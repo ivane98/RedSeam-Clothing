@@ -1,71 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>RedSeam Clothing</title>
+    <link rel="stylesheet" href="/styles/registration/globals.css" />
+    <link rel="stylesheet" href="/styles/registration/styleguide.css" />
+    <link rel="stylesheet" href="/styles/registration/style.css" />
+  </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Registration</title>
-
-  <link rel="stylesheet" href="styles/shared/header.css" />
-  <link rel="stylesheet" href="styles/registration.css" />
-</head>
-
-<body>
-  <div class="header">
-    <div class="header-left-section">
-      <a href="products.html" class="header-link">
-        <img class="logo" src="images/Vector.png" />
-        <p class="logo-text">RedSeam Clothing</p>
-      </a>
-    </div>
-
-    <div id="user" class="header-right-section">
-      <img class="cart-icon" src="images/cart.png" />
-
-      <div class="profile">
-        <img class="profile-picture" src="images/profile-picture.png" />
-        <img class="dropdown" src="images/chevron-down.png" alt="" />
-      </div>
-    </div>
-  </div>
-
-  <div class="container">
-    <div class="left">
-      <img src="images/banner.png" />
-    </div>
-
-    <div class="right">
-      <h1>Registration</h1>
-
-      <div class="avatar-upload">
-        <img id="avatarPreview" src="default-avatar.png" alt="avatar" />
-        <input type="file" id="avatarInput" hidden />
-        <div>
-          <button>Upload new</button>
-          <button>Remove</button>
+  <body>
+    <main class="registration">
+      <img
+        class="rectangle"
+        src="images/banner.png"
+        alt="Fashion background image"
+      />
+      <header class="header">
+        <div class="logo">
+          <img
+            class="hand-eye"
+            src="images/HandEye.png"
+            alt="RedSeam Clothing logo"
+          />
+          <div class="text-wrapper">RedSeam Clothing</div>
         </div>
-      </div>
-
-      <form id="registerForm">
-        <input type="text" id="username" placeholder="Username *" required />
-        <input type="email" id="email" placeholder="Email *" required />
-
-        <div class="password-field">
-          <input type="password" id="password" placeholder="Password *" required />
-          <span class="toggle">👁</span>
+        <div class="frame">
+          <img class="img" src="images/user-icon.png" alt="User icon" />
+          <div class="div">Log in</div>
         </div>
-
-        <div class="password-field">
-          <input type="password" id="confirmPassword" placeholder="Confirm password *" required />
-          <span class="toggle">👁</span>
+      </header>
+      <h1 class="text-wrapper-2">Registration</h1>
+      <section class="frame-2">
+        <div class="div-2">
+          <img
+            class="ellipse"
+            src="images/profile-picture-big.png"
+            alt="Profile picture placeholder"
+          />
+          <div class="div-2">
+            <button type="button" class="text-wrapper-3">Upload new</button>
+            <button type="button" class="text-wrapper-3">Remove</button>
+          </div>
         </div>
-
-        <button type="submit" class="btn">Register</button>
-      </form>
-
-      <p>Already member? <a href="login.html">Log in</a></p>
-    </div>
-  </div>
-</body>
-
+        <form class="frame-3" novalidate>
+          <div class="frame-4">
+            <div class="frame-5">
+              <div class="frame-6">
+                <div class="frame-6">
+                  <label class="mail" for="username">Username</label>
+                  <span class="text-wrapper-4" aria-label="Required field"
+                    >*</span
+                  >
+                </div>
+              </div>
+            </div>
+            <input
+              type="text"
+              id="username"
+              name="username"
+              class="form-input"
+              required
+              aria-describedby="username-error"
+            />
+            <div
+              id="username-error"
+              class="error-message"
+              role="alert"
+              aria-live="polite"
+            ></div>
+          </div>
+          <div class="frame-4">
+            <div class="frame-5">
+              <div class="frame-6">
+                <div class="frame-6">
+                  <label class="mail" for="email">Email</label>
+                  <span class="text-wrapper-4" aria-label="Required field"
+                    >*</span
+                  >
+                </div>
+              </div>
+            </div>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              class="form-input"
+              required
+              aria-describedby="email-error"
+            />
+            <div
+              id="email-error"
+              class="error-message"
+              role="alert"
+              aria-live="polite"
+            ></div>
+          </div>
+          <div class="frame-4">
+            <div class="frame-5">
+              <div class="frame-6">
+                <div class="frame-6">
+                  <label class="mail" for="password">Password</label>
+                  <span class="text-wrapper-4" aria-label="Required field"
+                    >*</span
+                  >
+                </div>
+              </div>
+              <button
+                type="button"
+                class="password-toggle"
+                aria-label="Toggle password visibility"
+              >
+                <img class="img" src="images/eye.png" alt="Show password" />
+              </button>
+            </div>
+            <input
+              type="password"
+              id="password"
+              name="password"
+              class="form-input"
+              required
+              aria-describedby="password-error"
+            />
+            <div
+              id="password-error"
+              class="error-message"
+              role="alert"
+              aria-live="polite"
+            ></div>
+          </div>
+          <div class="frame-4">
+            <div class="frame-5">
+              <div class="frame-6">
+                <div class="frame-6">
+                  <label class="mail" for="confirm-password"
+                    >Confirm password</label
+                  >
+                  <span class="text-wrapper-4" aria-label="Required field"
+                    >*</span
+                  >
+                </div>
+              </div>
+              <button
+                type="button"
+                class="password-toggle"
+                aria-label="Toggle confirm password visibility"
+              >
+                <img
+                  class="img"
+                  src="images/eye.png"
+                  alt="Show confirm password"
+                />
+              </button>
+            </div>
+            <input
+              type="password"
+              id="confirm-password"
+              name="confirm-password"
+              class="form-input"
+              required
+              aria-describedby="confirm-password-error"
+            />
+            <div
+              id="confirm-password-error"
+              class="error-message"
+              role="alert"
+              aria-live="polite"
+            ></div>
+          </div>
+          <div class="frame-7">
+            <button type="submit" class="primary">
+              <span class="add-to-cart">Register</span>
+            </button>
+            <div class="frame-8">
+              <span class="text-wrapper-3">Already member?</span>
+              <a href="#" class="text-wrapper-5">Log in</a>
+            </div>
+          </div>
+        </form>
+      </section>
+    </main>
+  </body>
 </html>
