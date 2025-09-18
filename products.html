@@ -1,47 +1,96 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title>RedSeam Clothing</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link rel="stylesheet" href="styles/shared/header.css" />
-  </head>
-  <body>
-    <div class="header">
-      <div class="header-left-section">
-        <a href="products.html" class="header-link">
-          <img class="logo" src="images/Vector.png" />
-          <p class="logo-text">RedSeam Clothing</p>
-        </a>
+<html lang="en">
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="utf-8" />
+  <title>RedSeam Clothing</title>
+  <link rel="stylesheet" href="styles/globals.css" />
+  <link rel="stylesheet" href="styles/styleguide.css" />
+  <link rel="stylesheet" href="styles/products.css" />
+</head>
+
+<body>
+  <main class="listing-page">
+
+    <header class="header" role="banner">
+      <div class="div">
+        <img class="img" src="images/HandEye.png" alt="RedSeam Clothing Logo" />
+        <h1 class="text-wrapper">RedSeam Clothing</h1>
       </div>
+      <nav class="frame" role="navigation" aria-label="User actions">
+        <button class="cart-button" type="button" aria-label="Shopping cart">
+          <img class="img" src="images/shopping-cart.png" alt="" />
+        </button>
+        <div class="user-menu">
+          <img class="ellipse" src="images/profile-picture.png" alt="User avatar" />
+          <button class="dropdown-toggle" type="button" aria-label="User menu" aria-expanded="false">
+            <img class="heroicons-mini" src="images/chevron-down.png" alt="" />
+          </button>
+        </div>
+      </nav>
+    </header>
 
-      <div id="user" class="header-right-section">
-        <img class="cart-icon" src="images/cart.png" />
+    <section class="frame-2" aria-labelledby="products-heading">
+      <h2 class="text-wrapper-2" id="products-heading">Products</h2>
+      <div class="frame-3" role="toolbar" aria-label="Product controls">
+        <p class="p" aria-live="polite">Showing 1–10 of 100 results</p>
+        <img class="line" src="images/line.png" alt="" role="presentation" />
+        <button class="frame-4" type="button" aria-label="Filter products">
+          <div class="heroicons-outline" aria-hidden="true"></div>
+          <span class="text-wrapper-3">Filter</span>
+        </button>
+        <div class="frame-5">
+          <label for="sort-select" class="text-wrapper-3">Sort by</label>
+          <select id="sort-select" class="sort-select" aria-label="Sort products">
+            <option value="default">New Products First</option>
+            <option value="price-low">Price: Low to High</option>
+            <option value="price-high">Price: High to Low</option>
 
-        <div class="profile">
-          <img class="profile-picture" src="images/profile-picture.png" />
-          <img class="dropdown" src="images/chevron-down.png" alt="" />
+          </select>
+          <img class="heroicons-mini" src="images/chevron-down.png" alt="" aria-hidden="true" />
         </div>
       </div>
-    </div>
+    </section>
 
-    <div class="main">
-      <div class="products-grid"></div>
-    </div>
-    <script type="module" src="./scripts/amazon.js"></script>
-  </body>
+    <section class="products-grid" aria-label="Product grid">
+    </section>
 
-  <script>
-    //   const isLoggedIn = false;
+    <nav class="pagination-wrapper" role="navigation" aria-label="Pagination">
+      <div class="pagination">
+        <button class="pagination-nav" type="button" aria-label="Previous page" disabled>
+          <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
+        </button>
+        <div class="page">
+          <button class="page-active" type="button" aria-current="page" aria-label="Page 1">
+            <span class="num">1</span>
+          </button>
+        </div>
+        <div class="num-wrapper">
+          <button class="page-button" type="button" aria-label="Go to page 2">
+            <span class="num-2">2</span>
+          </button>
+        </div>
+        <div class="num-wrapper">
+          <span class="num-2" aria-hidden="true">...</span>
+        </div>
+        <div class="num-wrapper">
+          <button class="page-button" type="button" aria-label="Go to page 9">
+            <span class="num-2">9</span>
+          </button>
+        </div>
+        <div class="num-wrapper">
+          <button class="page-button" type="button" aria-label="Go to page 10">
+            <span class="num-2">10</span>
+          </button>
+        </div>
+        <button class="pagination-nav" type="button" aria-label="Next page">
+          <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
+        </button>
+      </div>
+    </nav>
+  </main>
+</body>
+<script type="module" src="./scripts/products.js"></script>
 
-    //   document.getElementById("user").innerHTML = isLoggedIn
-    //     ? "<h2>Products Page</h2>"
-    //     : "<img class='avatar-icon' src='images/redberry/Union.png' /><p>Log in</p>";
-    //
-  </script>
 </html>

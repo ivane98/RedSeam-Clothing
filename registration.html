@@ -1,78 +1,71 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Registration</title>
 
-    <link rel="stylesheet" href="styles/shared/header.css" />
-    <link rel="stylesheet" href="styles/registration.css" />
-  </head>
-  <body>
-    <div class="header">
-      <div class="header-left-section">
-        <a href="products.html" class="header-link">
-          <img class="logo" src="images/Vector.png" />
-          <p class="logo-text">RedSeam Clothing</p>
-        </a>
-      </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration</title>
 
-      <div id="user" class="header-right-section">
-        <img class="cart-icon" src="images/cart.png" />
+  <link rel="stylesheet" href="styles/shared/header.css" />
+  <link rel="stylesheet" href="styles/registration.css" />
+</head>
 
-        <div class="profile">
-          <img class="profile-picture" src="images/profile-picture.png" />
-          <img class="dropdown" src="images/chevron-down.png" alt="" />
-        </div>
-      </div>
+<body>
+  <div class="header">
+    <div class="header-left-section">
+      <a href="products.html" class="header-link">
+        <img class="logo" src="images/Vector.png" />
+        <p class="logo-text">RedSeam Clothing</p>
+      </a>
     </div>
 
-    <div class="container">
-      <div class="left">
-        <img src="images/banner.png" />
-      </div>
+    <div id="user" class="header-right-section">
+      <img class="cart-icon" src="images/cart.png" />
 
-      <div class="right">
-        <h1>Registration</h1>
-
-        <div class="avatar-upload">
-          <img id="avatarPreview" src="default-avatar.png" alt="avatar" />
-          <input type="file" id="avatarInput" hidden />
-          <div>
-            <button>Upload new</button>
-            <button>Remove</button>
-          </div>
-        </div>
-
-        <form id="registerForm">
-          <input type="text" id="username" placeholder="Username *" required />
-          <input type="email" id="email" placeholder="Email *" required />
-
-          <div class="password-field">
-            <input
-              type="password"
-              id="password"
-              placeholder="Password *"
-              required
-            />
-            <span class="toggle">👁</span>
-          </div>
-
-          <div class="password-field">
-            <input
-              type="password"
-              id="confirmPassword"
-              placeholder="Confirm password *"
-              required
-            />
-            <span class="toggle">👁</span>
-          </div>
-
-          <button type="submit" class="btn">Register</button>
-        </form>
-
-        <p>Already member? <a href="login.html">Log in</a></p>
+      <div class="profile">
+        <img class="profile-picture" src="images/profile-picture.png" />
+        <img class="dropdown" src="images/chevron-down.png" alt="" />
       </div>
     </div>
-  </body>
+  </div>
+
+  <div class="container">
+    <div class="left">
+      <img src="images/banner.png" />
+    </div>
+
+    <div class="right">
+      <h1>Registration</h1>
+
+      <div class="avatar-upload">
+        <img id="avatarPreview" src="default-avatar.png" alt="avatar" />
+        <input type="file" id="avatarInput" hidden />
+        <div>
+          <button>Upload new</button>
+          <button>Remove</button>
+        </div>
+      </div>
+
+      <form id="registerForm">
+        <input type="text" id="username" placeholder="Username *" required />
+        <input type="email" id="email" placeholder="Email *" required />
+
+        <div class="password-field">
+          <input type="password" id="password" placeholder="Password *" required />
+          <span class="toggle">👁</span>
+        </div>
+
+        <div class="password-field">
+          <input type="password" id="confirmPassword" placeholder="Confirm password *" required />
+          <span class="toggle">👁</span>
+        </div>
+
+        <button type="submit" class="btn">Register</button>
+      </form>
+
+      <p>Already member? <a href="login.html">Log in</a></p>
+    </div>
+  </div>
+</body>
+
 </html>
