@@ -51,29 +51,70 @@
         <div class="frame-3" role="toolbar" aria-label="Product controls">
           <p class="p" aria-live="polite">Showing 1–10 of 100 results</p>
           <img class="line" src="images/line.png" alt="" role="presentation" />
-          <button class="frame-4" type="button" aria-label="Filter products">
+
+          <button
+            class="filter-control"
+            type="button"
+            aria-label="Filter products"
+          >
             <div class="heroicons-outline" aria-hidden="true"></div>
             <span class="text-wrapper-3">Filter</span>
           </button>
-          <div class="frame-5">
-            <label for="sort-select" class="text-wrapper-3">Sort by</label>
-            <select
+
+          <div class="price-filter">
+            <h3 class="filter-title">Select price</h3>
+            <div class="price-inputs">
+              <div class="price-input-group">
+                <div class="input-field">
+                  <label>From <span class="required">*</span></label>
+                </div>
+              </div>
+
+              <div class="price-input-group">
+                <div class="input-field">
+                  <label>To <span class="required">*</span></label>
+                </div>
+              </div>
+            </div>
+            <button class="apply-button">Apply</button>
+          </div>
+
+          <div class="sort-dropdown">
+            <p  class="text-wrapper-3"
+              >Sort by
+              <img
+                class="heroicons-mini"
+                src="images/chevron-down.png"
+                alt=""
+                aria-hidden="true"
+            /></p>
+
+            <!-- <select
               id="sort-select"
               class="sort-select"
               aria-label="Sort products"
             >
-              <option value="default">New Products First</option>
-              <option value="price-low">Price: Low to High</option>
-              <option value="price-high">Price: High to Low</option>
-            </select>
-            <img
-              class="heroicons-mini"
-              src="images/chevron-down.png"
-              alt=""
-              aria-hidden="true"
-            />
+              <option class="sort-option" value="default">
+                New Products First
+              </option>
+              <option class="sort-option" value="price-low">
+                Price: Low to High
+              </option>
+              <option class="sort-option" value="price-high">
+                Price: High to Low
+              </option>
+            </select> -->
+
+            <div class="dropdown-menu">
+             <div class="dropdown-header">Sort by</div>
+            <div class="dropdown-option">New products first</div>
+            <div class="dropdown-option">Price, low to high</div>
+            <div class="dropdown-option">Price, high to low</div>
+            </div>
+
           </div>
-        </div>
+
+          
       </section>
 
       <section class="products-grid" aria-label="Product grid"></section>
