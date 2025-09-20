@@ -278,7 +278,7 @@
         <article class="frame-14" aria-label="Cart item 1">
           <img
             class="rectangle-3"
-            src="https://c.animaapp.com/mfrthpdea9PxLT/img/rectangle-1-2.png"
+            src="images/rectangle-2.png"
             alt="Kids' Curved Hilfiger Graphic T-Shirt"
           />
           <div class="frame-15">
@@ -303,11 +303,7 @@
                   class="quantity-button"
                   aria-label="Decrease quantity"
                 >
-                  <img
-                    class="img-2"
-                    src="https://c.animaapp.com/mfrthpdea9PxLT/img/heroicons-micro-minus.svg"
-                    alt=""
-                  />
+                  <img class="img-2" src="images/minus.png" alt="" />
                 </button>
                 <div class="frame-20"><div class="text-wrapper-12">1</div></div>
                 <button
@@ -315,11 +311,7 @@
                   class="quantity-button"
                   aria-label="Increase quantity"
                 >
-                  <img
-                    class="img-2"
-                    src="https://c.animaapp.com/mfrthpdea9PxLT/img/heroicons-micro-plus.svg"
-                    alt=""
-                  />
+                  <img class="img-2" src="images/plus.png" alt="" />
                 </button>
               </div>
               <div class="frame-21">
@@ -333,7 +325,7 @@
         <article class="frame-22" aria-label="Cart item 2">
           <img
             class="rectangle-3"
-            src="https://c.animaapp.com/mfrthpdea9PxLT/img/rectangle-1-3.png"
+            src="images/rectangle-3.png"
             alt="Kids' Curved Hilfiger Graphic T-Shirt"
           />
           <div class="frame-15">
@@ -358,11 +350,7 @@
                   class="quantity-button"
                   aria-label="Decrease quantity"
                 >
-                  <img
-                    class="img-2"
-                    src="https://c.animaapp.com/mfrthpdea9PxLT/img/heroicons-micro-minus.svg"
-                    alt=""
-                  />
+                  <img class="img-2" src="images/minus.png" alt="" />
                 </button>
                 <div class="frame-20"><div class="text-wrapper-12">1</div></div>
                 <button
@@ -370,11 +358,7 @@
                   class="quantity-button"
                   aria-label="Increase quantity"
                 >
-                  <img
-                    class="img-2"
-                    src="https://c.animaapp.com/mfrthpdea9PxLT/img/heroicons-micro-plus.svg"
-                    alt=""
-                  />
+                  <img class="img-2" src="images/plus.png" alt="" />
                 </button>
               </div>
               <div class="frame-21">
@@ -402,5 +386,36 @@
       </aside>
       <!--  -->
     </main>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", async () => {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get("id");
+
+        if (productId) {
+          try {
+            const response = await fetch(
+              `https://api.redseam.redberryinternship.ge/api/products/${productId}`,
+              {
+                headers: {
+                  Accept: "application/json",
+                },
+              }
+            );
+            if (!response.ok) throw new Error("Product not found");
+            const product = await response.json();
+
+            console.log(product);
+          } catch (error) {
+            console.error("Error fetching product details:", error);
+            document.querySelector(".product-details").innerHTML =
+              "<p>Product not found or error occurred.</p>";
+          }
+        } else {
+          document.querySelector(".product-details").innerHTML =
+            "<p>No product ID provided.</p>";
+        }
+      });
+    </script>
   </body>
 </html>
