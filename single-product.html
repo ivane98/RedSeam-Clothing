@@ -49,63 +49,7 @@
         Listing / Product
       </nav>
 
-      <aside class="frame-2" aria-label="Product thumbnails">
-        <button
-          class="thumbnail-button"
-          type="button"
-          aria-label="View product image 1"
-        >
-          <img
-            class="image"
-            src="images/image-1.png"
-            alt="Product thumbnail 1"
-          />
-        </button>
-        <button
-          class="thumbnail-button"
-          type="button"
-          aria-label="View product image 2"
-        >
-          <img
-            class="image"
-            src="images/image-2.png"
-            alt="Product thumbnail 2"
-          />
-        </button>
-        <button
-          class="thumbnail-button"
-          type="button"
-          aria-label="View product image 3"
-        >
-          <img
-            class="image"
-            src="images/image-3.png"
-            alt="Product thumbnail 3"
-          />
-        </button>
-        <button
-          class="thumbnail-button"
-          type="button"
-          aria-label="View product image 4"
-        >
-          <img
-            class="image"
-            src="images/image-4.png"
-            alt="Product thumbnail 4"
-          />
-        </button>
-        <button
-          class="thumbnail-button"
-          type="button"
-          aria-label="View product image 5"
-        >
-          <img
-            class="image"
-            src="images/image-5.png"
-            alt="Product thumbnail 5"
-          />
-        </button>
-      </aside>
+      <aside class="frame-2" aria-label="Product thumbnails"></aside>
       <section class="product-image" aria-label="Main product image">
         <img
           class="rectangle"
@@ -115,10 +59,8 @@
       </section>
       <section class="frame-3" aria-label="Product details">
         <header class="frame-4">
-          <h2 class="kids-curved-hilfiger">
-            Kids' Curved Hilfiger Graphic T-Shirt
-          </h2>
-          <div class="text-wrapper-3" aria-label="Price">$ 25</div>
+          <h2 class="product-name"></h2>
+          <div class="product-price" aria-label="Price"></div>
         </header>
         <form class="frame-5" aria-label="Product options">
           <fieldset class="frame-6">
@@ -406,16 +348,192 @@
             const product = await response.json();
 
             console.log(product);
+
+            // Update main image
+            const mainImage = document.querySelector(".rectangle");
+            if (mainImage) {
+              mainImage.src = product.cover_image || "";
+              mainImage.alt = `${toCapitalCase(
+                product.name
+              )} - Main product image`;
+            } else {
+              console.warn("Main image (.rectangle) not found");
+            }
+
+            // Update thumbnail images
+            let productImages = "";
+            if (product.images) {
+              product.images.forEach((img) => {
+                productImages += `
+              <button
+                class="thumbnail-button"
+                type="button"
+                aria-label="View product image"
+              >
+                <img
+                  class="image"
+                  src="${img}"
+                  alt="Product thumbnail"
+                />
+              </button>
+              `;
+              });
+              const thumbnailContainer = document.querySelector(".frame-2");
+              if (thumbnailContainer) {
+                thumbnailContainer.innerHTML = productImages;
+              } else {
+                console.warn("Thumbnail container (.frame-2) not found");
+              }
+            }
+
+            // Update product name and price
+            const productName = document.querySelector(".product-name");
+            if (productName) {
+              productName.innerText = toCapitalCase(product.name);
+            } else {
+              console.warn("Product name (.product-name) not found");
+            }
+
+            const productPrice = document.querySelector(".product-price");
+            if (productPrice) {
+              productPrice.innerText = `$${product.price}`;
+            } else {
+              console.warn("Product price (.product-price) not found");
+            }
+
+            // Dynamic color picker (replace static fieldset)
+            const colorPickerContainer = document.createElement("fieldset");
+            colorPickerContainer.className = "frame-6";
+            const legend = document.createElement("legend");
+            legend.className = "text-wrapper-4";
+            legend.textContent = `Color: ${
+              product.available_colors ? product.available_colors[0] : "N/A"
+            }`;
+            const radioGroup = document.createElement("div");
+            radioGroup.className = "frame-7";
+            radioGroup.setAttribute("role", "radiogroup");
+            radioGroup.setAttribute("aria-label", "Color options");
+
+            if (
+              product.available_colors &&
+              product.available_colors.length > 0
+            ) {
+              product.available_colors.forEach((color, index) => {
+                const inputId = `color-${color
+                  .toLowerCase()
+                  .replace(/\s/g, "-")}`;
+                const input = document.createElement("input");
+                input.type = "radio";
+                input.id = inputId;
+                input.name = "color";
+                input.className = "color-input";
+                input.value = color.toLowerCase();
+                if (index === 0) input.checked = true;
+
+                const label = document.createElement("label");
+                label.htmlFor = inputId;
+                label.className = "component";
+                label.setAttribute("aria-label", `${color} color option`);
+                label.style.backgroundColor = getColorValue(color);
+                label.style.borderRadius = "50%";
+
+                radioGroup.appendChild(input);
+                radioGroup.appendChild(label);
+              });
+
+              radioGroup.addEventListener("change", (e) => {
+                const selectedInput = e.target;
+                if (selectedInput.checked) {
+                  const selectedColor = selectedInput.value;
+                  legend.textContent = `Color: ${toCapitalCase(selectedColor)}`;
+                }
+              });
+            } else {
+              const noColor = document.createElement("p");
+              noColor.textContent = "No colors available";
+              radioGroup.appendChild(noColor);
+            }
+
+            colorPickerContainer.appendChild(legend);
+            colorPickerContainer.appendChild(radioGroup);
+
+            // Replace the static color picker inside .frame-5
+            const productOptions = document.querySelector(".frame-3");
+            if (productOptions) {
+              const formContainer = productOptions.querySelector(".frame-5");
+              if (formContainer) {
+                const staticColorPicker =
+                  formContainer.querySelector(".frame-6");
+                if (staticColorPicker) {
+                  formContainer.replaceChild(
+                    colorPickerContainer,
+                    staticColorPicker
+                  );
+                } else {
+                  formContainer.insertBefore(
+                    colorPickerContainer,
+                    formContainer.firstChild
+                  ); // Fallback
+                }
+              } else {
+                console.error("Form container (.frame-5) not found");
+                productOptions.appendChild(colorPickerContainer); // Fallback
+              }
+            } else {
+              console.error("Product options container (.frame-3) not found");
+              document.body.appendChild(colorPickerContainer); // Last resort
+            }
           } catch (error) {
             console.error("Error fetching product details:", error);
-            document.querySelector(".product-details").innerHTML =
-              "<p>Product not found or error occurred.</p>";
+            const errorContainer =
+              document.querySelector(".frame-3") ||
+              document.querySelector(".listing-page");
+            if (errorContainer) {
+              errorContainer.innerHTML =
+                "<p>Product not found or error occurred.</p>";
+            } else {
+              document.body.innerHTML =
+                "<p>Product not found or error occurred.</p>";
+            }
           }
         } else {
-          document.querySelector(".product-details").innerHTML =
-            "<p>No product ID provided.</p>";
+          const noIdContainer =
+            document.querySelector(".frame-3") ||
+            document.querySelector(".listing-page");
+          if (noIdContainer) {
+            noIdContainer.innerHTML = "<p>No product ID provided.</p>";
+          } else {
+            document.body.innerHTML = "<p>No product ID provided.</p>";
+          }
         }
       });
+
+      function getColorValue(color) {
+        const colorMap = {
+          yellow: "#FFFF00",
+          green: "#00FF00",
+          purple: "#800080",
+          pink: "#FFC1CC",
+          white: "#FFFFFF",
+          red: "#FF0000",
+          blue: "#0000FF",
+          "navy blue": "#000080",
+          black: "#000000",
+          beige: "#F5F5DC",
+          grey: "#808080",
+          orange: "#FFA500",
+          multi: "#808080",
+        };
+        return colorMap[color.toLowerCase()] || "#808080";
+      }
+
+      function toCapitalCase(str) {
+        return str
+          .toLowerCase()
+          .split(" ")
+          .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
     </script>
   </body>
 </html>

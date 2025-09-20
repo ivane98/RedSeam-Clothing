@@ -1,7 +1,7 @@
 .listing-page {
   position: relative;
   width: 1920px;
-  height: 1080px;
+  height: 1227px;
   background-color: var(--white);
   overflow: hidden;
 }
@@ -208,7 +208,7 @@
   flex: 0 0 auto;
 }
 
-.listing-page .kids-curved-hilfiger {
+.listing-page .product-name {
   position: relative;
   align-self: stretch;
   margin-top: -1px;
@@ -220,7 +220,7 @@
   line-height: normal;
 }
 
-.listing-page .text-wrapper-3 {
+.listing-page .product-price {
   position: relative;
   align-self: stretch;
   font-family: "Poppins", Helvetica;
@@ -548,7 +548,7 @@
 }
 
 .listing-page .shopping-cart {
-  display: flex;
+  display: none;
   position: absolute;
   top: 0;
   right: 0;
