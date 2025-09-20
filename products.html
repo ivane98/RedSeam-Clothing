@@ -58,7 +58,7 @@
             aria-label="Filter products"
           >
             <div class="heroicons-outline" aria-hidden="true"></div>
-            <span class="text-wrapper-3">Filter</span>
+            <span class="filter-wrapper">Filter</span>
           </button>
 
           <div class="price-filter">
@@ -67,12 +67,14 @@
               <div class="price-input-group">
                 <div class="input-field">
                   <label>From <span class="required">*</span></label>
+                  <input type="number" class="price-input"  min="0" />
                 </div>
               </div>
 
               <div class="price-input-group">
                 <div class="input-field">
                   <label>To <span class="required">*</span></label>
+                  <input type="number" class="price-input"  min="0" />
                 </div>
               </div>
             </div>
@@ -81,7 +83,8 @@
 
           <div class="sort-dropdown">
             <p  class="text-wrapper-3"
-              >Sort by
+              >
+              <span class="sort-wrapper">Sort by</span>
               <img
                 class="heroicons-mini"
                 src="images/chevron-down.png"

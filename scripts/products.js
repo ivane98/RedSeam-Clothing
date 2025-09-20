@@ -1,6 +1,7 @@
 let products = [];
 let current_page = 1;
 let lastPage = 1;
+let currentSort = "default";
 
 async function displayTotalCount() {
   try {
@@ -34,7 +35,7 @@ async function getDataByPage(page = 1) {
       "Links:",
       data.meta.links
     ); // Debug
-    displayProducts(products);
+    applyFiltersAndSort();
     updatePagination(data.meta.links);
   } catch (error) {
     console.error("Error:", error);
@@ -44,6 +45,7 @@ async function getDataByPage(page = 1) {
 document.addEventListener("DOMContentLoaded", async () => {
   initializeEventListeners();
   initializePriceFilter();
+  initializeSortDropdown();
   const paginationWrapper = document.querySelector(".pagination-wrapper");
   if (paginationWrapper) {
     paginationWrapper.classList.remove("loaded");
@@ -61,8 +63,10 @@ export function displayProducts(products) {
         <img class="rectangle" src=${product.cover_image}
           alt=${product.name} />
         <div class="frame-7">
-          <h3 class="product-name">${product.name}</h3>
-          <span class="text-wrapper-4" aria-label="Price">$ ${product.price}</span>
+          <h3 class="product-name">${toCapitalCase(product.name)}</h3>
+          <span class="text-wrapper-4" aria-label="Price">$ ${
+            product.price
+          }</span>
         </div>
       </article>
         
@@ -220,6 +224,7 @@ function initializeEventListeners() {
   const priceFilter = document.querySelector(".price-filter");
 
   if (filterControl && priceFilter) {
+    priceFilter.style.display = priceFilter.style.display || "none";
     filterControl.addEventListener("click", function () {
       priceFilter.style.display =
         priceFilter.style.display === "none" ? "flex" : "none";
@@ -230,6 +235,7 @@ function initializeEventListeners() {
   const sortControl = document.querySelector(".sort-dropdown");
   const dropdownManu = document.querySelector(".dropdown-menu");
   if (sortControl && dropdownManu) {
+    dropdownManu.style.display = dropdownManu.style.display || "none";
     sortControl.addEventListener("click", function () {
       dropdownManu.style.display =
         dropdownManu.style.display === "none" ? "flex" : "none";
@@ -238,6 +244,8 @@ function initializeEventListeners() {
   document.addEventListener("click", function (event) {
     const sortControl = document.querySelector(".sort-dropdown");
     const dropdownManu = document.querySelector(".dropdown-menu");
+    const filterControl = document.querySelector(".filter-control");
+    const priceFilter = document.querySelector(".price-filter");
 
     if (dropdownManu && sortControl) {
       if (
@@ -245,6 +253,14 @@ function initializeEventListeners() {
         !sortControl.contains(event.target)
       ) {
         dropdownManu.style.display = "none";
+      }
+    }
+    if (priceFilter && filterControl) {
+      if (
+        !priceFilter.contains(event.target) &&
+        !filterControl.contains(event.target)
+      ) {
+        priceFilter.style.display = "none";
       }
     }
   });
@@ -256,8 +272,21 @@ function initializePriceFilter() {
 
   if (applyButton) {
     applyButton.addEventListener("click", function () {
-      // Add price filter functionality here
-      console.log("Price filter applied");
+      const minPriceInput = document.querySelector(
+        ".price-inputs .price-input-group:first-child .price-input"
+      );
+      const maxPriceInput = document.querySelector(
+        ".price-inputs .price-input-group:last-child .price-input"
+      );
+      const minPrice = parseFloat(minPriceInput.value) || 0;
+      const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
+
+      if (minPrice > maxPrice) {
+        alert("Minimum price cannot be greater than maximum price.");
+        return;
+      }
+
+      applyFiltersAndSort();
 
       // Hide the filter after applying
       if (priceFilter) {
@@ -282,6 +311,60 @@ function initializePriceFilter() {
   });
 }
 
+function initializeSortDropdown() {
+  const dropdownOptions = document.querySelectorAll(".dropdown-option");
+  const sortText = document.querySelector(".sort-wrapper");
+  if (dropdownOptions) {
+    dropdownOptions.forEach((option) => {
+      option.addEventListener("click", function () {
+        const selectedText = option.textContent;
+        sortText.textContent = selectedText;
+        const sortBy = option.textContent
+          .toLowerCase()
+          .replace(/, /g, "-")
+          .replace(/ /g, "-");
+        currentSort =
+          sortBy === "new-products-first"
+            ? "default"
+            : sortBy === "price-low-to-high"
+            ? "price-low"
+            : sortBy === "price-high-to-low"
+            ? "price-high"
+            : "default";
+        applyFiltersAndSort();
+        const dropdownManu = document.querySelector(".dropdown-menu");
+        if (dropdownManu) {
+          dropdownManu.style.display = "none";
+        }
+      });
+    });
+  }
+}
+
+function applyFiltersAndSort() {
+  const minPriceInput = document.querySelector(
+    ".price-inputs .price-input-group:first-child .price-input"
+  );
+  const maxPriceInput = document.querySelector(
+    ".price-inputs .price-input-group:last-child .price-input"
+  );
+  const minPrice = parseFloat(minPriceInput.value) || 0;
+  const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
+
+  if (minPrice > maxPrice) {
+    alert("Minimum price cannot be greater than maximum price.");
+    return;
+  }
+
+  // Apply filtering
+  let filteredProducts = filterProductsByPrice(minPrice, maxPrice);
+
+  // Apply sorting
+  const sortedProducts = sortProducts(filteredProducts, currentSort);
+
+  displayProducts(sortedProducts);
+}
+
 // Utility functions for future enhancements
 function filterProductsByPrice(minPrice, maxPrice) {
   // Filter products by price range
@@ -300,6 +383,14 @@ function sortProducts(products, sortBy) {
     case "name":
       return products.sort((a, b) => a.title.localeCompare(b.title));
     default:
-      return products;
+      return [...products];
   }
+}
+
+function toCapitalCase(str) {
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
 }
