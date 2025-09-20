@@ -96,7 +96,7 @@
   flex: 0 0 auto;
 }
 
-.listing-page .p {
+.listing-page .product-count {
   position: relative;
   width: fit-content;
   font-family: "Poppins", Helvetica;
@@ -271,8 +271,6 @@
   font-family: "Poppins", Helvetica;
 }
 
-
-
 .dropdown-header {
   font-size: 13px;
   font-weight: 600;
@@ -368,9 +366,7 @@
   align-items: center;
   justify-content: space-around;
   gap: 140px;
-
   opacity: 0;
-
   transition: opacity 0.2s ease;
 }
 
@@ -457,7 +453,7 @@
 .listing-page .user-menu {
   display: inline-flex;
   align-items: center;
-  gap: 0;
+  gap: 8px;
   position: relative;
 }
 

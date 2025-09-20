@@ -1,0 +1,145 @@
+.success {
+  width: 876px;
+  height: 590px;
+  display: flex;
+  flex-direction: column;
+  background-color: #ffffff;
+}
+
+.success .heroicons-mini-x {
+  margin-left: 806px;
+  width: 40px;
+  height: 40px;
+  margin-top: 30px;
+}
+
+.success .frame {
+  display: flex;
+  margin-left: 322px;
+  width: 233px;
+  height: 216px;
+  position: relative;
+  margin-top: 44px;
+  flex-direction: column;
+  align-items: center;
+  gap: 40px;
+}
+
+.success .img {
+  position: relative;
+  width: 76px;
+  height: 76px;
+}
+
+.success .div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+  align-self: stretch;
+  width: 100%;
+  flex: 0 0 auto;
+}
+
+.success .text-wrapper {
+  position: relative;
+  align-self: stretch;
+  margin-top: -1px;
+  font-family: "Poppins", Helvetica;
+  font-weight: 600;
+  color: var(--dark-blue);
+  font-size: 42px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.success .p {
+  position: relative;
+  align-self: stretch;
+  font-family: "Poppins", Helvetica;
+  font-weight: 400;
+  color: var(--dark-blue-2);
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.success .primary {
+  display: flex;
+  height: 41px;
+  width: 214px;
+  align-self: center;
+  position: relative;
+  margin-top: 74px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+  background-color: var(--red);
+  border-radius: 10px;
+}
+
+.success .add-to-cart {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Poppins", Helvetica;
+  font-weight: 400;
+  color: var(--white);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+/* Original CSS code should be injected here */
+
+/* Additional styles for semantic HTML elements and accessibility */
+.success .heroicons-mini-x {
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.success .heroicons-mini-x:hover {
+  opacity: 0.8;
+}
+
+.success .heroicons-mini-x:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.success .heroicons-mini-x img {
+  width: 40px;
+  height: 40px;
+  display: block;
+}
+
+.success .primary {
+  cursor: pointer;
+  border: none;
+  transition: background-color 0.2s ease;
+}
+
+.success .primary:hover {
+  background-color: #e55a00;
+}
+
+.success .primary:focus {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
+}
+
+.success .primary:active {
+  background-color: #cc5200;
+}
+
+.success .add-to-cart {
+  pointer-events: none;
+}

@@ -2,7 +2,22 @@ let products = [];
 let current_page = 1;
 let lastPage = 1;
 
-async function getData(page = 1) {
+async function displayTotalCount() {
+  try {
+    const response = await fetch(
+      `https://api.redseam.redberryinternship.ge/api/products`
+    );
+    const data = await response.json();
+
+    const productCount = (document.querySelector(
+      ".product-count"
+    ).innerHTML = `Showing 1–10 of ${data.meta.total} results`);
+  } catch (error) {
+    console.error("Error:", error);
+  }
+}
+
+async function getDataByPage(page = 1) {
   try {
     const response = await fetch(
       `https://api.redseam.redberryinternship.ge/api/products?page=${page}`
@@ -11,7 +26,14 @@ async function getData(page = 1) {
     products = data.data;
     current_page = data.meta.current_page;
     lastPage = data.meta.last_page;
-
+    console.log(
+      "Initial Load - Current Page:",
+      current_page,
+      "Last Page:",
+      lastPage,
+      "Links:",
+      data.meta.links
+    ); // Debug
     displayProducts(products);
     updatePagination(data.meta.links);
   } catch (error) {
@@ -26,7 +48,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (paginationWrapper) {
     paginationWrapper.classList.remove("loaded");
   }
-  await getData();
+  await displayTotalCount();
+  await getDataByPage();
 });
 
 export function displayProducts(products) {
@@ -67,7 +90,7 @@ function updatePagination(links) {
       active: link.active,
     }));
 
-  const maxVisiblePages = 3;
+  const maxVisiblePages = 2;
   const halfVisible = Math.floor(maxVisiblePages / 2);
 
   let startPage = Math.max(1, current_page - halfVisible);
@@ -83,8 +106,9 @@ function updatePagination(links) {
 
   const prevLink = links.find((link) => link.label.includes("Previous"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Previous page" ${!prevLink?.url ? "disabled" : ""
-    } data-url="${prevLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Previous page" ${
+          !prevLink?.url ? "disabled" : ""
+        } data-url="${prevLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
         </button>
     `;
@@ -95,11 +119,14 @@ function updatePagination(links) {
     const firstPage = pages.find((p) => p.label === 1);
     pagesHtml += `
             <div class="page ${!firstPage?.active ? "num-wrapper" : ""}">
-                <button class="page-button ${firstPage?.active ? "page-active" : ""
-      }" type="button" aria-label="Go to page 1" data-url="${firstPage?.url || ""
-      }" ${firstPage?.active ? 'aria-current="page"' : ""}>
-                    <span class="num-2 ${firstPage?.active ? "num" : ""
-      }">1</span>
+                <button class="page-button ${
+                  firstPage?.active ? "page-active" : ""
+                }" type="button" aria-label="Go to page 1" data-url="${
+      firstPage?.url || ""
+    }" ${firstPage?.active ? 'aria-current="page"' : ""}>
+                    <span class="num-2 ${
+                      firstPage?.active ? "num" : ""
+                    }">1</span>
                 </button>
             </div>
         `;
@@ -145,11 +172,14 @@ function updatePagination(links) {
     const lastPageLink = pages.find((p) => p.label === lastPage);
     pagesHtml += `
             <div class="${!lastPageLink?.active ? "num-wrapper" : "page"}">
-                <button class="${!lastPageLink?.active ? "page-button" : "page-active"
-      }" type="button" aria-label="Go to page ${lastPage}" data-url="${lastPageLink?.url || ""
-      }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
-                    <span class="${!lastPageLink?.active ? "num-2" : "num"
-      }">${lastPage}</span>
+                <button class="${
+                  !lastPageLink?.active ? "page-button" : "page-active"
+                }" type="button" aria-label="Go to page ${lastPage}" data-url="${
+      lastPageLink?.url || ""
+    }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
+                    <span class="${
+                      !lastPageLink?.active ? "num-2" : "num"
+                    }">${lastPage}</span>
                 </button>
             </div>
         `;
@@ -159,8 +189,9 @@ function updatePagination(links) {
 
   const nextLink = links.find((link) => link.label.includes("Next"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Next page" ${!nextLink?.url ? "disabled" : ""
-    } data-url="${nextLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Next page" ${
+          !nextLink?.url ? "disabled" : ""
+        } data-url="${nextLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
         </button>
     `;
@@ -173,7 +204,7 @@ function updatePagination(links) {
       const url = btn.dataset.url;
       if (url) {
         const pageParam = new URL(url).searchParams.get("page");
-        getData(Number(pageParam));
+        getDataByPage(Number(pageParam));
       }
     });
   });
@@ -217,9 +248,7 @@ function initializeEventListeners() {
       }
     }
   });
-
 }
-
 
 function initializePriceFilter() {
   const applyButton = document.querySelector(".apply-button");
