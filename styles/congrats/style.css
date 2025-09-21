@@ -93,9 +93,11 @@
   letter-spacing: 0;
   line-height: normal;
 }
+
 /* Original CSS code should be injected here */
 
 /* Additional styles for semantic HTML elements and accessibility */
+
 .success .heroicons-mini-x {
   background: none;
   border: none;
