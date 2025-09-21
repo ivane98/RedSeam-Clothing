@@ -39,8 +39,19 @@
             alt="Profile picture placeholder"
           />
           <div class="div-2">
-            <button type="button" class="text-wrapper-3">Upload new</button>
-            <button type="button" class="text-wrapper-3">Remove</button>
+            <input
+              type="file"
+              id="avatar"
+              name="avatar"
+              accept="image/jpeg,image/png"
+              style="display: none"
+            />
+            <button type="button" class="text-wrapper-3" id="upload-btn">
+              Upload new
+            </button>
+            <button type="button" class="text-wrapper-3" id="remove-btn">
+              Remove
+            </button>
           </div>
         </div>
         <form class="frame-3" novalidate>
@@ -116,16 +127,16 @@
           </div>
           <div class="frame-4">
             <div class="input-field">
-              <label class="input-label" for="confirm-password">
+              <label class="input-label" for="password_confirmation">
                 Confirm password <span class="required">*</span>
               </label>
               <input
                 type="password"
-                id="confirm-password"
-                name="confirm-password"
+                id="password_confirmation"
+                name="password_confirmation"
                 class="form-input"
                 required
-                aria-describedby="confirm-password-error"
+                aria-describedby="password_confirmation-error"
               />
               <button
                 type="button"
@@ -140,7 +151,7 @@
               </button>
             </div>
             <div
-              id="confirm-password-error"
+              id="password_confirmation-error"
               class="error-message"
               role="alert"
               aria-live="polite"
@@ -158,5 +169,7 @@
         </form>
       </section>
     </main>
+
+    <script type="module" src="./scripts/registration.js"></script>
   </body>
 </html>
