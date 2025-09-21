@@ -349,10 +349,15 @@
 
             console.log(product);
 
-            // Update main image
+            // Cache DOM elements for performance
             const mainImage = document.querySelector(".rectangle");
+            const thumbnailContainer = document.querySelector(".frame-2");
+            const productName = document.querySelector(".product-name");
+            const productPrice = document.querySelector(".product-price");
+
+            // Update main image with first available image
             if (mainImage) {
-              mainImage.src = product.cover_image || "";
+              mainImage.src = product.images?.[0] || product.main_image || "";
               mainImage.alt = `${toCapitalCase(
                 product.name
               )} - Main product image`;
@@ -363,22 +368,24 @@
             // Update thumbnail images
             let productImages = "";
             if (product.images) {
-              product.images.forEach((img) => {
-                productImages += `
-              <button
-                class="thumbnail-button"
-                type="button"
-                aria-label="View product image"
-              >
-                <img
-                  class="image"
-                  src="${img}"
-                  alt="Product thumbnail"
-                />
-              </button>
-              `;
-              });
-              const thumbnailContainer = document.querySelector(".frame-2");
+              productImages = product.images
+                .map(
+                  (img, index) => `
+            <button
+              class="thumbnail-button"
+              type="button"
+              data-index="${index}"
+              aria-label="View product image"
+            >
+              <img
+                class="image"
+                src="${img}"
+                alt="Product thumbnail ${index + 1}"
+              />
+            </button>
+          `
+                )
+                .join("");
               if (thumbnailContainer) {
                 thumbnailContainer.innerHTML = productImages;
               } else {
@@ -387,32 +394,35 @@
             }
 
             // Update product name and price
-            const productName = document.querySelector(".product-name");
             if (productName) {
               productName.innerText = toCapitalCase(product.name);
             } else {
               console.warn("Product name (.product-name) not found");
             }
 
-            const productPrice = document.querySelector(".product-price");
             if (productPrice) {
               productPrice.innerText = `$${product.price}`;
             } else {
               console.warn("Product price (.product-price) not found");
             }
 
-            // Dynamic color picker (replace static fieldset)
+            // Dynamic color picker
             const colorPickerContainer = document.createElement("fieldset");
             colorPickerContainer.className = "frame-6";
             const legend = document.createElement("legend");
             legend.className = "text-wrapper-4";
             legend.textContent = `Color: ${
-              product.available_colors ? product.available_colors[0] : "N/A"
+              product.available_colors
+                ? toCapitalCase(product.available_colors[0])
+                : "N/A"
             }`;
             const radioGroup = document.createElement("div");
             radioGroup.className = "frame-7";
             radioGroup.setAttribute("role", "radiogroup");
             radioGroup.setAttribute("aria-label", "Color options");
+
+            let lastSelectedWrapper = null;
+            let lastSelectedThumbnail = null;
 
             if (
               product.available_colors &&
@@ -430,24 +440,98 @@
                 input.value = color.toLowerCase();
                 if (index === 0) input.checked = true;
 
-                const label = document.createElement("label");
-                label.htmlFor = inputId;
+                const wrapper = document.createElement("div");
+                wrapper.className = "color-wrapper";
+                wrapper.setAttribute(
+                  "aria-label",
+                  `${toCapitalCase(color)} color option`
+                );
+
+                const label = document.createElement("div");
                 label.className = "component";
-                label.setAttribute("aria-label", `${color} color option`);
                 label.style.backgroundColor = getColorValue(color);
                 label.style.borderRadius = "50%";
+                label.style.borderColor = getColorValue(color);
+                label.style.width = "38px";
+                label.style.height = "38px";
+                wrapper.appendChild(label);
+                wrapper.style.border =
+                  index === 0 ? `2px solid ${getColorValue(color)}` : "none";
+                wrapper.style.borderRadius = "50%";
+                wrapper.style.display = "inline-flex";
+                wrapper.style.alignItems = "center";
+                wrapper.style.justifyContent = "center";
+                wrapper.style.width = "48px";
+                wrapper.style.height = "48px";
+                wrapper.style.backgroundColor = "#fff";
+                wrapper.style.margin = "2px";
+                wrapper.style.cursor = "pointer";
+
+                // Make color wrapper clickable
+                wrapper.addEventListener("click", () => {
+                  input.checked = true;
+                  input.dispatchEvent(new Event("change"));
+                });
+
+                input.addEventListener("change", () => {
+                  if (input.checked) {
+                    const selectedImage =
+                      product.images[index] || product.main_image;
+                    if (mainImage) {
+                      mainImage.src = selectedImage;
+                      mainImage.alt = `${toCapitalCase(
+                        product.name
+                      )} - ${toCapitalCase(color)}`;
+                    }
+
+                    legend.textContent = `Color: ${toCapitalCase(color)}`;
+
+                    // Remove styling from previously selected
+                    if (lastSelectedWrapper) {
+                      lastSelectedWrapper.style.border = "none";
+                    }
+
+                    // Apply selected color's hex as border
+                    wrapper.style.border = `2px solid ${getColorValue(color)}`;
+                    lastSelectedWrapper = wrapper;
+
+                    // Highlight corresponding thumbnail and reset others
+                    const thumbnailButtons =
+                      document.querySelectorAll(".thumbnail-button");
+                    thumbnailButtons.forEach(
+                      (btn) => (btn.style.border = "none")
+                    );
+                    if (thumbnailButtons[index]) {
+                      thumbnailButtons[index].style.border =
+                        "2px solid #FF4000";
+                      lastSelectedThumbnail = thumbnailButtons[index];
+                    }
+                  }
+                });
 
                 radioGroup.appendChild(input);
-                radioGroup.appendChild(label);
+                radioGroup.appendChild(wrapper);
               });
 
-              radioGroup.addEventListener("change", (e) => {
-                const selectedInput = e.target;
-                if (selectedInput.checked) {
-                  const selectedColor = selectedInput.value;
-                  legend.textContent = `Color: ${toCapitalCase(selectedColor)}`;
-                }
-              });
+              // Highlight first color and trigger change event
+              lastSelectedWrapper = radioGroup.querySelector(".color-wrapper");
+              if (lastSelectedWrapper) {
+                lastSelectedWrapper.style.borderColor = "#FF4000";
+              }
+              const firstColorInput =
+                radioGroup.querySelector("input.color-input");
+              if (firstColorInput) {
+                firstColorInput.checked = true;
+                firstColorInput.dispatchEvent(new Event("change")); // Trigger initial update
+              }
+
+              // Highlight first thumbnail
+              const thumbnailButtons =
+                document.querySelectorAll(".thumbnail-button");
+              if (thumbnailButtons[0]) {
+                thumbnailButtons[0].style.border = "2px solid #FF4000";
+                lastSelectedThumbnail = thumbnailButtons[0];
+              }
             } else {
               const noColor = document.createElement("p");
               noColor.textContent = "No colors available";
@@ -457,7 +541,7 @@
             colorPickerContainer.appendChild(legend);
             colorPickerContainer.appendChild(radioGroup);
 
-            // Replace the static color picker inside .frame-5
+            // Replace static color picker
             const productOptions = document.querySelector(".frame-3");
             if (productOptions) {
               const formContainer = productOptions.querySelector(".frame-5");
@@ -473,16 +557,49 @@
                   formContainer.insertBefore(
                     colorPickerContainer,
                     formContainer.firstChild
-                  ); // Fallback
+                  );
                 }
               } else {
                 console.error("Form container (.frame-5) not found");
-                productOptions.appendChild(colorPickerContainer); // Fallback
+                productOptions.appendChild(colorPickerContainer);
               }
             } else {
               console.error("Product options container (.frame-3) not found");
-              document.body.appendChild(colorPickerContainer); // Last resort
+              document.body.appendChild(colorPickerContainer);
             }
+
+            // Link thumbnails to colors
+            const thumbnailButtons =
+              document.querySelectorAll(".thumbnail-button");
+            thumbnailButtons.forEach((btn) => {
+              btn.addEventListener("click", () => {
+                const index = parseInt(btn.getAttribute("data-index"), 10);
+                const selectedColor = product.available_colors[index];
+
+                if (mainImage) {
+                  mainImage.src = product.images[index];
+                  mainImage.alt = `${toCapitalCase(
+                    product.name
+                  )} - ${toCapitalCase(selectedColor)}`;
+                }
+
+                // Auto-select matching radio
+                const colorInput = document.querySelector(
+                  `#color-${selectedColor.toLowerCase().replace(/\s/g, "-")}`
+                );
+                if (colorInput) {
+                  colorInput.checked = true;
+                  colorInput.dispatchEvent(new Event("change"));
+                }
+
+                // Highlight selected thumbnail
+                if (lastSelectedThumbnail) {
+                  lastSelectedThumbnail.style.border = "2px solid #CCCCCC";
+                }
+                btn.style.border = "2px solid #FF4000";
+                lastSelectedThumbnail = btn;
+              });
+            });
           } catch (error) {
             console.error("Error fetching product details:", error);
             const errorContainer =

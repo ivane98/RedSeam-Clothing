@@ -1,44 +1,46 @@
 let products = [];
 let current_page = 1;
 let lastPage = 1;
-let currentSort = "default";
+let currentSort = "default"; // Track the current sort option
 
 async function displayTotalCount() {
   try {
     const response = await fetch(
-      `https://api.redseam.redberryinternship.ge/api/products`
+      `https://api.redseam.redberryinternship.ge/api/products`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
     );
     const data = await response.json();
-
     const productCount = (document.querySelector(
       ".product-count"
     ).innerHTML = `Showing 1–10 of ${data.meta.total} results`);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error fetching total count:", error);
   }
 }
 
 async function getDataByPage(page = 1) {
   try {
     const response = await fetch(
-      `https://api.redseam.redberryinternship.ge/api/products?page=${page}`
+      `https://api.redseam.redberryinternship.ge/api/products?page=${page}`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
     );
     const data = await response.json();
-    products = data.data;
+    products = data.data; // Ensure products is updated
     current_page = data.meta.current_page;
     lastPage = data.meta.last_page;
-    console.log(
-      "Initial Load - Current Page:",
-      current_page,
-      "Last Page:",
-      lastPage,
-      "Links:",
-      data.meta.links
-    ); // Debug
-    applyFiltersAndSort();
+    console.log("Fetched products:", products); // Debug: Log the products array
+    applyFiltersAndSort(); // Apply current filter and sort on load
     updatePagination(data.meta.links);
   } catch (error) {
-    console.error("Error:", error);
+    console.error("Error fetching data:", error);
   }
 }
 
@@ -51,29 +53,61 @@ document.addEventListener("DOMContentLoaded", async () => {
     paginationWrapper.classList.remove("loaded");
   }
   await displayTotalCount();
-  await getDataByPage();
+  await getDataByPage(); // Ensure data is fetched before proceeding
 });
 
 export function displayProducts(products) {
+  if (!products || !Array.isArray(products)) {
+    console.error("Invalid products array:", products);
+    return;
+  }
+
   let productsHtml = "";
 
   products.forEach((product) => {
+    console.log("Processing product:", product); // Debug each product
     productsHtml += `
-        <article class="div-2">
-        <img class="rectangle" src=${product.cover_image}
-          alt=${product.name} />
-        <div class="frame-7">
-          <h3 class="product-name">${toCapitalCase(product.name)}</h3>
-          <span class="text-wrapper-4" aria-label="Price">$ ${
-            product.price
-          }</span>
-        </div>
-      </article>
-        
+        <article class="div-2" data-product-id="${product.id || "no-id"}">
+          <a href="single-product.html?id=${
+            product.id || "no-id"
+          }" class="product-link">
+            <img class="rectangle" src="${product.cover_image || ""}" alt="${
+      product.name || "Unnamed Product"
+    }" />
+            <div class="frame-7">
+              <h3 class="product-name">${product.name || "No Name"}</h3>
+              <span class="text-wrapper-4" aria-label="Price">$ ${
+                product.price || 0
+              }</span>
+            </div>
+          </a>
+        </article>
         `;
   });
 
-  document.querySelector(".products-grid").innerHTML = productsHtml;
+  const productsGrid = document.querySelector(".products-grid");
+  if (productsGrid) {
+    productsGrid.innerHTML = productsHtml;
+    // Attach event listeners after DOM update
+    const cards = document.querySelectorAll(".div-2");
+    console.log("Found cards:", cards.length); // Debug: Number of cards
+    cards.forEach((card) => {
+      const productId = card.getAttribute("data-product-id");
+      console.log("Card ID:", productId); // Debug: ID of each card
+      card.addEventListener("click", (event) => {
+        event.preventDefault();
+        const clickedId = card.getAttribute("data-product-id");
+        console.log("Clicked product ID:", clickedId); // Debug: ID on click
+        if (clickedId && clickedId !== "no-id") {
+          window.location.href = `single-product.html?id=${clickedId}`;
+        } else {
+          console.error("No valid product ID for this card:", card);
+        }
+      });
+    });
+  } else {
+    console.error("Products grid not found in DOM");
+  }
 }
 
 function updatePagination(links) {
@@ -200,26 +234,27 @@ function updatePagination(links) {
         </button>
     `;
 
-  paginationWrapper.innerHTML = paginationHtml;
-  paginationWrapper.offsetHeight;
+  if (paginationWrapper) {
+    paginationWrapper.innerHTML = paginationHtml;
+    paginationWrapper.offsetHeight;
 
-  paginationWrapper.querySelectorAll("button").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const url = btn.dataset.url;
-      if (url) {
-        const pageParam = new URL(url).searchParams.get("page");
-        getDataByPage(Number(pageParam));
-      }
+    paginationWrapper.querySelectorAll("button").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const url = btn.dataset.url;
+        if (url) {
+          const pageParam = new URL(url).searchParams.get("page");
+          getDataByPage(Number(pageParam));
+        }
+      });
     });
-  });
 
-  if (pageWrapper) {
-    pageWrapper.classList.add("loaded");
+    if (pageWrapper) {
+      pageWrapper.classList.add("loaded");
+    }
   }
 }
 
 function initializeEventListeners() {
-  // Filter control click handler
   const filterControl = document.querySelector(".filter-control");
   const priceFilter = document.querySelector(".price-filter");
 
@@ -231,7 +266,6 @@ function initializeEventListeners() {
     });
   }
 
-  // Sort control click handler
   const sortControl = document.querySelector(".sort-dropdown");
   const dropdownManu = document.querySelector(".dropdown-menu");
   if (sortControl && dropdownManu) {
@@ -241,6 +275,7 @@ function initializeEventListeners() {
         dropdownManu.style.display === "none" ? "flex" : "none";
     });
   }
+
   document.addEventListener("click", function (event) {
     const sortControl = document.querySelector(".sort-dropdown");
     const dropdownManu = document.querySelector(".dropdown-menu");
@@ -287,15 +322,12 @@ function initializePriceFilter() {
       }
 
       applyFiltersAndSort();
-
-      // Hide the filter after applying
       if (priceFilter) {
         priceFilter.style.display = "none";
       }
     });
   }
 
-  // Close filter when clicking outside
   document.addEventListener("click", function (event) {
     const filterControl = document.querySelector(".filter-control");
     const priceFilter = document.querySelector(".price-filter");
@@ -313,13 +345,14 @@ function initializePriceFilter() {
 
 function initializeSortDropdown() {
   const dropdownOptions = document.querySelectorAll(".dropdown-option");
-  const sortText = document.querySelector(".sort-wrapper");
-  if (dropdownOptions) {
+  const sortText = document.querySelector(".text-wrapper-3");
+  if (dropdownOptions && sortText) {
     dropdownOptions.forEach((option) => {
       option.addEventListener("click", function () {
         const selectedText = option.textContent;
-        sortText.textContent = selectedText;
-        const sortBy = option.textContent
+        const capitalizedText = toCapitalCase(selectedText);
+        sortText.textContent = capitalizedText;
+        const sortBy = selectedText
           .toLowerCase()
           .replace(/, /g, "-")
           .replace(/ /g, "-");
@@ -356,41 +389,30 @@ function applyFiltersAndSort() {
     return;
   }
 
-  // Apply filtering
   let filteredProducts = filterProductsByPrice(minPrice, maxPrice);
-
-  // Apply sorting
   const sortedProducts = sortProducts(filteredProducts, currentSort);
-
   displayProducts(sortedProducts);
 }
 
-// Utility functions for future enhancements
 function filterProductsByPrice(minPrice, maxPrice) {
-  // Filter products by price range
   return products.filter(
     (product) => product.price >= minPrice && product.price <= maxPrice
   );
 }
 
 function sortProducts(products, sortBy) {
-  // Sort products by different criteria
   switch (sortBy) {
     case "price-low":
       return products.sort((a, b) => a.price - b.price);
     case "price-high":
       return products.sort((a, b) => b.price - a.price);
     case "name":
-      return products.sort((a, b) => a.title.localeCompare(b.title));
+      return products.sort((a, b) => a.name.localeCompare(b.name)); // Updated to use 'name' instead of 'title'
     default:
       return [...products];
   }
 }
 
 function toCapitalCase(str) {
-  return str
-    .toLowerCase()
-    .split(" ")
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(" ");
+  return str.replace(/(^|\s)\w/g, (letter) => letter.toUpperCase());
 }
