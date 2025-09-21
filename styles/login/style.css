@@ -203,53 +203,92 @@
   border-radius: 8px;
 }
 
-.log-in .frame-5 {
-  display: flex;
-  height: 42px;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 8px;
-  padding: 0px 12px;
-  position: relative;
-  align-self: stretch;
-  width: 100%;
-  background-color: var(--white);
+.log-in .input-field {
+  background-color: #ffffff;
+  border: 1px solid #e1dfe1;
   border-radius: 8px;
-  border: 1px solid;
-  border-color: #e1dfe1;
+  padding: 10.5px 12px;
+  display: flex;
+  align-items: center;
+  height: 42px;
+  position: relative;
+  width: 100%;
+  gap: 8px;
 }
 
-.log-in .frame-6 {
+.log-in .input-label {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #3e424a;
   display: flex;
   align-items: center;
   gap: 4px;
-  position: relative;
-  flex: 1;
-  flex-grow: 1;
+  flex-shrink: 0;
 }
 
-.log-in .mail {
-  position: relative;
-  width: fit-content;
-  margin-top: -1px;
-  font-family: "Poppins", Helvetica;
+.log-in .required {
+  font-family: "Poppins", sans-serif;
   font-weight: 400;
-  color: var(--dark-blue-2);
   font-size: 14px;
-  letter-spacing: 0;
-  line-height: normal;
+  line-height: 21px;
+  color: var(--red);
 }
 
-.log-in .text-wrapper-3 {
-  position: relative;
+.log-in .form-input {
   flex: 1;
-  margin-top: -1px;
+  border: none;
+  background: transparent;
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 21px;
+  color: #3e424a;
+  outline: none;
+}
+
+.log-in .input-field:focus-within {
+  border-color: var(--red);
+  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2);
+}
+
+.log-in .form-input:invalid {
+  border-color: var(--red);
+}
+
+.log-in .password-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.log-in .password-toggle:hover {
+  opacity: 0.7;
+}
+
+.log-in .password-toggle:focus {
+  outline: 2px solid var(--red);
+  outline-offset: 2px;
+}
+
+.log-in .error-message {
   font-family: "Poppins", Helvetica;
   font-weight: 400;
   color: var(--red);
-  font-size: 14px;
+  font-size: 12px;
   letter-spacing: 0;
   line-height: normal;
+  /* margin-top: 4px; */
+  /* min-height: 16px; */
 }
 
 .log-in .frame-7 {
@@ -275,6 +314,9 @@
   width: 100%;
   background-color: var(--red);
   border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  border: none;
 }
 
 .log-in .add-to-cart {
@@ -322,128 +364,6 @@
   text-align: center;
   letter-spacing: 0;
   line-height: normal;
-}
-
-.log-in .pagination-btn {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.log-in .pagination-btn:hover {
-  opacity: 0.7;
-}
-
-.log-in .pagination-btn:focus-visible {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.log-in .num-wrapper {
-  background: none;
-  border: 1px solid #f8f6f7;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.log-in .num-wrapper:hover {
-  border-color: #e1dfe1;
-  background-color: #f8f6f7;
-}
-
-.log-in .num-wrapper:focus-visible {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
-}
-
-.log-in .input-field {
-  display: flex;
-  height: 42px;
-  align-items: center;
-  gap: 8px;
-  padding: 0px 12px;
-  align-self: stretch;
-  width: 100%;
-  background-color: var(--white);
-  border-radius: 8px;
-  border: 1px solid #e1dfe1;
-  font-family: "Poppins", Helvetica;
-  font-weight: 400;
-  color: var(--dark-blue-2);
-  font-size: 14px;
-  letter-spacing: 0;
-  line-height: normal;
-  margin: 0;
-  box-sizing: border-box;
-}
-
-.log-in .input-field:focus {
-  outline: none;
-  border-color: var(--red);
-  box-shadow: 0 0 0 1px var(--red);
-}
-
-.log-in .input-field::placeholder {
-  color: var(--dark-blue-2);
-  opacity: 0.6;
-}
-
-.log-in .password-toggle {
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-}
-
-.log-in .password-toggle:hover {
-  opacity: 0.7;
-}
-
-.log-in .password-toggle:focus-visible {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
-  border-radius: 2px;
-}
-
-.log-in .error-message {
-  font-family: "Poppins", Helvetica;
-  font-weight: 400;
-  color: var(--red);
-  font-size: 12px;
-  letter-spacing: 0;
-  line-height: normal;
-  margin-top: 4px;
-  min-height: 16px;
-}
-
-.log-in .primary {
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border: none;
-}
-
-.log-in .primary:hover {
-  background-color: #e63900;
-}
-
-.log-in .primary:focus-visible {
-  outline: 2px solid #4a90e2;
-  outline-offset: 2px;
-}
-
-.log-in .text-wrapper-5 {
   cursor: pointer;
   text-decoration: none;
   transition: color 0.2s ease;
@@ -460,10 +380,11 @@
   border-radius: 2px;
 }
 
-.log-in .frame-4:has(.input-field) .frame-5 {
-  display: none;
+.log-in .primary:hover {
+  background-color: #e63900;
 }
 
-.log-in .frame-4:has(.input-field) {
-  gap: 8px;
+.log-in .primary:focus-visible {
+  outline: 2px solid #4a90e2;
+  outline-offset: 2px;
 }

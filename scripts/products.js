@@ -416,3 +416,33 @@ function sortProducts(products, sortBy) {
 function toCapitalCase(str) {
   return str.replace(/(^|\s)\w/g, (letter) => letter.toUpperCase());
 }
+
+// // parse jwt
+// function parseJwt(token) {
+//   try {
+//     const base64Payload = token.split(".")[1];
+//     const payload = atob(base64Payload); // decode Base64
+//     return JSON.parse(payload);
+//   } catch (e) {
+//     return null;
+//   }
+// }
+
+// // Get cookie value
+// function getCookie(name) {
+//   const value = `; ${document.cookie}`;
+//   const parts = value.split(`; ${name}=`);
+//   if (parts.length === 2) return parts.pop().split(";").shift();
+// }
+
+// // On products.html
+// const token = getCookie("authToken");
+// console.log(token);
+// if (token) {
+//   const user = parseJwt(token);
+//   console.log(user); // user info from token payload
+// } else {
+//   console.log("No token found");
+// }
+
+//TOKEN IS NOT VALID JWT. MIGHT NEED TO SAVE OTHER INFO INTO LOCALSTORAGE OR COOKIES
