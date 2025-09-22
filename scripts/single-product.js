@@ -2,6 +2,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get("id");
 
+  let product = null;
+
   if (productId) {
     try {
       const response = await fetch(
@@ -13,7 +15,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       );
       if (!response.ok) throw new Error("Product not found");
-      const product = await response.json();
+      product = await response.json();
 
       console.log(product);
 
@@ -384,7 +386,85 @@ document.addEventListener("DOMContentLoaded", async () => {
       document.body.innerHTML = "<p>No product ID provided.</p>";
     }
   }
+
+  // Add this inside your DOMContentLoaded or after product is fetched
+  const addToCartButton = document.querySelector("button.primary"); // your "Add to cart" button
+  if (addToCartButton) {
+    addToCartButton.addEventListener("click", async () => {
+      try {
+        if (!product) throw new Error("Product data not loaded");
+        // 1. Get selected color
+        const colorInput = document.querySelector(
+          "input[name='color']:checked"
+        );
+        const selectedColorIndex = Array.from(
+          document.querySelectorAll("input[name='color']")
+        ).indexOf(colorInput);
+        const selectedColor = product.available_colors[selectedColorIndex];
+
+        // 2. Get selected size (exact match from product.available_sizes)
+        const sizeInput = document.querySelector("input[name='size']:checked");
+        const selectedSizeIndex = Array.from(
+          document.querySelectorAll("input[name='size']")
+        ).indexOf(sizeInput);
+        const selectedSize = product.available_sizes[selectedSizeIndex];
+
+        // 3. Get quantity
+        const quantitySelect = document.querySelector("#quantity");
+        const quantity = parseInt(quantitySelect.value, 10) || 1;
+
+        // 4. Get token from cookies
+        const authToken = document.cookie
+          .split("; ")
+          .find((row) => row.startsWith("authToken="))
+          ?.split("=")[1];
+
+        if (!authToken) {
+          alert("You must be logged in to add items to cart.");
+          return;
+        }
+
+        // 5. Send POST request to API
+        const response = await fetch(
+          `https://api.redseam.redberryinternship.ge/api/cart/products/${product.id}`,
+          {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({
+              color: selectedColor,
+              size: selectedSize,
+              quantity: quantity,
+            }),
+          }
+        );
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(
+            errorData.message || "Failed to add product to cart."
+          );
+        }
+
+        alert("Product added to cart successfully!");
+      } catch (error) {
+        console.error("Error adding product to cart:", error);
+        alert(`Error adding product to cart: ${error.message}`);
+      }
+    });
+  }
 });
+
+// Helper to get cookie by name
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
 
 function getColorValue(color) {
   const colorMap = {
