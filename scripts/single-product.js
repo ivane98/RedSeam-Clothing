@@ -826,6 +826,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Overlay (.rectangle-2) not found");
   }
 
+  // Go to Checkout button event listener
+  const checkoutButton = document.querySelector("button.primary-2");
+  if (checkoutButton) {
+    checkoutButton.addEventListener("click", () => {
+      console.log("Go to Checkout button clicked");
+      window.location.href = "checkout.html";
+    });
+  } else {
+    console.error("Checkout button (.primary-2) not found");
+  }
+
   // Initialize cart item count on page load
   const cartItems = await fetchCartItems(true);
   const cartTitle = document.querySelector(".text-wrapper-9");
