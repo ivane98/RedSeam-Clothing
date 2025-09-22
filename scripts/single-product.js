@@ -740,7 +740,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (!authToken) throw new Error("Please log in to remove items.");
 
           const response = await fetch(
-            `https://api.redseam.redberryinternship.ge/api/cart/${itemId}`,
+            `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
             {
               method: "DELETE",
               headers: {
