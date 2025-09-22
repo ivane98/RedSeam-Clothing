@@ -79,11 +79,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       colorPickerContainer.className = "frame-6";
       const legend = document.createElement("legend");
       legend.className = "text-wrapper-4";
-      legend.textContent = `Color: ${
-        product.available_colors
-          ? toCapitalCase(product.available_colors[0])
-          : "N/A"
-      }`;
+      legend.textContent = `Color: ${product.available_colors
+        ? toCapitalCase(product.available_colors[0])
+        : "N/A"
+        }`;
       const radioGroup = document.createElement("div");
       radioGroup.className = "frame-7";
       radioGroup.setAttribute("role", "radiogroup");
@@ -226,9 +225,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizePickerContainer.className = "frame-8";
       const sizeLegend = document.createElement("legend");
       sizeLegend.className = "text-wrapper-4";
-      sizeLegend.textContent = `Size: ${
-        product.available_sizes ? product.available_sizes[0] : "N/A"
-      }`;
+      sizeLegend.textContent = `Size: ${product.available_sizes ? product.available_sizes[0] : "N/A"
+        }`;
       const sizeRadioGroup = document.createElement("div");
       sizeRadioGroup.className = "frame-9";
       sizeRadioGroup.setAttribute("role", "radiogroup");
@@ -251,9 +249,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           const label = document.createElement("label");
           label.htmlFor = inputId;
           label.className = index === 0 ? "div-wrapper" : "size";
-          label.innerHTML = `<span class="${
-            index === 0 ? "text-wrapper-5" : "l"
-          }">${size}</span>`;
+          label.innerHTML = `<span class="${index === 0 ? "text-wrapper-5" : "l"
+            }">${size}</span>`;
           label.style.cursor = "pointer"; // Explicit cursor pointer
           label.style.outline = "none"; // Remove default blue focus outline
 
@@ -419,6 +416,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           .find((row) => row.startsWith("authToken="))
           ?.split("=")[1];
 
+        console.log(authToken)
+
         if (!authToken) {
           alert("You must be logged in to add items to cart.");
           return;
@@ -492,3 +491,4 @@ function toCapitalCase(str) {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 }
+

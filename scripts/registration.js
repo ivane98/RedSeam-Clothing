@@ -84,17 +84,9 @@ async function handleSubmit(event) {
 
   if (!isValid) return;
 
-  // Prepare form data
-  // const formData = new FormData(form);
-  // if (!formData.get("avatar")) {
-  //   formData.delete("avatar"); // Remove empty avatar
-  // }
 
   const formData = new FormData(form);
-  // const avatarFile = formData.get("avatar");
-  // if (!avatarFile || avatarFile.name === "") {
-  //   formData.delete("avatar"); // Only delete if no file selected
-  // }
+
 
   try {
     const response = await fetch(
@@ -113,9 +105,9 @@ async function handleSubmit(event) {
       setCookie("authToken", data.token, 7); // Save token to cookie
       localStorage.setItem("user", JSON.stringify(data.user));
       showSuccessMessage();
-      // setTimeout(() => {
-      //   window.location.href = "products.html"; // Redirect
-      // }, 2000);
+      setTimeout(() => {
+        window.location.href = "products.html"; // Redirect
+      }, 2000);
     } else if (response.status === 422) {
       const data = await response.json();
       console.log("Backend errors:", data.errors); // Debug

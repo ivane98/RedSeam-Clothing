@@ -1,3 +1,10 @@
+// Utility to set a cookie
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;Secure`;
+}
+
 document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("login-form");
   const emailInput = document.getElementById("email");
@@ -83,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
       // ✅ Store token in cookie
       document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
-
+      setCookie("authToken", token, 7); // Save token to cookie
       localStorage.setItem("user", JSON.stringify(data.user));
 
       // ✅ Show success message and redirect

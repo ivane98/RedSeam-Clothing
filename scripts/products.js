@@ -1,26 +1,8 @@
-let products = [];
+let products = []
 let current_page = 1;
 let lastPage = 1;
-let currentSort = "default"; // Track the current sort option
+let currentSort = "default";
 
-async function displayTotalCount() {
-  try {
-    const response = await fetch(
-      `https://api.redseam.redberryinternship.ge/api/products`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    const productCount = (document.querySelector(
-      ".product-count"
-    ).innerHTML = `Showing 1–10 of ${data.meta.total} results`);
-  } catch (error) {
-    console.error("Error fetching total count:", error);
-  }
-}
 
 async function getDataByPage(page = 1) {
   try {
@@ -43,9 +25,35 @@ async function getDataByPage(page = 1) {
   }
 }
 
+
+
+async function displayTotalCount() {
+  try {
+    const response = await fetch(
+      `https://api.redseam.redberryinternship.ge/api/products`,
+      {
+        headers: {
+          Accept: "application/json",
+        },
+      }
+    );
+    const data = await response.json();
+    const meta = data.meta;
+    const start = (meta.current_page - 1) * meta.per_page + 1;
+    const end = Math.min(meta.current_page * meta.per_page, meta.total);
+
+    console.log(meta)
+    const productCount = (document.querySelector(
+      ".product-count"
+    ).innerHTML = `Showing ${start}–${end} of ${meta.total} results`);
+  } catch (error) {
+    console.error("Error fetching total count:", error);
+  }
+}
+
+
 document.addEventListener("DOMContentLoaded", async () => {
   const user = JSON.parse(localStorage.getItem("user"));
-
   const avatarImg = document.querySelector(".user-menu .ellipse");
 
   if (user && user.avatar && avatarImg) {
@@ -53,7 +61,9 @@ document.addEventListener("DOMContentLoaded", async () => {
     avatarImg.alt = `${user.name || "User"} avatar`; // accessibility
   } else {
     avatarImg.src = "images/user-icon.png";
-    avatarImg.alt = `${user.name || "User"} avatar`;
+    avatarImg.alt = `user avatar`;
+    avatarImg.style.width = '20px'
+    avatarImg.style.height = '20px'
   }
 
   initializeEventListeners();
@@ -78,17 +88,14 @@ export function displayProducts(products) {
   products.forEach((product) => {
     productsHtml += `
         <article class="div-2" data-product-id="${product.id || "no-id"}">
-          <a href="single-product.html?id=${
-            product.id || "no-id"
-          }" class="product-link">
-            <img class="rectangle" src="${product.cover_image || ""}" alt="${
-      product.name || "Unnamed Product"
-    }" />
+          <a href="single-product.html?id=${product.id || "no-id"
+      }" class="product-link">
+            <img class="rectangle" src="${product.cover_image || ""}" alt="${product.name || "Unnamed Product"
+      }" />
             <div class="frame-7">
               <h3 class="product-name">${product.name || "No Name"}</h3>
-              <span class="text-wrapper-4" aria-label="Price">$ ${
-                product.price || 0
-              }</span>
+              <span class="text-wrapper-4" aria-label="Price">$ ${product.price || 0
+      }</span>
             </div>
           </a>
         </article>
@@ -152,9 +159,8 @@ function updatePagination(links) {
 
   const prevLink = links.find((link) => link.label.includes("Previous"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Previous page" ${
-          !prevLink?.url ? "disabled" : ""
-        } data-url="${prevLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Previous page" ${!prevLink?.url ? "disabled" : ""
+    } data-url="${prevLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
         </button>
     `;
@@ -165,14 +171,11 @@ function updatePagination(links) {
     const firstPage = pages.find((p) => p.label === 1);
     pagesHtml += `
             <div class="page ${!firstPage?.active ? "num-wrapper" : ""}">
-                <button class="page-button ${
-                  firstPage?.active ? "page-active" : ""
-                }" type="button" aria-label="Go to page 1" data-url="${
-      firstPage?.url || ""
-    }" ${firstPage?.active ? 'aria-current="page"' : ""}>
-                    <span class="num-2 ${
-                      firstPage?.active ? "num" : ""
-                    }">1</span>
+                <button class="page-button ${firstPage?.active ? "page-active" : ""
+      }" type="button" aria-label="Go to page 1" data-url="${firstPage?.url || ""
+      }" ${firstPage?.active ? 'aria-current="page"' : ""}>
+                    <span class="num-2 ${firstPage?.active ? "num" : ""
+      }">1</span>
                 </button>
             </div>
         `;
@@ -218,14 +221,11 @@ function updatePagination(links) {
     const lastPageLink = pages.find((p) => p.label === lastPage);
     pagesHtml += `
             <div class="${!lastPageLink?.active ? "num-wrapper" : "page"}">
-                <button class="${
-                  !lastPageLink?.active ? "page-button" : "page-active"
-                }" type="button" aria-label="Go to page ${lastPage}" data-url="${
-      lastPageLink?.url || ""
-    }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
-                    <span class="${
-                      !lastPageLink?.active ? "num-2" : "num"
-                    }">${lastPage}</span>
+                <button class="${!lastPageLink?.active ? "page-button" : "page-active"
+      }" type="button" aria-label="Go to page ${lastPage}" data-url="${lastPageLink?.url || ""
+      }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
+                    <span class="${!lastPageLink?.active ? "num-2" : "num"
+      }">${lastPage}</span>
                 </button>
             </div>
         `;
@@ -235,9 +235,8 @@ function updatePagination(links) {
 
   const nextLink = links.find((link) => link.label.includes("Next"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Next page" ${
-          !nextLink?.url ? "disabled" : ""
-        } data-url="${nextLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Next page" ${!nextLink?.url ? "disabled" : ""
+    } data-url="${nextLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
         </button>
     `;
@@ -368,10 +367,10 @@ function initializeSortDropdown() {
           sortBy === "new-products-first"
             ? "default"
             : sortBy === "price-low-to-high"
-            ? "price-low"
-            : sortBy === "price-high-to-low"
-            ? "price-high"
-            : "default";
+              ? "price-low"
+              : sortBy === "price-high-to-low"
+                ? "price-high"
+                : "default";
         applyFiltersAndSort();
         const dropdownManu = document.querySelector(".dropdown-menu");
         if (dropdownManu) {
@@ -424,3 +423,4 @@ function sortProducts(products, sortBy) {
 function toCapitalCase(str) {
   return str.replace(/(^|\s)\w/g, (letter) => letter.toUpperCase());
 }
+
