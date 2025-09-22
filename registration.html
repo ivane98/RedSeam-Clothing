@@ -39,22 +39,28 @@
             alt="Profile picture placeholder"
           />
           <div class="div-2">
-            <input
-              type="file"
-              id="avatar"
-              name="avatar"
-              accept="image/jpeg,image/png"
-              style="display: none"
-            />
             <button type="button" class="text-wrapper-3" id="upload-btn">
               Upload new
             </button>
             <button type="button" class="text-wrapper-3" id="remove-btn">
               Remove
             </button>
+            <div
+              id="avatar-error"
+              class="error-message"
+              role="alert"
+              aria-live="polite"
+            ></div>
           </div>
         </div>
         <form class="frame-3" novalidate>
+          <input
+            type="file"
+            id="avatar"
+            name="avatar"
+            accept="image/jpeg,image/png"
+            style="display: none"
+          />
           <div class="frame-4">
             <div class="input-field">
               <label class="input-label" for="username">

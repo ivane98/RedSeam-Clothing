@@ -78,10 +78,13 @@ document.addEventListener("DOMContentLoaded", () => {
       }
 
       const data = await response.json();
+      console.log(data);
       const token = data.token;
 
       // ✅ Store token in cookie
       document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
+
+      localStorage.setItem("user", JSON.stringify(data.user));
 
       // ✅ Show success message and redirect
       successMessage.textContent = "Login successful! Redirecting...";

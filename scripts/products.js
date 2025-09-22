@@ -36,7 +36,6 @@ async function getDataByPage(page = 1) {
     products = data.data; // Ensure products is updated
     current_page = data.meta.current_page;
     lastPage = data.meta.last_page;
-    console.log("Fetched products:", products); // Debug: Log the products array
     applyFiltersAndSort(); // Apply current filter and sort on load
     updatePagination(data.meta.links);
   } catch (error) {
@@ -45,6 +44,18 @@ async function getDataByPage(page = 1) {
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const avatarImg = document.querySelector(".user-menu .ellipse");
+
+  if (user && user.avatar && avatarImg) {
+    avatarImg.src = user.avatar; // set avatar dynamically
+    avatarImg.alt = `${user.name || "User"} avatar`; // accessibility
+  } else {
+    avatarImg.src = "images/user-icon.png";
+    avatarImg.alt = `${user.name || "User"} avatar`;
+  }
+
   initializeEventListeners();
   initializePriceFilter();
   initializeSortDropdown();
@@ -53,7 +64,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     paginationWrapper.classList.remove("loaded");
   }
   await displayTotalCount();
-  await getDataByPage(); // Ensure data is fetched before proceeding
+  await getDataByPage();
 });
 
 export function displayProducts(products) {
@@ -65,7 +76,6 @@ export function displayProducts(products) {
   let productsHtml = "";
 
   products.forEach((product) => {
-    console.log("Processing product:", product); // Debug each product
     productsHtml += `
         <article class="div-2" data-product-id="${product.id || "no-id"}">
           <a href="single-product.html?id=${
@@ -90,10 +100,8 @@ export function displayProducts(products) {
     productsGrid.innerHTML = productsHtml;
     // Attach event listeners after DOM update
     const cards = document.querySelectorAll(".div-2");
-    console.log("Found cards:", cards.length); // Debug: Number of cards
     cards.forEach((card) => {
       const productId = card.getAttribute("data-product-id");
-      console.log("Card ID:", productId); // Debug: ID of each card
       card.addEventListener("click", (event) => {
         event.preventDefault();
         const clickedId = card.getAttribute("data-product-id");
@@ -416,33 +424,3 @@ function sortProducts(products, sortBy) {
 function toCapitalCase(str) {
   return str.replace(/(^|\s)\w/g, (letter) => letter.toUpperCase());
 }
-
-// // parse jwt
-// function parseJwt(token) {
-//   try {
-//     const base64Payload = token.split(".")[1];
-//     const payload = atob(base64Payload); // decode Base64
-//     return JSON.parse(payload);
-//   } catch (e) {
-//     return null;
-//   }
-// }
-
-// // Get cookie value
-// function getCookie(name) {
-//   const value = `; ${document.cookie}`;
-//   const parts = value.split(`; ${name}=`);
-//   if (parts.length === 2) return parts.pop().split(";").shift();
-// }
-
-// // On products.html
-// const token = getCookie("authToken");
-// console.log(token);
-// if (token) {
-//   const user = parseJwt(token);
-//   console.log(user); // user info from token payload
-// } else {
-//   console.log("No token found");
-// }
-
-//TOKEN IS NOT VALID JWT. MIGHT NEED TO SAVE OTHER INFO INTO LOCALSTORAGE OR COOKIES
