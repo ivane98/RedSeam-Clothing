@@ -1,6 +1,18 @@
 document.addEventListener("DOMContentLoaded", async () => {
   // Prepopulate email field from localStorage
   const userDataString = localStorage.getItem("user");
+
+  const avatarImg = document.querySelector(".ellipse");
+
+  if (userDataString && userDataString.avatar && avatarImg) {
+    avatarImg.src = userDataString.avatar; // set avatar dynamically
+    avatarImg.alt = `${userDataString.name || "User"} avatar`; // accessibility
+  } else {
+    avatarImg.src = "images/user-icon.png";
+    avatarImg.alt = `user avatar`;
+    avatarImg.style.width = "20px";
+    avatarImg.style.height = "20px";
+  }
   if (userDataString) {
     try {
       const userData = JSON.parse(userDataString);
@@ -105,7 +117,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const responseData = await response.json();
         console.log("Checkout successful:", responseData);
-        alert("Checkout successful! Your cart has been cleared.");
+
+        // Show congratulatory modal
+        const modal = document.getElementById("congratulatory-modal");
+        if (modal) {
+          modal.classList.add("visible");
+          console.log("Congratulatory modal displayed");
+        } else {
+          console.error(
+            "Congratulatory modal (#congratulatory-modal) not found"
+          );
+          alert("Checkout successful! Your cart has been cleared."); // Fallback
+        }
+
         await fetchCartItems(true); // Refresh to show empty cart
         checkoutForm.reset();
       } catch (error) {
@@ -139,7 +163,19 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             const retryData = await retryResponse.json();
             console.log("Checkout successful (empty body):", retryData);
-            alert("Checkout successful! Your cart has been cleared.");
+
+            // Show congratulatory modal
+            const modal = document.getElementById("congratulatory-modal");
+            if (modal) {
+              modal.classList.add("visible");
+              console.log("Congratulatory modal displayed (empty body)");
+            } else {
+              console.error(
+                "Congratulatory modal (#congratulatory-modal) not found"
+              );
+              alert("Checkout successful! Your cart has been cleared."); // Fallback
+            }
+
             await fetchCartItems(true);
             checkoutForm.reset();
           } catch (retryError) {
@@ -151,6 +187,46 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
     });
+
+    // Add event listeners for modal close and continue shopping
+    const closeModalButton = document.querySelector(".heroicons-mini-x");
+    if (closeModalButton) {
+      closeModalButton.addEventListener("click", () => {
+        const modal = document.getElementById("congratulatory-modal");
+        if (modal) {
+          modal.classList.remove("visible");
+          console.log("Congratulatory modal closed via close button");
+        }
+      });
+    } else {
+      console.warn("Close modal button (.heroicons-mini-x) not found");
+    }
+    const continueButton = document.querySelector(".success .primary");
+    if (continueButton) {
+      continueButton.addEventListener("click", () => {
+        const modal = document.getElementById("congratulatory-modal");
+        if (modal) {
+          modal.classList.remove("visible");
+          console.log("Congratulatory modal closed via Continue shopping");
+          window.location.href = "products.html"; // Adjust to your shopping page
+        }
+      });
+    } else {
+      console.warn("Continue shopping button (.success .primary) not found");
+    }
+
+    // Close modal by clicking outside
+    const modal = document.getElementById("congratulatory-modal");
+    if (modal) {
+      modal.addEventListener("click", (e) => {
+        if (e.target === modal) {
+          modal.classList.remove("visible");
+          console.log("Congratulatory modal closed by clicking outside");
+        }
+      });
+    } else {
+      console.warn("Congratulatory modal (#congratulatory-modal) not found");
+    }
   } else {
     console.error("Checkout form (#checkout-form) not found.");
   }

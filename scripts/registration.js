@@ -84,9 +84,7 @@ async function handleSubmit(event) {
 
   if (!isValid) return;
 
-
   const formData = new FormData(form);
-
 
   try {
     const response = await fetch(
@@ -169,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Avatar remove
   removeBtn.addEventListener("click", () => {
     avatarInput.value = "";
-    avatarImg.src = "images/profile-picture-big.png";
+    avatarImg.src = "images/photo.png";
     document.getElementById("username-error").textContent = ""; // Clear avatar error
   });
 

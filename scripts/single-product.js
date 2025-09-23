@@ -1,4 +1,16 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const user = JSON.parse(localStorage.getItem("user"));
+  const avatarImg = document.querySelector(".ellipse");
+
+  if (user && user.avatar && avatarImg) {
+    avatarImg.src = user.avatar; // set avatar dynamically
+    avatarImg.alt = `${user.name || "User"} avatar`; // accessibility
+  } else {
+    avatarImg.src = "images/user-icon.png";
+    avatarImg.alt = `user avatar`;
+    avatarImg.style.width = "20px";
+    avatarImg.style.height = "20px";
+  }
   const urlParams = new URLSearchParams(window.location.search);
   const productId = urlParams.get("id");
 

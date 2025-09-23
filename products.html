@@ -25,11 +25,7 @@
             <img class="img" src="images/shopping-cart.png" alt="" />
           </button>
           <div class="user-menu">
-            <img
-              class="ellipse"
-              src="images/profile-picture-big.png"
-              alt="User avatar"
-            />
+            <img class="ellipse" alt="User avatar" />
             <button
               class="dropdown-toggle"
               type="button"
@@ -67,14 +63,14 @@
               <div class="price-input-group">
                 <div class="input-field">
                   <label>From <span class="required">*</span></label>
-                  <input type="number" class="price-input"  min="0" />
+                  <input type="number" class="price-input" min="0" />
                 </div>
               </div>
 
               <div class="price-input-group">
                 <div class="input-field">
                   <label>To <span class="required">*</span></label>
-                  <input type="number" class="price-input"  min="0" />
+                  <input type="number" class="price-input" min="0" />
                 </div>
               </div>
             </div>
@@ -82,28 +78,28 @@
           </div>
 
           <div class="sort-dropdown">
-            <p  class="text-wrapper-3"
-              >
+            <p class="text-wrapper-3">
               <span class="sort-wrapper">Sort by</span>
               <img
                 class="heroicons-mini"
                 src="images/chevron-down.png"
                 alt=""
                 aria-hidden="true"
-            /></p>
+              />
+            </p>
             <div class="dropdown-menu">
-             <div class="dropdown-header">Sort by</div>
-            <div class="dropdown-option">New products first</div>
-            <div class="dropdown-option">Price, low to high</div>
-            <div class="dropdown-option">Price, high to low</div>
+              <div class="dropdown-header">Sort by</div>
+              <div class="dropdown-option">New products first</div>
+              <div class="dropdown-option">Price, low to high</div>
+              <div class="dropdown-option">Price, high to low</div>
             </div>
-
           </div>
+        </div>
       </section>
 
       <section class="products-grid" aria-label="Product grid"></section>
 
-      <!-- <nav class="pagination-wrapper" role="navigation" aria-label="Pagination">
+      <nav class="pagination-wrapper" role="navigation" aria-label="Pagination">
         <div class="pagination">
           <button
             class="pagination-nav"
@@ -149,41 +145,8 @@
             <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
           </button>
         </div>
-      </nav> -->
-      <nav class="pagination-wrapper" role="navigation" aria-label="Pagination">
-  <div class="pagination">
-    <button class="pagination-nav" type="button" aria-label="Previous page" disabled>
-      <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
-    </button>
-    <div class="page">
-      <button class="page-active" type="button" aria-current="page" aria-label="Page 1">
-        <span class="num">1</span>
-      </button>
-    </div>
-    <div class="num-wrapper">
-      <button class="page-button" type="button" aria-label="Go to page 2">
-        <span class="num-2">2</span>
-      </button>
-    </div>
-    <div class="num-wrapper">
-      <span class="num-2" aria-hidden="true">...</span>
-    </div>
-    <div class="num-wrapper">
-      <button class="page-button" type="button" aria-label="Go to page 9">
-        <span class="num-2">9</span>
-      </button>
-    </div>
-    <div class="num-wrapper">
-      <button class="page-button" type="button" aria-label="Go to page 10">
-        <span class="num-2">10</span>
-      </button>
-    </div>
-    <button class="pagination-nav" type="button" aria-label="Next page">
-      <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
-    </button>
-  </div>
-</nav>
+      </nav>
     </main>
+    <script type="module" src="./scripts/products.js"></script>
   </body>
-  <script type="module" src="./scripts/products.js"></script>
 </html>
