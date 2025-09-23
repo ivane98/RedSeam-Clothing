@@ -53,6 +53,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       // Fetch cart items to check if cart is empty
       const cartItems = await fetchCartItems(false); // Don't render, just fetch
+      console.log("Cart items:", cartItems);
       if (cartItems.length === 0) {
         displayFormError("Your cart is empty. Add items before checking out.");
         return;
@@ -71,8 +72,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Prepare form data
-      const formData = { name, surname, email, address, zipcode };
+      // Prepare form data with API-expected field names
+      const formData = {
+        name, // Adjust to API's naming convention
+        surname,
+        email,
+        zip_code: zipcode, // Changed from zipcode to zip_code
+        address,
+      };
       console.log("Checkout form data:", formData);
 
       try {
@@ -103,7 +110,45 @@ document.addEventListener("DOMContentLoaded", async () => {
         checkoutForm.reset();
       } catch (error) {
         console.error("Error during checkout:", error);
-        displayFormError(`Checkout failed: ${error.message}`);
+        if (error.message.includes("422") || error.message.includes("400")) {
+          console.log("Retrying checkout with empty body...");
+          try {
+            const retryResponse = await fetch(
+              "https://api.redseam.redberryinternship.ge/api/cart/checkout",
+              {
+                method: "POST",
+                headers: {
+                  Accept: "application/json",
+                  Authorization: `Bearer ${authToken}`,
+                },
+                body: null,
+              }
+            );
+            if (!retryResponse.ok) {
+              const retryErrorData = await retryResponse.json();
+              console.error(
+                "Retry checkout API error response:",
+                retryErrorData
+              );
+              throw new Error(
+                `Checkout failed: ${
+                  retryErrorData.message || retryResponse.status
+                }`
+              );
+            }
+
+            const retryData = await retryResponse.json();
+            console.log("Checkout successful (empty body):", retryData);
+            alert("Checkout successful! Your cart has been cleared.");
+            await fetchCartItems(true);
+            checkoutForm.reset();
+          } catch (retryError) {
+            console.error("Error during retry checkout:", retryError);
+            displayFormError(`Checkout failed: ${retryError.message}`);
+          }
+        } else {
+          displayFormError(`Checkout failed: ${error.message}`);
+        }
       }
     });
   } else {
