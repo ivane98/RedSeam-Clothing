@@ -783,6 +783,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.log("Cart button clicked"); // Debug log
       const cartPanel = document.querySelector(".shopping-cart");
       const overlayElement = document.querySelector(".rectangle-2");
+      //empty cart
+      // const emptyCart = document.querySelector(".cart-is-empty");
+      // if (cartItems.length === 0) {
+      //   emptyCart.style.display = "flex";
+      //   overlayElement.style.display = "flex";
+      //   emptyCart.style.zIndex = "1000"; // Ensure visibility
+      //   overlayElement.style.zIndex = "999";
+      // }
       if (cartPanel && overlayElement) {
         cartPanel.style.display = "flex";
         overlayElement.style.display = "flex";

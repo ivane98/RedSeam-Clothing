@@ -814,8 +814,102 @@
   letter-spacing: 0;
   line-height: normal;
 }
+/* empty cart */
+
+.listing-page .cart-is-empty {
+  display: none;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 540px;
+  height: 1080px;
+  background-color: var(--grey);
+  border-left-width: 1px;
+  border-left-style: solid;
+  border-color: #e1dfe1;
+}
+
+.listing-page .cart-is-empty .heroicons-solid-x {
+  position: absolute;
+  top: 40px;
+  left: 468px;
+  width: 32px;
+  height: 32px;
+}
+
+.listing-page .cart-is-empty .text-wrapper-9 {
+  position: absolute;
+  top: 41px;
+  left: 40px;
+  font-family: "Poppins", Helvetica;
+  font-weight: 500;
+  color: var(--dark-blue);
+  font-size: 20px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.listing-page .cart-is-empty .text-wrapper-10 {
+  position: absolute;
+  top: 381px;
+  left: calc(50% - 44px);
+  font-family: "Poppins", Helvetica;
+  font-weight: 600;
+  color: var(--dark-blue);
+  font-size: 24px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.listing-page .cart-is-empty .text-wrapper-11 {
+  position: absolute;
+  top: 427px;
+  left: calc(50% - 138px);
+  font-family: "Poppins", Helvetica;
+  font-weight: 400;
+  color: var(--dark-blue-2);
+  font-size: 14px;
+  text-align: center;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.listing-page .cart-is-empty .primary-2 {
+  display: flex;
+  width: 214px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 20px;
+  position: absolute;
+  top: 506px;
+  left: calc(50% - 107px);
+  background-color: var(--red);
+  border-radius: 10px;
+}
+
+.listing-page .cart-is-empty .add-to-cart {
+  position: relative;
+  width: fit-content;
+  margin-top: -1px;
+  font-family: "Poppins", Helvetica;
+  font-weight: 400;
+  color: var(--white);
+  font-size: 14px;
+  letter-spacing: 0;
+  line-height: normal;
+}
+
+.listing-page .cart-is-empty .making-credit {
+  position: absolute;
+  top: 222px;
+  left: calc(50% - 85px);
+  width: 170px;
+  height: 135px;
+}
 
 /*  */
+
 .cart-button,
 .profile-dropdown,
 .pagination-button,

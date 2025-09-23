@@ -297,7 +297,7 @@ function displayCartItems(cartItems) {
   // Render cart items
   cartItems.forEach((item, index) => {
     const itemElement = document.createElement("article");
-    itemElement.className = `frame-4 frame-${4 + index}`; // Unique class for styling if needed
+    itemElement.className = `frame-4`; // Unique class for styling if needed
     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
     itemElement.innerHTML = `
       <img

@@ -195,7 +195,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  /* gap: 4px; */
   position: relative;
   align-self: stretch;
   width: 100%;
@@ -317,6 +317,7 @@
   cursor: pointer;
   transition: background-color 0.2s ease;
   border: none;
+  margin-top: 22px;
 }
 
 .log-in .add-to-cart {

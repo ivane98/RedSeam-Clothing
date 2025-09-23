@@ -109,6 +109,10 @@
   flex: 0 0 auto;
 }
 
+.registration .div-2 .text-wrapper-3#remove-btn {
+  margin-right: -15px;
+}
+
 .registration .ellipse {
   position: relative;
   width: 100px;
@@ -157,7 +161,7 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 4px;
+  /* gap: 4px; */
   position: relative;
   align-self: stretch;
   width: 100%;
@@ -168,7 +172,7 @@
   background-color: #ffffff;
   border: 1px solid #e1dfe1;
   border-radius: 8px;
-  padding: 10.5px 12px;
+  padding: 10px 12px;
   display: flex;
   align-items: center;
   height: 42px;
@@ -247,8 +251,8 @@
   color: var(--red);
   font-size: 12px;
   line-height: normal;
-  margin-top: 4px;
-  min-height: 16px;
+  /* margin-top: 4px; */
+  /* min-height: 16px; */
 }
 
 .registration .primary {
@@ -263,6 +267,9 @@
   width: 100%;
   background-color: var(--red);
   border-radius: 10px;
+  margin-top: 22px;
+  border: none;
+  cursor: pointer;
 }
 
 .registration .add-to-cart {

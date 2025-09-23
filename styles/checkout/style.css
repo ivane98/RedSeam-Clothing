@@ -402,6 +402,8 @@
   width: 100%;
   background-color: var(--red);
   border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
 
 .order .add-to-cart {
@@ -466,6 +468,7 @@
 .order .mail {
   position: relative;
   width: fit-content;
+  white-space: nowrap;
   margin-top: -1px;
   font-family: "Poppins", Helvetica;
   font-weight: 400;
