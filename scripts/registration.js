@@ -149,6 +149,7 @@ document.addEventListener("DOMContentLoaded", () => {
   // Avatar upload
   uploadBtn.addEventListener("click", () => {
     avatarInput.click();
+    avatarImg.click()
   });
   avatarInput.addEventListener("change", () => {
     const file = avatarInput.files[0];
@@ -163,6 +164,8 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
   });
+
+
 
   // Avatar remove
   removeBtn.addEventListener("click", () => {

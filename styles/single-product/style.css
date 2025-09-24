@@ -12,17 +12,21 @@
   position: absolute;
   top: 0;
   left: 0;
-  width: 1380px; /* Covers main content, not sidebar */
+  /* width: 1380px;  */
+  width: 1920px;
   height: 1080px;
   background-color: var(--dark-blue);
   opacity: 0.3;
-  z-index: 1000; /* Below sidebars */
-  pointer-events: none; /* Allow clicks to pass through */
+  z-index: 1000;
+  /* Below sidebars */
+  pointer-events: none;
+  /* Allow clicks to pass through */
 }
 
 .listing-page .rectangle-2.active {
   display: block !important;
-  pointer-events: auto; /* Enable clicks to close overlay */
+  pointer-events: auto;
+  /* Enable clicks to close overlay */
 }
 
 /* Shopping cart styles */
@@ -33,7 +37,8 @@
   right: 0;
   width: 540px;
   height: 1080px;
-  z-index: 2000; /* Above .rectangle-2 */
+  z-index: 2000;
+  /* Above .rectangle-2 */
   background-color: var(--grey);
   border-left: 1px solid #e1dfe1;
 }
@@ -63,6 +68,7 @@
   left: 40px;
   background-color: var(--red);
   border-radius: 10px;
+  border: none;
 }
 
 .listing-page .shopping-cart .text-wrapper-9 {
@@ -191,6 +197,21 @@
   border-color: #e1dfe1;
 }
 
+.listing-page .shopping-cart .quantity-button {
+  border: none;
+  background-color: var(--grey);
+  cursor: pointer;
+}
+
+.listing-page .shopping-cart .remove-button {
+  border: none;
+  background-color: var(--grey);
+  cursor: pointer;
+}
+
+
+
+
 .listing-page .shopping-cart .img-2 {
   position: relative;
   width: 16px;
@@ -271,7 +292,8 @@
   top: 0;
   width: 540px;
   display: none;
-  z-index: 1900; /* Above .rectangle-2, below .shopping-cart */
+  z-index: 1900;
+  /* Above .rectangle-2, below .shopping-cart */
 }
 
 .listing-page .cart-is-empty.active {
@@ -383,7 +405,8 @@
   top: 0;
   left: 0;
   background-color: transparent;
-  z-index: 1100; /* Above .rectangle-2, below sidebars */
+  z-index: 1100;
+  /* Above .rectangle-2, below sidebars */
 }
 
 .listing-page .div {
@@ -636,6 +659,7 @@
   align-self: stretch;
   width: 100%;
   flex: 0 0 auto;
+  margin-top: 10px;
 }
 
 .listing-page .component {
@@ -692,6 +716,7 @@
   align-self: stretch;
   width: 100%;
   flex: 0 0 auto;
+  margin-top: 13px;
 }
 
 .listing-page .size {
@@ -792,6 +817,7 @@
   width: 20px;
   height: 20px;
   margin-right: -1px;
+  cursor: pointer;
 }
 
 .listing-page .primary {
@@ -961,8 +987,8 @@
   height: 0;
 }
 
-.color-input:focus + label,
-.size-input:focus + label {
+.color-input:focus+label,
+.size-input:focus+label {
   outline: 2px solid #4a90e2;
   outline-offset: 2px;
 }
