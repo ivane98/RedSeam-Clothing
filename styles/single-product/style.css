@@ -38,9 +38,9 @@
   width: 540px;
   height: 1080px;
   z-index: 2000;
-  /* Above .rectangle-2 */
   background-color: var(--grey);
   border-left: 1px solid #e1dfe1;
+  overflow-y: auto; /* Enable scrolling for more items */
 }
 
 .listing-page .shopping-cart.active {
@@ -829,6 +829,8 @@
   flex: 0 0 auto;
   background-color: var(--red);
   border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
 
 .listing-page .text-wrapper-6 {
