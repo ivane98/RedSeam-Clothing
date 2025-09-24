@@ -339,6 +339,13 @@ function initializePriceFilter() {
       if (priceFilter) {
         priceFilter.style.display = "none";
       }
+
+      const priceValues = document.querySelector(".price-values");
+      const priceRange = document.querySelector(".price-range");
+      priceRange.innerText = `${minPriceInput.value || 0}-${
+        maxPriceInput.value || "-"
+      }`;
+      priceValues.style.display = "flex";
     });
   }
 
@@ -388,6 +395,13 @@ function initializeSortDropdown() {
       });
     });
   }
+
+  const priceValuesImg = document.querySelector(".price-values-img");
+
+  priceValuesImg.addEventListener("click", () => {
+    document.querySelector(".price-values").style.display = "none";
+    window.location.reload();
+  });
 }
 
 function applyFiltersAndSort() {

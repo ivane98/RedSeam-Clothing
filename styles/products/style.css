@@ -330,6 +330,28 @@
 
 /*  */
 
+.price-values {
+  position: relative;
+  width: 141px;
+  height: 37px;
+  border-radius: 50px;
+  background-color: #e7e7e74f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid grey;
+  left: 100px;
+  display: none;
+  font-family: "Poppins", "Helvetica";
+  font-size: 14px;
+}
+
+.price-values img {
+  width: 12px;
+  height: 12px;
+  cursor: pointer;
+}
+
 .listing-page .products-grid {
   display: flex;
   margin-left: 100px;
