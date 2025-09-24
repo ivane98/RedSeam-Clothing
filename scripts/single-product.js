@@ -1,5 +1,4 @@
 document.addEventListener("DOMContentLoaded", async () => {
-
   const user = JSON.parse(localStorage.getItem("user"));
   const avatarImg = document.querySelector(".ellipse");
 
@@ -93,10 +92,11 @@ document.addEventListener("DOMContentLoaded", async () => {
       colorPickerContainer.className = "frame-6";
       const legend = document.createElement("legend");
       legend.className = "text-wrapper-4";
-      legend.textContent = `Color: ${product.available_colors
-        ? toCapitalCase(product.available_colors[0])
-        : "N/A"
-        }`;
+      legend.textContent = `Color: ${
+        product.available_colors
+          ? toCapitalCase(product.available_colors[0])
+          : "N/A"
+      }`;
       const radioGroup = document.createElement("div");
       radioGroup.className = "frame-7";
       radioGroup.setAttribute("role", "radiogroup");
@@ -242,8 +242,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizePickerContainer.className = "frame-8";
       const sizeLegend = document.createElement("legend");
       sizeLegend.className = "text-wrapper-4";
-      sizeLegend.textContent = `Size: ${product.available_sizes ? product.available_sizes[0] : "N/A"
-        }`;
+      sizeLegend.textContent = `Size: ${
+        product.available_sizes ? product.available_sizes[0] : "N/A"
+      }`;
       const sizeRadioGroup = document.createElement("div");
       sizeRadioGroup.className = "frame-9";
       sizeRadioGroup.setAttribute("role", "radiogroup");
@@ -266,8 +267,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           const label = document.createElement("label");
           label.htmlFor = inputId;
           label.className = index === 0 ? "div-wrapper" : "size";
-          label.innerHTML = `<span class="${index === 0 ? "text-wrapper-5" : "l"
-            }">${size}</span>`;
+          label.innerHTML = `<span class="${
+            index === 0 ? "text-wrapper-5" : "l"
+          }">${size}</span>`;
           label.style.cursor = "pointer"; // Explicit cursor pointer
           label.style.outline = "none"; // Remove default blue focus outline
 
@@ -420,8 +422,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           document.querySelectorAll("input[name='size']")
         ).indexOf(sizeInput);
         const selectedSize = product.available_sizes[selectedSizeIndex];
-
-
 
         const quantitySelect = document.querySelector("#quantity");
 
@@ -626,42 +626,50 @@ document.addEventListener("DOMContentLoaded", async () => {
       itemElement.className = `frame-${14 + index * 8}`;
       itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
       itemElement.innerHTML = `
-        <img class="rectangle-3" src="${item.main_image || item.images?.[0] || "/images/fallback.png"
+        <img class="rectangle-3" src="${
+          item.main_image || item.images?.[0] || "/images/fallback.png"
         }" alt="${toCapitalCase(item.name) || "Product"}" />
         <div class="frame-15">
           <div class="frame-16">
             <div class="frame-17">
               <div class="kids-curved-hilfiger-wrapper">
-                <h3 class="kids-curved-hilfiger-2">${toCapitalCase(item.name) || "Unknown Product"
-        }</h3>
+                <h3 class="kids-curved-hilfiger-2">${
+                  toCapitalCase(item.name) || "Unknown Product"
+                }</h3>
               </div>
-              <div class="text-wrapper-10">${toCapitalCase(item.color) || "N/A"
-        }</div>
+              <div class="text-wrapper-10">${
+                toCapitalCase(item.color) || "N/A"
+              }</div>
               <div class="text-wrapper-10">${(
-          item.size || "N/A"
-        ).toUpperCase()}</div>
+                item.size || "N/A"
+              ).toUpperCase()}</div>
             </div>
             <div class="frame-18">
-              <div class="text-wrapper-11">$${item.price ? item.price : "0"
-        }</div>
+              <div class="text-wrapper-11">$${
+                item.price ? item.price : "0"
+              }</div>
             </div>
           </div>
           <div class="frame-12">
             <div class="frame-19" role="group" aria-label="Quantity controls">
-              <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${item.id || ""
-        }" data-action="decrease">
+              <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${
+                item.id || ""
+              }" data-action="decrease">
                 <img class="img-2" src="/images/minus.png" alt="Decrease" />
               </button>
-              <div class="frame-20"><div class="text-wrapper-12">${item.quantity || 1
-        }</div></div>
-              <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${item.id || ""
-        }" data-action="increase">
+              <div class="frame-20"><div class="text-wrapper-12">${
+                item.quantity || 1
+              }</div></div>
+              <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${
+                item.id || ""
+              }" data-action="increase">
                 <img class="img-2" src="/images/plus.png" alt="Increase" />
               </button>
             </div>
             <div class="frame-21">
-              <button type="button" class="remove-button" data-item-id="${item.id || ""
-        }">
+              <button type="button" class="remove-button" data-item-id="${
+                item.id || ""
+              }">
                 <span class="text-wrapper-13">Remove</span>
               </button>
             </div>
@@ -1015,16 +1023,70 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   //drop down
+  // Custom dropdown quantity functionality
   const chevron = document.querySelector(".heroicons-mini-3");
   const select = document.querySelector(".quantity-select");
+  const quantityDisplay = document.querySelector(".l-2");
+  const sizeContainer = document.querySelector(".size-2");
+  const dropdown = document.querySelector(".quantity-dropdown");
+  const options = document.querySelectorAll(".dropdown-option");
 
-  if (chevron && select) {
-    chevron.addEventListener("click", () => {
-      // Focus first, then click — works in most browsers
-      select.focus();
-      select.click();
+  if (chevron && select && quantityDisplay && sizeContainer && dropdown) {
+    console.log("Found chevron:", chevron);
+    chevron.addEventListener("click", (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      const isExpanded = dropdown.classList.contains("active");
+      dropdown.classList.toggle("active");
+      sizeContainer.setAttribute("aria-expanded", !isExpanded);
+      if (!isExpanded) {
+        const selectedValue = select.value;
+        options.forEach((option) => {
+          option.classList.toggle(
+            "selected",
+            option.dataset.value === selectedValue
+          );
+        });
+      }
+      console.log(
+        "Chevron clicked, dropdown toggled, aria-expanded:",
+        !isExpanded
+      );
+    });
+
+    options.forEach((option) => {
+      option.addEventListener("click", () => {
+        const value = option.dataset.value;
+        select.value = value;
+        quantityDisplay.textContent = value;
+        options.forEach((opt) => opt.classList.remove("selected"));
+        option.classList.add("selected");
+        dropdown.classList.remove("active");
+        select.dispatchEvent(new Event("change")); // Trigger form submission if needed
+        console.log("Quantity selected:", value);
+      });
+    });
+
+    // Initialize display with default value
+    quantityDisplay.textContent = select.value;
+  } else {
+    console.error("Missing elements:", {
+      chevron,
+      select,
+      quantityDisplay,
+      sizeContainer,
+      dropdown,
     });
   }
+
+  // Close dropdown when clicking outside
+  document.addEventListener("click", (e) => {
+    const isClickInside = sizeContainer.contains(e.target);
+    if (!isClickInside && dropdown) {
+      dropdown.classList.remove("active");
+      sizeContainer.setAttribute("aria-expanded", "false");
+    }
+  });
   //
 });
 
@@ -1058,9 +1120,9 @@ function getColorValue(color) {
 function toCapitalCase(str) {
   return str
     ? str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
     : "";
 }
