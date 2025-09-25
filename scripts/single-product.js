@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const logo = document.querySelector(".div");
+
+  logo.addEventListener("click", () => {
+    window.location.href = "products.html";
+  });
   const user = JSON.parse(localStorage.getItem("user"));
   const avatarImg = document.querySelector(".ellipse");
 

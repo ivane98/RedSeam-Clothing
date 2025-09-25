@@ -1,3 +1,6 @@
+// Configurable API URL
+const API_URL = "https://api.redseam.redberryinternship.ge/api/register";
+
 // Utility to set a cookie
 function setCookie(name, value, days) {
   const expires = new Date();
@@ -12,34 +15,18 @@ function clearErrors() {
   });
 }
 
-// Validate form fields
+// Basic frontend validation for UX (only checks required fields)
 function validateField(field, errorDiv) {
   const value = field.value.trim();
   let error = "";
 
-  if (field.name === "username") {
-    if (!value) error = "Username is required";
-    else if (value.length < 3) error = "Username must be at least 3 characters";
-  } else if (field.name === "email") {
-    if (!value) error = "Email is required";
-    else if (!/^[^@]+@[^@]+\.[^@]+$/.test(value))
-      error = "Invalid email format";
-  } else if (field.name === "password") {
-    if (!value) error = "Password is required";
-    else if (value.length < 3) error = "Password must be at least 3 characters";
-  } else if (field.name === "password_confirmation") {
-    const password = document.getElementById("password").value;
-    if (!value) error = "Confirm password is required";
-    else if (value !== password) error = "Passwords do not match";
-  } else if (field.name === "avatar") {
-    if (value) {
-      const file = field.files[0];
-      if (!["image/jpeg", "image/png"].includes(file.type)) {
-        error = "Only JPEG or PNG files are allowed";
-      } else if (file.size > 1024 * 1024) {
-        error = "Avatar must be less than 1MB";
-      }
-    }
+  if (
+    ["username", "email", "password", "password_confirmation"].includes(
+      field.name
+    ) &&
+    !value
+  ) {
+    error = "This field is required";
   }
 
   errorDiv.textContent = error;
@@ -72,9 +59,11 @@ async function handleSubmit(event) {
 
   const form = event.target;
   const fields = form.querySelectorAll("input");
-  let isValid = true;
+  const submitBtn = form.querySelector("button[type=submit]");
+  submitBtn.disabled = true; // Disable button during submission
 
-  // Validate all fields
+  // Optional: Basic frontend validation for UX
+  let isValid = true;
   fields.forEach((field) => {
     const errorDiv = document.getElementById(`${field.id}-error`);
     if (!validateField(field, errorDiv)) {
@@ -82,34 +71,36 @@ async function handleSubmit(event) {
     }
   });
 
-  if (!isValid) return;
+  if (!isValid) {
+    submitBtn.disabled = false;
+    return;
+  }
 
   const formData = new FormData(form);
 
   try {
-    const response = await fetch(
-      "https://api.redseam.redberryinternship.ge/api/register",
-      {
-        method: "POST",
-        headers: {
-          Accept: "application/json",
-        },
-        body: formData,
-      }
-    );
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+      },
+      body: formData,
+    });
 
     if (response.ok) {
       const data = await response.json();
-      setCookie("authToken", data.token, 7); // Save token to cookie
+      setCookie("authToken", data.token, 7);
       localStorage.setItem("user", JSON.stringify(data.user));
       showSuccessMessage();
       setTimeout(() => {
-        window.location.href = "products.html"; // Redirect
+        window.location.href = "products.html";
       }, 2000);
     } else if (response.status === 422) {
       const data = await response.json();
-      console.log("Backend errors:", data.errors); // Debug
       const errors = data.errors || {};
+      console.log("Backend errors:", errors);
+
+      // Map backend errors to form fields
       [
         "username",
         "email",
@@ -126,17 +117,27 @@ async function handleSubmit(event) {
       alert("An error occurred. Please try again later.");
     }
   } catch (error) {
+    console.error("Network error:", error);
     alert("Network error. Please check your connection.");
+  } finally {
+    submitBtn.disabled = false; // Re-enable button
   }
 }
 
+// DOM event listeners
 document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.querySelector(".logo");
   const form = document.querySelector(".frame-3");
   const uploadBtn = document.getElementById("upload-btn");
   const removeBtn = document.getElementById("remove-btn");
   const avatarInput = document.getElementById("avatar");
   const avatarImg = document.querySelector(".ellipse");
   const passwordToggles = document.querySelectorAll(".password-toggle");
+
+  // Logo click handler
+  logo.addEventListener("click", () => {
+    window.location.href = "products.html";
+  });
 
   // Password toggle
   passwordToggles.forEach((toggle) => {
@@ -149,32 +150,24 @@ document.addEventListener("DOMContentLoaded", () => {
   // Avatar upload
   uploadBtn.addEventListener("click", () => {
     avatarInput.click();
-    avatarImg.click()
   });
+
   avatarInput.addEventListener("change", () => {
     const file = avatarInput.files[0];
-    const errorDiv = document.getElementById("username-error"); // Use username-error for avatar
+    const errorDiv = document.getElementById("avatar-error");
     if (file) {
-      if (validateField(avatarInput, errorDiv)) {
-        avatarImg.src = URL.createObjectURL(file);
-        console.log(file);
-      } else {
-        avatarInput.value = ""; // Clear invalid file
-        avatarImg.src = "images/profile-picture-big.png";
-      }
+      avatarImg.src = URL.createObjectURL(file);
     }
   });
-
-
 
   // Avatar remove
   removeBtn.addEventListener("click", () => {
     avatarInput.value = "";
     avatarImg.src = "images/photo.png";
-    document.getElementById("username-error").textContent = ""; // Clear avatar error
+    document.getElementById("avatar-error").textContent = "";
   });
 
-  // Validate on blur
+  // Validate on blur (optional, for UX)
   form.querySelectorAll("input").forEach((field) => {
     field.addEventListener("blur", () => {
       const errorDiv = document.getElementById(`${field.id}-error`);

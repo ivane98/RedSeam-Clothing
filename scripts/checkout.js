@@ -1,4 +1,9 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const logo = document.querySelector(".div");
+
+  logo.addEventListener("click", () => {
+    window.location.href = "products.html";
+  });
   // Prepopulate email field from localStorage
   const userDataString = localStorage.getItem("user");
 

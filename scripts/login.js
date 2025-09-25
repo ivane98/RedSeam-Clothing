@@ -6,6 +6,11 @@ function setCookie(name, value, days) {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.querySelector(".logo");
+
+  logo.addEventListener("click", () => {
+    window.location.href = "products.html";
+  });
   const form = document.getElementById("login-form");
   const emailInput = document.getElementById("email");
   const passwordInput = document.getElementById("password");
