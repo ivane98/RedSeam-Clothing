@@ -160,8 +160,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 retryErrorData
               );
               throw new Error(
-                `Checkout failed: ${
-                  retryErrorData.message || retryResponse.status
+                `Checkout failed: ${retryErrorData.message || retryResponse.status
                 }`
               );
             }
@@ -200,6 +199,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const modal = document.getElementById("congratulatory-modal");
         if (modal) {
           modal.classList.remove("visible");
+          window.location.href = "products.html"
           console.log("Congratulatory modal closed via close button");
         }
       });
@@ -293,7 +293,7 @@ function displayCartItems(cartItems) {
   if (cartItems.length === 0) {
     const emptyMessage = document.createElement("p");
     emptyMessage.className = "empty-cart";
-    emptyMessage.textContent = "Your cart is empty.";
+    // emptyMessage.textContent = "Your cart is empty.";
     cartContainer.appendChild(emptyMessage);
     updateOrderSummary(0);
     return;
@@ -314,21 +314,18 @@ function displayCartItems(cartItems) {
         <div class="frame-6">
           <div class="frame-7">
             <div class="kids-curved-hilfiger-wrapper">
-              <h3 class="kids-curved-hilfiger">${
-                toCapitalCase(item.name) || "Unknown Product"
-              }</h3>
+              <h3 class="kids-curved-hilfiger">${toCapitalCase(item.name) || "Unknown Product"
+      }</h3>
             </div>
-            <div class="text-wrapper-2">${
-              toCapitalCase(item.color) || "N/A"
-            }</div>
+            <div class="text-wrapper-2">${toCapitalCase(item.color) || "N/A"
+      }</div>
             <div class="text-wrapper-2">${(
-              item.size || "N/A"
-            ).toUpperCase()}</div>
+        item.size || "N/A"
+      ).toUpperCase()}</div>
           </div>
           <div class="div-wrapper">
-            <div class="text-wrapper-3">$${
-              item.price ? item.price.toFixed(2) : "0.00"
-            }</div>
+            <div class="text-wrapper-3">$${item.price ? item.price.toFixed(2) : "0.00"
+      }</div>
           </div>
         </div>
         <div class="frame-8">
@@ -343,9 +340,8 @@ function displayCartItems(cartItems) {
               <img class="img-3" src="/images/minus.png" alt="" />
             </button>
             <div class="frame-10">
-              <span class="text-wrapper-4" aria-label="Quantity">${
-                item.quantity || 1
-              }</span>
+              <span class="text-wrapper-4" aria-label="Quantity">${item.quantity || 1
+      }</span>
             </div>
             <button
               type="button"
@@ -358,9 +354,8 @@ function displayCartItems(cartItems) {
             </button>
           </div>
           <div class="frame-11">
-            <button type="button" class="remove-button" data-item-id="${
-              item.id || ""
-            }">
+            <button type="button" class="remove-button" data-item-id="${item.id || ""
+      }">
               <span class="text-wrapper-5">Remove</span>
             </button>
           </div>
@@ -545,9 +540,9 @@ function getCookie(name) {
 function toCapitalCase(str) {
   return str
     ? str
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     : "";
 }

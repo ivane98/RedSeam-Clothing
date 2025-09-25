@@ -76,6 +76,23 @@ async function handleSubmit(event) {
     return;
   }
 
+  // ✅ Check file size before uploading
+  const avatarInput = form.querySelector("#avatar");
+  if (avatarInput && avatarInput.files[0]) {
+    const file = avatarInput.files[0];
+    const maxSize = 1 * 1024 * 1024; // 1 MB
+    if (file.size > maxSize) {
+      // alert("Image size must be less than 1MB");
+      const errorDiv = document.getElementById(`avatar-error`);
+
+      errorDiv.textContent = "Image size must be less than 1MB";
+      errorDiv.style.display = 'flex'
+
+      submitBtn.disabled = false;
+      return;
+    }
+  }
+
   const formData = new FormData(form);
 
   try {
@@ -95,7 +112,7 @@ async function handleSubmit(event) {
       setTimeout(() => {
         window.location.href = "products.html";
       }, 2000);
-    } else if (response.status === 422) {
+    } else if (response.status === 413 || response.status === 422) {
       const data = await response.json();
       const errors = data.errors || {};
       console.log("Backend errors:", errors);
@@ -133,6 +150,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const avatarInput = document.getElementById("avatar");
   const avatarImg = document.querySelector(".ellipse");
   const passwordToggles = document.querySelectorAll(".password-toggle");
+  const photo = document.querySelector('.ellipse')
 
   // Logo click handler
   logo.addEventListener("click", () => {
@@ -152,8 +170,25 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarInput.click();
   });
 
+  // Avatar upload via photo (ellipse)
+  photo.addEventListener("click", () => {
+    avatarInput.click();
+
+
+  });
+
+
   avatarInput.addEventListener("change", () => {
     const file = avatarInput.files[0];
+    console.log(file.type)
+    console.log("image/png")
+    if (file.type !== "image/png" &&
+      file.type !== "image/jpeg" &&
+      file.type !== "image/svg+xml" &&
+      file.type !== "image/gif") {
+      alert('File should be of valid Image Type ')
+      return
+    }
     const errorDiv = document.getElementById("avatar-error");
     if (file) {
       avatarImg.src = URL.createObjectURL(file);
@@ -165,6 +200,7 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarInput.value = "";
     avatarImg.src = "images/photo.png";
     document.getElementById("avatar-error").textContent = "";
+    document.getElementById("avatar-error").style.display = "none";
   });
 
   // Validate on blur (optional, for UX)

@@ -106,11 +106,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       colorPickerContainer.className = "frame-6";
       const legend = document.createElement("legend");
       legend.className = "text-wrapper-4";
-      legend.textContent = `Color: ${
-        product.available_colors
-          ? toCapitalCase(product.available_colors[0])
-          : "N/A"
-      }`;
+      legend.textContent = `Color: ${product.available_colors
+        ? toCapitalCase(product.available_colors[0])
+        : "N/A"
+        }`;
       const radioGroup = document.createElement("div");
       radioGroup.className = "frame-7";
       radioGroup.setAttribute("role", "radiogroup");
@@ -256,9 +255,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizePickerContainer.className = "frame-8";
       const sizeLegend = document.createElement("legend");
       sizeLegend.className = "text-wrapper-4";
-      sizeLegend.textContent = `Size: ${
-        product.available_sizes ? product.available_sizes[0] : "N/A"
-      }`;
+      sizeLegend.textContent = `Size: ${product.available_sizes ? product.available_sizes[0] : "N/A"
+        }`;
       const sizeRadioGroup = document.createElement("div");
       sizeRadioGroup.className = "frame-9";
       sizeRadioGroup.setAttribute("role", "radiogroup");
@@ -281,9 +279,8 @@ document.addEventListener("DOMContentLoaded", async () => {
           const label = document.createElement("label");
           label.htmlFor = inputId;
           label.className = index === 0 ? "div-wrapper" : "size";
-          label.innerHTML = `<span class="${
-            index === 0 ? "text-wrapper-5" : "l"
-          }">${size}</span>`;
+          label.innerHTML = `<span class="${index === 0 ? "text-wrapper-5" : "l"
+            }">${size}</span>`;
           label.style.cursor = "pointer"; // Explicit cursor pointer
           label.style.outline = "none"; // Remove default blue focus outline
 
@@ -446,6 +443,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!authToken) {
           alert("You must be logged in to add items to cart.");
+          window.location.href = 'login.html'
           return;
         }
 
@@ -542,7 +540,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const authToken = getCookie("authToken");
     if (!authToken) {
       console.error("No auth token found");
-      if (render) displayCartError("Please log in to view your cart.");
+      alert('You must be logged in to view your cart')
+      // if (render) displayCartError("Please log in to view your cart.");
       return [];
     }
 
@@ -640,50 +639,42 @@ document.addEventListener("DOMContentLoaded", async () => {
       itemElement.className = `frame-${14 + index * 8}`;
       itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
       itemElement.innerHTML = `
-        <img class="rectangle-3" src="${
-          item.main_image || item.images?.[0] || "/images/fallback.png"
+        <img class="rectangle-3" src="${item.main_image || item.images?.[0] || "/images/fallback.png"
         }" alt="${toCapitalCase(item.name) || "Product"}" />
         <div class="frame-15">
           <div class="frame-16">
             <div class="frame-17">
               <div class="kids-curved-hilfiger-wrapper">
-                <h3 class="kids-curved-hilfiger-2">${
-                  toCapitalCase(item.name) || "Unknown Product"
-                }</h3>
+                <h3 class="kids-curved-hilfiger-2">${toCapitalCase(item.name) || "Unknown Product"
+        }</h3>
               </div>
-              <div class="text-wrapper-10">${
-                toCapitalCase(item.color) || "N/A"
-              }</div>
+              <div class="text-wrapper-10">${toCapitalCase(item.color) || "N/A"
+        }</div>
               <div class="text-wrapper-10">${(
-                item.size || "N/A"
-              ).toUpperCase()}</div>
+          item.size || "N/A"
+        ).toUpperCase()}</div>
             </div>
             <div class="frame-18">
-              <div class="text-wrapper-11">$${
-                item.price ? item.price : "0"
-              }</div>
+              <div class="text-wrapper-11">$${item.price ? item.price : "0"
+        }</div>
             </div>
           </div>
           <div class="frame-12">
             <div class="frame-19" role="group" aria-label="Quantity controls">
-              <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${
-                item.id || ""
-              }" data-action="decrease">
+              <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${item.id || ""
+        }" data-action="decrease">
                 <img class="img-2" src="/images/minus.png" alt="Decrease" />
               </button>
-              <div class="frame-20"><div class="text-wrapper-12">${
-                item.quantity || 1
-              }</div></div>
-              <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${
-                item.id || ""
-              }" data-action="increase">
+              <div class="frame-20"><div class="text-wrapper-12">${item.quantity || 1
+        }</div></div>
+              <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${item.id || ""
+        }" data-action="increase">
                 <img class="img-2" src="/images/plus.png" alt="Increase" />
               </button>
             </div>
             <div class="frame-21">
-              <button type="button" class="remove-button" data-item-id="${
-                item.id || ""
-              }">
+              <button type="button" class="remove-button" data-item-id="${item.id || ""
+        }">
                 <span class="text-wrapper-13">Remove</span>
               </button>
             </div>
@@ -1134,9 +1125,9 @@ function getColorValue(color) {
 function toCapitalCase(str) {
   return str
     ? str
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     : "";
 }

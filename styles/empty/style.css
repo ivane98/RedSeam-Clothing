@@ -116,7 +116,7 @@
   flex: 1;
   margin-bottom: 5px;
   width: 24px;
-  font-family: "SF Pro Text-Bold", Helvetica;
+  font-family: "Poppins", Helvetica;
   font-weight: 700;
   color: var(--red);
   font-size: 14px;
@@ -642,6 +642,7 @@
   width: 170px;
   height: 135px;
 }
+
 /* Original CSS code should be injected here */
 
 /* Additional styles for semantic elements and accessibility */
@@ -681,22 +682,22 @@
   height: 0;
 }
 
-.color-input:focus + label,
-.size-input:focus + label {
+.color-input:focus+label,
+.size-input:focus+label {
   outline: 2px solid #4a90e2;
   outline-offset: 2px;
 }
 
-.color-input:checked + .ellipse-wrapper {
+.color-input:checked+.ellipse-wrapper {
   border-color: #ff3f00;
 }
 
-.size-input:checked + .size {
+.size-input:checked+.size {
   background-color: var(--grey);
   border-color: #10151f;
 }
 
-.size-input:checked + .div-wrapper {
+.size-input:checked+.div-wrapper {
   background-color: var(--grey);
   border-color: #10151f;
 }

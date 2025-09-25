@@ -40,7 +40,8 @@
   z-index: 2000;
   background-color: var(--grey);
   border-left: 1px solid #e1dfe1;
-  overflow-y: auto; /* Enable scrolling for more items */
+  overflow-y: auto;
+  /* Enable scrolling for more items */
 }
 
 .listing-page .shopping-cart.active {
@@ -497,7 +498,7 @@
   flex: 1;
   margin-bottom: 5px;
   width: 24px;
-  font-family: "SF Pro Text-Bold", Helvetica;
+  font-family: "Poppins", Helvetica;
   font-weight: 700;
   color: var(--red);
   font-size: 14px;
@@ -988,8 +989,8 @@
   height: 0;
 }
 
-.color-input:focus + label,
-.size-input:focus + label {
+.color-input:focus+label,
+.size-input:focus+label {
   outline: 2px solid #4a90e2;
   outline-offset: 2px;
 }
@@ -1001,6 +1002,7 @@
   height: 100%;
   cursor: pointer;
 }
+
 /* dropdown */
 .quantity-dropdown {
   position: absolute;

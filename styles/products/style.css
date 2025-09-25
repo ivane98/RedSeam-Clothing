@@ -381,6 +381,8 @@
   height: 549px;
   border-radius: 10px;
   object-fit: cover;
+  border: 1px solid rgb(212, 212, 212);
+  ;
 }
 
 .listing-page .frame-7 {
@@ -467,7 +469,7 @@
   flex: 1;
   margin-bottom: 5px;
   width: 24px;
-  font-family: "SF Pro Text-Bold", Helvetica;
+  font-family: "Poppins", Helvetica;
   font-weight: 700;
   color: var(--red);
   font-size: 14px;

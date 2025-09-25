@@ -119,6 +119,8 @@
   width: 100px;
   height: 100px;
   object-fit: cover;
+  border-radius: 50%;
+  cursor: pointer;
 }
 
 .registration .text-wrapper-3 {
@@ -179,7 +181,8 @@
   height: 42px;
   position: relative;
   width: 100%;
-  gap: 8px; /* Space between label and input */
+  gap: 8px;
+  /* Space between label and input */
 }
 
 .registration .input-label {
@@ -190,7 +193,8 @@
   color: #3e424a;
   display: flex;
   align-items: center;
-  gap: 4px; /* Space between label text and asterisk */
+  gap: 4px;
+  /* Space between label text and asterisk */
   flex-shrink: 0;
 }
 
@@ -203,7 +207,8 @@
 }
 
 .registration .form-input {
-  flex: 1; /* Takes remaining space */
+  flex: 1;
+  /* Takes remaining space */
   border: none;
   background: transparent;
   font-family: "Poppins", sans-serif;
@@ -216,11 +221,13 @@
 
 .registration .input-field:focus-within {
   border-color: var(--red);
-  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2); /* Subtle focus ring */
+  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2);
+  /* Subtle focus ring */
 }
 
 .registration .form-input:invalid {
-  border-color: var(--red); /* Invalid styling on .input-field */
+  border-color: var(--red);
+  /* Invalid styling on .input-field */
 }
 
 .registration .password-toggle {
@@ -252,6 +259,17 @@
   color: var(--red);
   font-size: 12px;
   line-height: normal;
+  /* margin-top: 4px; */
+  /* min-height: 16px; */
+}
+
+.registration .avatar-error-message {
+  font-family: "Poppins", sans-serif;
+  font-weight: 400;
+  color: var(--red);
+  font-size: 12px;
+  line-height: normal;
+  display: none;
   /* margin-top: 4px; */
   /* min-height: 16px; */
 }
@@ -333,6 +351,7 @@
 
 .registration .text-wrapper-5:focus {
   outline: 2px solid var(--red);
+
   outline-offset: 2px;
 }
 
@@ -342,5 +361,6 @@
 
 .registration .text-wrapper-3:focus {
   outline: 2px solid var(--red);
+  border-radius: 10px;
   outline-offset: 2px;
 }
