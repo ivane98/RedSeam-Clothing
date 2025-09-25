@@ -1,111 +1,144 @@
+// Configurable API URL
+const API_URL = "https://api.redseam.redberryinternship.ge/api/login";
+
 // Utility to set a cookie
 function setCookie(name, value, days) {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;Secure`;
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;Secure;SameSite=Strict`;
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const logo = document.querySelector(".logo");
+// Clear all error messages
+function clearErrors() {
+  document.getElementById("email-error").textContent = "";
+  document.getElementById("password-error").textContent = "";
+}
 
-  logo.addEventListener("click", () => {
-    window.location.href = "products.html";
-  });
-  const form = document.getElementById("login-form");
-  const emailInput = document.getElementById("email");
-  const passwordInput = document.getElementById("password");
-  const emailError = document.getElementById("email-error");
-  const passwordError = document.getElementById("password-error");
-  const passwordToggle = document.querySelector(".password-toggle");
+// Basic frontend validation for UX (only checks required fields)
+function validateField(field, errorElement) {
+  const value = field.value.trim();
+  let error = "";
 
-  // ✅ Success message element
+  if (["email", "password"].includes(field.name) && !value) {
+    error = "This field is required";
+  }
+
+  errorElement.textContent = error;
+  return !error;
+}
+
+// Show success message
+function showSuccessMessage() {
   const successMessage = document.createElement("p");
   successMessage.style.color = "green";
   successMessage.style.marginTop = "10px";
   successMessage.style.textAlign = "center";
-  form.appendChild(successMessage);
+  successMessage.textContent = "Login successful! Redirecting...";
+  document.getElementById("login-form").appendChild(successMessage);
+  setTimeout(() => {
+    successMessage.remove();
+  }, 1500);
+}
 
-  // ✅ Toggle password visibility
+// Handle form submission
+async function handleSubmit(e) {
+  e.preventDefault();
+  clearErrors();
+
+  const form = e.target;
+  const emailInput = document.getElementById("email");
+  const passwordInput = document.getElementById("password");
+  const emailError = document.getElementById("email-error");
+  const passwordError = document.getElementById("password-error");
+  const submitBtn = form.querySelector("button[type=submit]");
+  submitBtn.disabled = true; // Disable button during submission
+
+  // Optional: Basic frontend validation for UX
+  let isValid = true;
+  if (!validateField(emailInput, emailError)) isValid = false;
+  if (!validateField(passwordInput, passwordError)) isValid = false;
+
+  if (!isValid) {
+    submitBtn.disabled = false;
+    return;
+  }
+
+  const email = emailInput.value.trim();
+  const password = passwordInput.value.trim();
+
+  try {
+    const response = await fetch(API_URL, {
+      method: "POST",
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      setCookie("authToken", data.token, 7);
+      localStorage.setItem("user", JSON.stringify(data.user));
+      showSuccessMessage();
+      setTimeout(() => {
+        window.location.href = "products.html";
+      }, 1500);
+    } else if (response.status === 422) {
+      const data = await response.json();
+      const errors = data.errors || {};
+      console.log("Backend errors:", errors);
+
+      // Map backend errors to form fields
+      ["email", "password"].forEach((field) => {
+        const errorElement = document.getElementById(`${field}-error`);
+        if (errors[field] && errors[field].length > 0) {
+          errorElement.textContent = errors[field][0];
+        }
+      });
+    } else if (response.status === 401) {
+      passwordError.textContent = "Invalid email or password.";
+    } else {
+      passwordError.textContent = "Something went wrong. Try again.";
+    }
+  } catch (error) {
+    console.error("Network error:", error);
+    passwordError.textContent = "Network error. Please try again.";
+  } finally {
+    submitBtn.disabled = false; // Re-enable button
+  }
+}
+
+// DOM event listeners
+document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.querySelector(".logo");
+  const form = document.getElementById("login-form");
+  const passwordInput = document.getElementById("password");
+  const passwordToggle = document.querySelector(".password-toggle");
+
+  // Logo click handler
+  logo.addEventListener("click", () => {
+    window.location.href = "products.html";
+  });
+
+  // Password toggle
   passwordToggle.addEventListener("click", () => {
     const type =
       passwordInput.getAttribute("type") === "password" ? "text" : "password";
     passwordInput.setAttribute("type", type);
   });
 
-  function isValidEmail(email) {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-  }
+  // Form submission
+  form.addEventListener("submit", handleSubmit);
 
-  form.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    emailError.textContent = "";
-    passwordError.textContent = "";
-    successMessage.textContent = "";
-
-    const email = emailInput.value.trim();
-    const password = passwordInput.value.trim();
-    let valid = true;
-
-    if (!email) {
-      emailError.textContent = "Email is required.";
-      valid = false;
-    } else if (!isValidEmail(email)) {
-      emailError.textContent = "Enter a valid email address.";
-      valid = false;
-    }
-
-    if (!password) {
-      passwordError.textContent = "Password is required.";
-      valid = false;
-    } else if (password.length < 3) {
-      passwordError.textContent = "Password must be at least 3 characters.";
-      valid = false;
-    }
-
-    if (!valid) return;
-
-    try {
-      const response = await fetch(
-        "https://api.redseam.redberryinternship.ge/api/login",
-        {
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ email, password }),
-        }
-      );
-
-      if (!response.ok) {
-        if (response.status === 401) {
-          passwordError.textContent = "Invalid email or password.";
-        } else if (response.status === 422) {
-          emailError.textContent = "Please check your input.";
-        } else {
-          passwordError.textContent = "Something went wrong. Try again.";
-        }
-        return;
-      }
-
-      const data = await response.json();
-      console.log(data);
-      const token = data.token;
-
-      // ✅ Store token in cookie
-      document.cookie = `authToken=${token}; path=/; secure; samesite=strict`;
-      setCookie("authToken", token, 7); // Save token to cookie
-      localStorage.setItem("user", JSON.stringify(data.user));
-
-      // ✅ Show success message and redirect
-      successMessage.textContent = "Login successful! Redirecting...";
-      setTimeout(() => {
-        window.location.href = "products.html";
-      }, 1500);
-    } catch (error) {
-      passwordError.textContent = "Network error. Please try again.";
-      console.error("Login error:", error);
-    }
+  // Validate on blur (optional, for UX)
+  [
+    document.getElementById("email"),
+    document.getElementById("password"),
+  ].forEach((field) => {
+    field.addEventListener("blur", () => {
+      const errorElement = document.getElementById(`${field.id}-error`);
+      validateField(field, errorElement);
+    });
   });
 });
