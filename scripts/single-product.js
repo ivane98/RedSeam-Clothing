@@ -41,6 +41,15 @@ document.addEventListener("DOMContentLoaded", async () => {
       const thumbnailContainer = document.querySelector(".frame-2");
       const productName = document.querySelector(".product-name");
       const productPrice = document.querySelector(".product-price");
+      const brandLogo = document.querySelector(".image-2");
+      const brandName = document.querySelector(".text-wrapper-8");
+      const brandDescription = document.querySelector(".description");
+
+      if (product) {
+        brandLogo.src = product.brand.image;
+        brandName.innerText = `Brand: ${product.brand.name}`;
+        brandDescription.innerText = product.description;
+      }
 
       // Update main image with first available image
       if (mainImage) {
@@ -841,7 +850,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           if (!authToken) throw new Error("Please log in to update cart.");
 
           const response = await fetch(
-            `https://api.redseam.redberryinternship.ge/api/cart/${itemId}`,
+            `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
             {
               method: "PATCH",
               headers: {

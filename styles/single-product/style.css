@@ -69,6 +69,7 @@
   background-color: var(--red);
   border-radius: 10px;
   border: none;
+  cursor: pointer;
 }
 
 .listing-page .shopping-cart .text-wrapper-9 {
@@ -914,7 +915,7 @@
   line-height: normal;
 }
 
-.listing-page .p {
+.listing-page .description {
   position: relative;
   align-self: stretch;
   font-family: "Poppins", Helvetica;
