@@ -5,7 +5,6 @@ let state = {
   sort: null,
 };
 
-// Debounce function to limit rapid API calls
 function debounce(func, wait) {
   let timeout;
   return function (...args) {
@@ -14,7 +13,6 @@ function debounce(func, wait) {
   };
 }
 
-// Parse URL query parameters
 function parseQueryParams() {
   const params = new URLSearchParams(window.location.search);
   state.page = parseInt(params.get("page")) || 1;
@@ -23,7 +21,6 @@ function parseQueryParams() {
   state.sort = params.get("sort") || null;
 }
 
-// Update URL with current state
 function updateURL() {
   const params = new URLSearchParams();
   if (state.page !== 1) params.set("page", state.page);
@@ -37,7 +34,6 @@ function updateURL() {
   history.pushState(state, "", newURL);
 }
 
-// Fetch products from API
 async function getDataByPage() {
   try {
     const params = new URLSearchParams();
@@ -48,7 +44,6 @@ async function getDataByPage() {
     if (state.sort !== null) params.set("sort", state.sort);
 
 
-    // for debuging
     console.log('API Request:', `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`);
     const response = await fetch(
       `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
@@ -60,7 +55,7 @@ async function getDataByPage() {
     );
     if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const data = await response.json();
-    state.page = data.meta.current_page; // Sync page
+    state.page = data.meta.current_page; 
     displayProducts(data.data);
     updatePagination(data.meta);
     displayTotalCount(data.meta);
@@ -73,7 +68,6 @@ async function getDataByPage() {
   }
 }
 
-// Display total count
 function displayTotalCount(meta) {
   const productCount = document.querySelector(".product-count");
   if (!productCount) return;
@@ -83,7 +77,6 @@ function displayTotalCount(meta) {
   productCount.innerHTML = `Showing ${start}–${end} of ${meta.total} results`;
 }
 
-// Display products
 function displayProducts(products) {
   const productsGrid = document.querySelector(".products-grid");
   if (!productsGrid) {
@@ -131,7 +124,6 @@ function displayProducts(products) {
   });
 }
 
-// Update pagination
 function updatePagination(meta) {
   const paginationWrapper = document.querySelector(".pagination");
   if (!paginationWrapper) return;
@@ -259,7 +251,6 @@ function updatePagination(meta) {
   if (pageWrapper) pageWrapper.classList.add("loaded");
 }
 
-// Initialize event listeners
 function initializeEventListeners() {
   const filterControl = document.querySelector(".filter-control");
   const priceFilter = document.querySelector(".price-filter");
@@ -267,7 +258,7 @@ function initializeEventListeners() {
   const dropdownMenu = document.querySelector(".dropdown-menu");
 
   if (filterControl && priceFilter) {
-    priceFilter.style.display = 'none'; // Always closed on load
+    priceFilter.style.display = 'none';
     filterControl.setAttribute('aria-expanded', 'false');
     filterControl.addEventListener('click', () => {
       const isExpanded = priceFilter.style.display === 'flex';
@@ -278,7 +269,7 @@ function initializeEventListeners() {
 
 
   if (sortControl && dropdownMenu) {
-    dropdownMenu.style.display = 'none'; // Always closed on load
+    dropdownMenu.style.display = 'none'; 
     sortControl.setAttribute('aria-expanded', 'false');
     sortControl.addEventListener('click', () => {
       const isExpanded = dropdownMenu.style.display === 'block';
@@ -309,7 +300,6 @@ function initializeEventListeners() {
   });
 }
 
-// Initialize price filter
 function initializePriceFilter() {
   const applyButton = document.querySelector(".apply-button");
   const minPriceInput = document.querySelector("#price-from");
@@ -318,14 +308,12 @@ function initializePriceFilter() {
   const priceRange = document.querySelector(".price-range");
   const clearButton = document.querySelector(".price-values-img");
 
-  // Log warning if inputs are missing
   if (!minPriceInput || !maxPriceInput) {
     console.warn(
       "Price filter inputs not found: #price-from or #price-to missing"
     );
   }
 
-  // Set initial values
   if (minPriceInput && maxPriceInput) {
     minPriceInput.value = state.price_from || "";
     maxPriceInput.value = state.price_to || "";
@@ -390,42 +378,6 @@ function initializePriceFilter() {
   }
 }
 
-// // Initialize sort dropdown
-// function initializeSortDropdown() {
-//   const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
-//   const dropdownMenu = document.querySelector(".dropdown-menu");
-
-//   if (sortText) {
-//     sortText.textContent =
-//       state.sort === "price"
-//         ? "Price, low to high"
-//         : state.sort === "-price"
-//         ? "Price, high to low"
-//         : state.sort === 'created_at'
-//         ? "New products first"
-//         : "Sort By";
-//   }
-
-//   document.querySelectorAll(".dropdown-option").forEach((option) => {
-//     option.addEventListener("click", (event) => {
-//       event.stopPropagation();
-//       const value = option.dataset.value;
-//       const text = option.textContent;
-//       if (sortText) sortText.textContent = text;
-//       state.sort = value === "default" ? null : value;
-//       state.page = 1;
-//       getDataByPage();
-//       if (dropdownMenu) {
-//         dropdownMenu.style.display = "none";
-//         document
-//           .querySelector(".sort-dropdown")
-//           .setAttribute("aria-expanded", "false");
-//       }
-//     });
-//   });
-// }
-
-// Initialize sort dropdown
 function initializeSortDropdown() {
   const sortText = document.querySelector('.text-wrapper-3 .sort-wrapper');
   const dropdownMenu = document.querySelector('.dropdown-menu');
@@ -464,7 +416,6 @@ function initializeSortDropdown() {
   });
 }
 
-// Handle popstate
 window.addEventListener("popstate", () => {
   parseQueryParams();
   const minPriceInput = document.querySelector("#price-from");
@@ -480,7 +431,9 @@ window.addEventListener("popstate", () => {
   const sortOptions = [
     { value: 'created_at', text: 'New products first' },
     { value: 'price', text: 'Price, low to high' },
-    { value: '-price', text: 'Price, high to low' }
+    { value: '-price', text: 'Price, high to low' },
+    { value: 'default', text: 'Sort by' }
+
   ];
 
   if (minPriceInput && maxPriceInput) {
@@ -494,19 +447,10 @@ window.addEventListener("popstate", () => {
     priceValues.style.display =
       state.price_from || state.price_to ? "flex" : "none";
   }
-  //  if (sortText) {
-  //   sortText.textContent =
-  //     state.sort === "price"
-  //       ? "Price, low to high"
-  //       : state.sort === "-price"
-  //       ? "Price, high to low"
-  //       : state.sort === 'created_at'
-  //       ? "New products first"
-  //       : "Sort By";
-  // }
+
 
   if (sortText) {
-    const selectedOption = sortOptions.find(opt => opt.value === state.sort) || 'Sort By';
+    const selectedOption = sortOptions.find(opt => opt.value === state.sort) || sortOptions[3];
     sortText.textContent = selectedOption.text;
   }
 
@@ -521,7 +465,6 @@ window.addEventListener("popstate", () => {
   getDataByPage();
 });
 
-// Initialize on DOM load
 document.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".div");
   if (logo) {

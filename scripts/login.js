@@ -1,20 +1,16 @@
-// Configurable API URL
 const API_URL = "https://api.redseam.redberryinternship.ge/api/login";
 
-// Utility to set a cookie
 function setCookie(name, value, days) {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;Secure;SameSite=Strict`;
 }
 
-// Clear all error messages
 function clearErrors() {
   document.getElementById("email-error").textContent = "";
   document.getElementById("password-error").textContent = "";
 }
 
-// Basic frontend validation for UX (only checks required fields)
 function validateField(field, errorElement) {
   const value = field.value.trim();
   let error = "";
@@ -27,7 +23,6 @@ function validateField(field, errorElement) {
   return !error;
 }
 
-// Show success message
 function showSuccessMessage() {
   const successMessage = document.createElement("p");
   successMessage.style.color = "green";
@@ -40,7 +35,6 @@ function showSuccessMessage() {
   }, 1500);
 }
 
-// Handle form submission
 async function handleSubmit(e) {
   e.preventDefault();
   clearErrors();
@@ -51,9 +45,8 @@ async function handleSubmit(e) {
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
   const submitBtn = form.querySelector("button[type=submit]");
-  submitBtn.disabled = true; // Disable button during submission
+  submitBtn.disabled = true; 
 
-  // Optional: Basic frontend validation for UX
   let isValid = true;
   if (!validateField(emailInput, emailError)) isValid = false;
   if (!validateField(passwordInput, passwordError)) isValid = false;
@@ -89,7 +82,6 @@ async function handleSubmit(e) {
       const errors = data.errors || {};
       console.log("Backend errors:", errors);
 
-      // Map backend errors to form fields
       ["email", "password"].forEach((field) => {
         const errorElement = document.getElementById(`${field}-error`);
         if (errors[field] && errors[field].length > 0) {
@@ -105,33 +97,28 @@ async function handleSubmit(e) {
     console.error("Network error:", error);
     passwordError.textContent = "Network error. Please try again.";
   } finally {
-    submitBtn.disabled = false; // Re-enable button
+    submitBtn.disabled = false; 
   }
 }
 
-// DOM event listeners
 document.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".logo");
   const form = document.getElementById("login-form");
   const passwordInput = document.getElementById("password");
   const passwordToggle = document.querySelector(".password-toggle");
 
-  // Logo click handler
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
 
-  // Password toggle
   passwordToggle.addEventListener("click", () => {
     const type =
       passwordInput.getAttribute("type") === "password" ? "text" : "password";
     passwordInput.setAttribute("type", type);
   });
 
-  // Form submission
   form.addEventListener("submit", handleSubmit);
 
-  // Validate on blur (optional, for UX)
   [
     document.getElementById("email"),
     document.getElementById("password"),

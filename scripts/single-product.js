@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avatarImg = document.querySelector(".ellipse");
 
   if (user && user.avatar && avatarImg) {
-    avatarImg.src = user.avatar; // set avatar dynamically
-    avatarImg.alt = `${user.name || "User"} avatar`; // accessibility
+    avatarImg.src = user.avatar; 
+    avatarImg.alt = `${user.name || "User"} avatar`; 
   } else {
     avatarImg.src = "images/user-icon.png";
     avatarImg.alt = `user avatar`;
@@ -36,7 +36,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       console.log("Fetched product:", product);
 
-      // Cache DOM elements for performance
       const mainImage = document.querySelector(".rectangle");
       const thumbnailContainer = document.querySelector(".frame-2");
       const productName = document.querySelector(".product-name");
@@ -51,7 +50,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         brandDescription.innerText = product.description;
       }
 
-      // Update main image with first available image
       if (mainImage) {
         mainImage.src =
           product.images?.[0] || product.main_image || "/images/fallback.png";
@@ -60,7 +58,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.warn("Main image (.rectangle) not found");
       }
 
-      // Update thumbnail images
       let productImages = "";
       if (product.images) {
         productImages = product.images
@@ -88,7 +85,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       }
 
-      // Update product name and price
       if (productName) {
         productName.innerText = toCapitalCase(product.name);
       } else {
@@ -101,7 +97,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.warn("Product price (.product-price) not found");
       }
 
-      // Dynamic color picker
       const colorPickerContainer = document.createElement("fieldset");
       colorPickerContainer.className = "frame-6";
       const legend = document.createElement("legend");
@@ -157,7 +152,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           wrapper.style.margin = "2px";
           wrapper.style.cursor = "pointer";
 
-          // Make color wrapper clickable
           wrapper.addEventListener("click", () => {
             input.checked = true;
             input.dispatchEvent(new Event("change"));
@@ -178,16 +172,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 
               legend.textContent = `Color: ${toCapitalCase(color)}`;
 
-              // Remove styling from previously selected
               if (lastSelectedWrapper) {
                 lastSelectedWrapper.style.border = "none";
               }
 
-              // Apply selected color's hex as border
               wrapper.style.border = `2px solid ${getColorValue(color)}`;
               lastSelectedWrapper = wrapper;
 
-              // Highlight corresponding thumbnail and reset others
               const thumbnailButtons =
                 document.querySelectorAll(".thumbnail-button");
               thumbnailButtons.forEach((btn) => (btn.style.border = "none"));
@@ -202,7 +193,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           radioGroup.appendChild(wrapper);
         });
 
-        // Highlight first color and trigger change event
         lastSelectedWrapper = radioGroup.querySelector(".color-wrapper");
         if (lastSelectedWrapper) {
           lastSelectedWrapper.style.borderColor = "#FF4000";
@@ -210,10 +200,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         const firstColorInput = radioGroup.querySelector("input.color-input");
         if (firstColorInput) {
           firstColorInput.checked = true;
-          firstColorInput.dispatchEvent(new Event("change")); // Trigger initial update
+          firstColorInput.dispatchEvent(new Event("change"));
         }
 
-        // Highlight first thumbnail
         const thumbnailButtons = document.querySelectorAll(".thumbnail-button");
         if (thumbnailButtons[0]) {
           thumbnailButtons[0].style.border = "2px solid #FF4000";
@@ -228,7 +217,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       colorPickerContainer.appendChild(legend);
       colorPickerContainer.appendChild(radioGroup);
 
-      // Replace static color picker
       const productOptions = document.querySelector(".frame-3");
       if (productOptions) {
         const formContainer = productOptions.querySelector(".frame-5");
@@ -251,7 +239,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         document.body.appendChild(colorPickerContainer);
       }
 
-      // Dynamic size picker
       const sizePickerContainer = document.createElement("fieldset");
       sizePickerContainer.className = "frame-8";
       const sizeLegend = document.createElement("legend");
@@ -276,7 +263,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           input.className = "size-input";
           input.value = size.toLowerCase();
           if (index === 0) input.checked = true;
-          input.style.outline = "none"; // Remove default blue focus outline
+          input.style.outline = "none";
 
           const label = document.createElement("label");
           label.htmlFor = inputId;
@@ -284,18 +271,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           label.innerHTML = `<span class="${
             index === 0 ? "text-wrapper-5" : "l"
           }">${size}</span>`;
-          label.style.cursor = "pointer"; // Explicit cursor pointer
-          label.style.outline = "none"; // Remove default blue focus outline
+          label.style.cursor = "pointer"; 
+          label.style.outline = "none"; 
 
           input.addEventListener("change", () => {
             if (input.checked) {
               sizeLegend.textContent = `Size: ${size}`;
-              // Reset previous label styling
               if (lastSelectedSizeLabel) {
                 lastSelectedSizeLabel.className = "size";
                 lastSelectedSizeLabel.querySelector("span").className = "l";
               }
-              // Apply selected styling
               label.className = "div-wrapper";
               label.querySelector("span").className = "text-wrapper-5";
               lastSelectedSizeLabel = label;
@@ -306,7 +291,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           sizeRadioGroup.appendChild(label);
         });
 
-        // Trigger initial change for first size
         const firstSizeInput = sizeRadioGroup.querySelector("input.size-input");
         if (firstSizeInput) {
           firstSizeInput.dispatchEvent(new Event("change"));
@@ -320,14 +304,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizePickerContainer.appendChild(sizeLegend);
       sizePickerContainer.appendChild(sizeRadioGroup);
 
-      // Replace static size picker
       const formContainer = productOptions.querySelector(".frame-5");
       if (formContainer) {
         const staticSizePicker = formContainer.querySelector(".frame-8");
         if (staticSizePicker) {
           formContainer.replaceChild(sizePickerContainer, staticSizePicker);
         } else {
-          // Insert after color picker
           const colorPicker = formContainer.querySelector(".frame-6");
           if (colorPicker) {
             formContainer.insertBefore(
@@ -343,7 +325,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         productOptions.appendChild(sizePickerContainer);
       }
 
-      // Link thumbnails to colors
       const thumbnailButtons = document.querySelectorAll(".thumbnail-button");
       thumbnailButtons.forEach((btn) => {
         btn.addEventListener("click", () => {
@@ -357,7 +338,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             )}`;
           }
 
-          // Auto-select matching radio
           const colorInput = document.querySelector(
             `#color-${selectedColor.toLowerCase().replace(/\s/g, "-")}`
           );
@@ -366,7 +346,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             colorInput.dispatchEvent(new Event("change"));
           }
 
-          // Highlight selected thumbnail
           if (lastSelectedThumbnail) {
             lastSelectedThumbnail.style.border = "2px solid #CCCCCC";
           }
@@ -375,7 +354,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
       });
 
-      // Form submission (example)
       const form = document.querySelector(".frame-5");
 
       if (form) {
@@ -417,7 +395,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
-  // Add to Cart functionality
   const addToCartButton = document.querySelector("button.primary");
   if (addToCartButton) {
     addToCartButton.addEventListener("click", async () => {
@@ -450,7 +427,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
 
-        // Attempt to add new item to cart
         console.log("Attempting POST to add item:", {
           productId: product.id,
           color: selectedColor,
@@ -475,9 +451,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         );
 
         if (response.status === 422) {
-          // Validation error: Item may already exist, try updating quantity
           console.log("POST returned 422, checking for existing item");
-          const cartItems = await fetchCartItems(false); // Fetch without rendering
+          const cartItems = await fetchCartItems(false); 
           const existingItem = cartItems.find(
             (item) =>
               item.product_id === product.id &&
@@ -514,6 +489,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               `Updated quantity of item ${existingItem.id} to ${newQuantity}`
             );
             alert("Updated quantity in cart successfully!");
+            
           } else {
             throw new Error(
               "Validation error: Item not found in cart for update."
@@ -528,9 +504,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           const responseData = await response.json();
           console.log("Added new item to cart:", responseData);
           alert("Product added to cart successfully!");
+          window.location.href = 'index.html'
         }
 
-        // Do not call fetchCartItems(true) here to avoid auto-opening
       } catch (error) {
         console.error("Error adding product to cart:", error);
         alert(`Error adding product to cart: ${error.message}`);
@@ -538,13 +514,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Cart functionality
   async function fetchCartItems(render = true) {
     const authToken = getCookie("authToken");
     if (!authToken) {
       console.error("No auth token found");
       alert("You must be logged in to view your cart");
-      // if (render) displayCartError("Please log in to view your cart.");
       return [];
     }
 
@@ -590,17 +564,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     const emptyCartPanel = document.querySelector(".cart-is-empty");
     const overlay = document.querySelector(".rectangle-2");
 
-    // Required elements
     if (!cartPanel || !emptyCartPanel || !overlay) {
       console.error("Required cart elements not found");
       return;
     }
 
-    // Optional elements with fallback
     const cartTitle = cartPanel.querySelector(".text-wrapper-9");
     const orderSummary = cartPanel.querySelector(".frame-23");
 
-    //
     const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
 
     if (!cartTitle) {
@@ -610,7 +581,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       console.warn("Order summary (.frame-23) not found in .shopping-cart");
     }
 
-    // Toggle sidebar visibility
     console.log(
       "Adding .active to .shopping-cart and .rectangle-2, removing from .cart-is-empty"
     );
@@ -618,7 +588,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     emptyCartPanel.classList.remove("active");
     overlay.classList.add("active");
 
-    // update total count
     if (cartTitle) {
       const totalQuantity = cartItems.reduce(
         (sum, item) => sum + (item.quantity || 1),
@@ -628,14 +597,13 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     //
-    cartItemsContainer.innerHTML = ""; // Clear only the container
+    cartItemsContainer.innerHTML = ""; 
 
     cartItems.forEach((item, index) => {
       console.log(`Rendering cart item ${index + 1}:`, item);
 
-      // Find the index of the selected color in available_colors
+
       const colorIndex = item.available_colors.indexOf(item.color);
-      // Select the corresponding image, fallback to cover_image or first image
       const itemImage =
         colorIndex !== -1 && item.images[colorIndex]
           ? item.images[colorIndex]
@@ -696,7 +664,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
       `;
       //
-      cartItemsContainer.appendChild(itemElement); // Append to container
+      cartItemsContainer.appendChild(itemElement);
 
       if (orderSummary) {
         cartPanel.insertBefore(itemElement, orderSummary);
@@ -744,7 +712,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Toggle sidebar visibility
     console.log(
       "Adding .active to .cart-is-empty and .rectangle-2, removing from .shopping-cart"
     );
@@ -755,7 +722,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Shopping cart classList:", cartPanel.classList.toString());
     console.log("Overlay classList:", overlay.classList.toString());
 
-    // Update title
     emptyCartTitle.textContent = "Shopping cart (0)";
     console.log("Completed displayEmptyCart");
   }
@@ -808,7 +774,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       return;
     }
 
-    // Show shopping cart with error message
     console.log(
       "Adding .active to .shopping-cart and .rectangle-2, removing from .cart-is-empty"
     );
@@ -818,7 +783,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Shopping cart classList:", cartPanel.classList.toString());
     console.log("Overlay classList:", overlay.classList.toString());
 
-    // Remove existing cart items and messages
     const existingItems = cartPanel.querySelectorAll(
       "article[class^='frame-'], .empty-cart, .error-message"
     );
@@ -912,18 +876,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Completed adding cart item event listeners");
   }
 
-  // Cart button event listener
   const cartButton = document.querySelector(".cart-button");
   if (cartButton) {
     cartButton.addEventListener("click", () => {
       console.log("Cart button clicked");
-      fetchCartItems(true); // Fetch and display cart items or empty cart
+      fetchCartItems(true); 
     });
   } else {
     console.error("Cart button (.cart-button) not found");
   }
 
-  // Shopping cart close button event listener
   const closeButton = document.querySelector(
     ".shopping-cart .heroicons-solid-x"
   );
@@ -955,7 +917,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  // Empty cart close button event listener
   const emptyCartCloseButton = document.querySelector(
     ".cart-is-empty .close-cart-button"
   );
@@ -987,7 +948,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  // Overlay event listener
   const overlay = document.querySelector(".rectangle-2");
   if (overlay) {
     overlay.addEventListener("click", () => {
@@ -1018,7 +978,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Overlay (.rectangle-2) not found");
   }
 
-  // Go to Checkout button event listener
   const checkoutButton = document.querySelector(".shopping-cart .primary-2");
   if (checkoutButton) {
     checkoutButton.addEventListener("click", () => {
@@ -1029,7 +988,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.error("Checkout button (.shopping-cart .primary-2) not found");
   }
 
-  // Start shopping button event listener
   const startShoppingButton = document.querySelector(
     ".cart-is-empty .shopping-button-wrapper"
   );
@@ -1044,8 +1002,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  //drop down
-  // Custom dropdown quantity functionality
   const chevron = document.querySelector(".heroicons-mini-3");
   const select = document.querySelector(".quantity-select");
   const quantityDisplay = document.querySelector(".l-2");
@@ -1084,12 +1040,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         options.forEach((opt) => opt.classList.remove("selected"));
         option.classList.add("selected");
         dropdown.classList.remove("active");
-        select.dispatchEvent(new Event("change")); // Trigger form submission if needed
+        select.dispatchEvent(new Event("change"));
         console.log("Quantity selected:", value);
       });
     });
 
-    // Initialize display with default value
     quantityDisplay.textContent = select.value;
   } else {
     console.error("Missing elements:", {
@@ -1101,7 +1056,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 
-  // Close dropdown when clicking outside
   document.addEventListener("click", (e) => {
     const isClickInside = sizeContainer.contains(e.target);
     if (!isClickInside && dropdown) {
@@ -1109,10 +1063,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizeContainer.setAttribute("aria-expanded", "false");
     }
   });
-  //
 });
 
-// Helper functions
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);

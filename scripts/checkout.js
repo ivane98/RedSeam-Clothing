@@ -4,14 +4,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  // Prepopulate email field from localStorage
   const userDataString = localStorage.getItem("user");
 
   const avatarImg = document.querySelector(".ellipse");
 
   if (userDataString && userDataString.avatar && avatarImg) {
-    avatarImg.src = userDataString.avatar; // set avatar dynamically
-    avatarImg.alt = `${userDataString.name || "User"} avatar`; // accessibility
+    avatarImg.src = userDataString.avatar; 
+    avatarImg.alt = `${userDataString.name || "User"} avatar`;
   } else {
     avatarImg.src = "images/user-icon.png";
     avatarImg.alt = `user avatar`;
@@ -41,17 +40,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     );
   }
 
-  // Fetch and display cart items
   await fetchCartItems(true);
 
-  // Handle form submission for Pay button
   const checkoutForm = document.getElementById("checkout-form");
   if (checkoutForm) {
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       console.log("Pay button clicked, processing checkout...");
 
-      // Validate form fields
       const name = document.getElementById("name").value.trim();
       const surname = document.getElementById("surname").value.trim();
       const email = document.getElementById("email").value.trim();
@@ -68,7 +64,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Fetch cart items to check if cart is empty
       const cartItems = await fetchCartItems(false); // Don't render, just fetch
       console.log("Cart items:", cartItems);
       if (cartItems.length === 0) {
@@ -76,25 +71,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
       }
 
-      // Check if cart is empty
       if (cartItems.length === 0) {
         displayFormError("Your cart is empty. Add items before checking out.");
         return;
       }
 
-      // Prepare checkout request
       const authToken = getCookie("authToken");
       if (!authToken) {
         displayFormError("Please log in to complete checkout.");
         return;
       }
 
-      // Prepare form data with API-expected field names
       const formData = {
-        name, // Adjust to API's naming convention
+        name, 
         surname,
         email,
-        zip_code: zipcode, // Changed from zipcode to zip_code
+        zip_code: zipcode, 
         address,
       };
       console.log("Checkout form data:", formData);
@@ -123,7 +115,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const responseData = await response.json();
         console.log("Checkout successful:", responseData);
 
-        // Show congratulatory modal
         const modal = document.getElementById("congratulatory-modal");
         if (modal) {
           modal.classList.add("visible");
@@ -132,10 +123,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           console.error(
             "Congratulatory modal (#congratulatory-modal) not found"
           );
-          alert("Checkout successful! Your cart has been cleared."); // Fallback
+          alert("Checkout successful! Your cart has been cleared.");
         }
 
-        await fetchCartItems(true); // Refresh to show empty cart
+        await fetchCartItems(true); 
         checkoutForm.reset();
       } catch (error) {
         console.error("Error during checkout:", error);
@@ -169,7 +160,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             const retryData = await retryResponse.json();
             console.log("Checkout successful (empty body):", retryData);
 
-            // Show congratulatory modal
             const modal = document.getElementById("congratulatory-modal");
             if (modal) {
               modal.classList.add("visible");
@@ -178,7 +168,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               console.error(
                 "Congratulatory modal (#congratulatory-modal) not found"
               );
-              alert("Checkout successful! Your cart has been cleared."); // Fallback
+              alert("Checkout successful! Your cart has been cleared."); 
             }
 
             await fetchCartItems(true);
@@ -193,7 +183,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     });
 
-    // Add event listeners for modal close and continue shopping
     const closeModalButton = document.querySelector(".heroicons-mini-x");
     if (closeModalButton) {
       closeModalButton.addEventListener("click", () => {
@@ -214,14 +203,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (modal) {
           modal.classList.remove("visible");
           console.log("Congratulatory modal closed via Continue shopping");
-          window.location.href = "index.html"; // Adjust to your shopping page
+          window.location.href = "index.html"; 
         }
       });
     } else {
       console.warn("Continue shopping button (.success .primary) not found");
     }
 
-    // Close modal by clicking outside
     const modal = document.getElementById("congratulatory-modal");
     if (modal) {
       modal.addEventListener("click", (e) => {
@@ -238,7 +226,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// Fetch cart items from API
 async function fetchCartItems(render = true) {
   const authToken = getCookie("authToken");
   if (!authToken) {
@@ -275,7 +262,6 @@ async function fetchCartItems(render = true) {
   }
 }
 
-// Display cart items in .frame-3 and update order summary in .frame-12
 function displayCartItems(cartItems) {
   const cartContainer = document.querySelector(".frame-3");
   const orderSummary = document.querySelector(".frame-12");
@@ -288,22 +274,20 @@ function displayCartItems(cartItems) {
     return;
   }
 
-  // Clear existing cart items
   cartContainer.innerHTML = "";
 
   if (cartItems.length === 0) {
     const emptyMessage = document.createElement("p");
     emptyMessage.className = "empty-cart";
-    // emptyMessage.textContent = "Your cart is empty.";
     cartContainer.appendChild(emptyMessage);
     updateOrderSummary(0);
     return;
   }
 
-  // Render cart items
+
   cartItems.forEach((item, index) => {
     const itemElement = document.createElement("article");
-    itemElement.className = `frame-4`; // Unique class for styling if needed
+    itemElement.className = `frame-4`; 
     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
     itemElement.innerHTML = `
       <img
@@ -371,21 +355,15 @@ function displayCartItems(cartItems) {
     cartContainer.appendChild(itemElement);
   });
 
-  // Log rendered HTML for debugging
-  //   console.log("Rendered cart items HTML:", cartContainer.innerHTML);
-
-  // Calculate and update order summary
   const subtotal = cartItems.reduce(
     (sum, item) => sum + (item.total_price || item.price * item.quantity || 0),
     0
   );
   updateOrderSummary(subtotal);
 
-  // Add event listeners for quantity and remove buttons
   addCartItemEventListeners();
 }
 
-// Update order summary (subtotal, delivery, total)
 function updateOrderSummary(subtotal) {
   const orderSummary = document.querySelector(".frame-12");
   if (!orderSummary) {
@@ -393,7 +371,7 @@ function updateOrderSummary(subtotal) {
     return;
   }
 
-  const delivery = 5; // Fixed delivery cost
+  const delivery = 5;
   const total = subtotal + delivery;
 
   orderSummary.innerHTML = `
@@ -412,7 +390,6 @@ function updateOrderSummary(subtotal) {
   `;
 }
 
-// Display error message in cart container
 function displayCartError(message) {
   const cartContainer = document.querySelector(".frame-3");
   const orderSummary = document.querySelector(".frame-12");
@@ -431,7 +408,6 @@ function displayCartError(message) {
   updateOrderSummary(0);
 }
 
-// Add event listeners for quantity and remove buttons
 function addCartItemEventListeners() {
   document.querySelectorAll(".quantity-button").forEach((button) => {
     button.addEventListener("click", async () => {
@@ -446,7 +422,7 @@ function addCartItemEventListeners() {
       } else if (action === "decrease" && currentQuantity > 1) {
         currentQuantity -= 1;
       } else {
-        return; // Don't allow quantity < 1
+        return;
       }
 
       try {
@@ -474,7 +450,7 @@ function addCartItemEventListeners() {
         }
 
         quantityElement.textContent = currentQuantity;
-        await fetchCartItems(true); // Refresh cart display
+        await fetchCartItems(true); 
       } catch (error) {
         console.error("Error updating quantity:", error);
         displayCartError("Failed to update quantity. Please try again.");
@@ -508,7 +484,7 @@ function addCartItemEventListeners() {
           );
         }
 
-        await fetchCartItems(true); // Refresh cart display
+        await fetchCartItems(true); 
       } catch (error) {
         console.error("Error removing item:", error);
         displayCartError("Failed to remove item. Please try again.");
@@ -517,7 +493,6 @@ function addCartItemEventListeners() {
   });
 }
 
-// Display error message below form
 function displayFormError(message) {
   const form = document.getElementById("checkout-form");
   if (!form) return;
@@ -535,7 +510,6 @@ function displayFormError(message) {
   form.appendChild(errorMessage);
 }
 
-// Helper functions from single-product.js
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);

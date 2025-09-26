@@ -1,21 +1,17 @@
-// Configurable API URL
 const API_URL = "https://api.redseam.redberryinternship.ge/api/register";
 
-// Utility to set a cookie
 function setCookie(name, value, days) {
   const expires = new Date();
   expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/;Secure`;
 }
 
-// Clear all error messages
 function clearErrors() {
   document.querySelectorAll(".error-message").forEach((div) => {
     div.textContent = "";
   });
 }
 
-// Basic frontend validation for UX (only checks required fields)
 function validateField(field, errorDiv) {
   const value = field.value.trim();
   let error = "";
@@ -33,7 +29,6 @@ function validateField(field, errorDiv) {
   return !error;
 }
 
-// Show success message
 function showSuccessMessage() {
   const message = document.createElement("div");
   message.textContent = "Registration successful!";
@@ -52,7 +47,6 @@ function showSuccessMessage() {
   }, 2000);
 }
 
-// Handle form submission
 async function handleSubmit(event) {
   event.preventDefault();
   clearErrors();
@@ -60,9 +54,8 @@ async function handleSubmit(event) {
   const form = event.target;
   const fields = form.querySelectorAll("input");
   const submitBtn = form.querySelector("button[type=submit]");
-  submitBtn.disabled = true; // Disable button during submission
+  submitBtn.disabled = true; 
 
-  // Optional: Basic frontend validation for UX
   let isValid = true;
   fields.forEach((field) => {
     const errorDiv = document.getElementById(`${field.id}-error`);
@@ -76,13 +69,11 @@ async function handleSubmit(event) {
     return;
   }
 
-  // ✅ Check file size before uploading
   const avatarInput = form.querySelector("#avatar");
   if (avatarInput && avatarInput.files[0]) {
     const file = avatarInput.files[0];
     const maxSize = 1 * 1024 * 1024; // 1 MB
     if (file.size > maxSize) {
-      // alert("Image size must be less than 1MB");
       const errorDiv = document.getElementById(`avatar-error`);
 
       errorDiv.textContent = "Image size must be less than 1MB";
@@ -117,7 +108,6 @@ async function handleSubmit(event) {
       const errors = data.errors || {};
       console.log("Backend errors:", errors);
 
-      // Map backend errors to form fields
       [
         "username",
         "email",
@@ -137,11 +127,10 @@ async function handleSubmit(event) {
     console.error("Network error:", error);
     alert("Network error. Please check your connection.");
   } finally {
-    submitBtn.disabled = false; // Re-enable button
+    submitBtn.disabled = false; 
   }
 }
 
-// DOM event listeners
 document.addEventListener("DOMContentLoaded", () => {
   const logo = document.querySelector(".logo");
   const form = document.querySelector(".frame-3");
@@ -152,12 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordToggles = document.querySelectorAll(".password-toggle");
   const photo = document.querySelector(".ellipse");
 
-  // Logo click handler
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
 
-  // Password toggle
   passwordToggles.forEach((toggle) => {
     toggle.addEventListener("click", () => {
       const input = toggle.parentElement.querySelector("input");
@@ -165,12 +152,10 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Avatar upload
   uploadBtn.addEventListener("click", () => {
     avatarInput.click();
   });
 
-  // Avatar upload via photo (ellipse)
   photo.addEventListener("click", () => {
     avatarInput.click();
   });
@@ -194,7 +179,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  // Avatar remove
   removeBtn.addEventListener("click", () => {
     avatarInput.value = "";
     avatarImg.src = "images/photo.png";
@@ -202,7 +186,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("avatar-error").style.display = "none";
   });
 
-  // Validate on blur (optional, for UX)
   form.querySelectorAll("input").forEach((field) => {
     field.addEventListener("blur", () => {
       const errorDiv = document.getElementById(`${field.id}-error`);
@@ -210,6 +193,5 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Form submission
   form.addEventListener("submit", handleSubmit);
 });

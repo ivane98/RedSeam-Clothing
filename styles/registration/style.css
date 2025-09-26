@@ -164,7 +164,6 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  /* gap: 4px; */
   position: relative;
   align-self: stretch;
   width: 100%;
@@ -182,7 +181,6 @@
   position: relative;
   width: 100%;
   gap: 8px;
-  /* Space between label and input */
 }
 
 .registration .input-label {
@@ -194,7 +192,6 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  /* Space between label text and asterisk */
   flex-shrink: 0;
 }
 
@@ -208,7 +205,6 @@
 
 .registration .form-input {
   flex: 1;
-  /* Takes remaining space */
   border: none;
   background: transparent;
   font-family: "Poppins", sans-serif;
@@ -222,12 +218,10 @@
 .registration .input-field:focus-within {
   border-color: var(--red);
   box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2);
-  /* Subtle focus ring */
 }
 
 .registration .form-input:invalid {
   border-color: var(--red);
-  /* Invalid styling on .input-field */
 }
 
 .registration .password-toggle {
@@ -259,8 +253,6 @@
   color: var(--red);
   font-size: 12px;
   line-height: normal;
-  /* margin-top: 4px; */
-  /* min-height: 16px; */
 }
 
 .registration .avatar-error-message {
@@ -270,8 +262,6 @@
   font-size: 12px;
   line-height: normal;
   display: none;
-  /* margin-top: 4px; */
-  /* min-height: 16px; */
 }
 
 .registration .primary {

@@ -124,7 +124,6 @@
   flex: 0 0 auto;
 }
 
-/* price filter */
 .price-filter {
   display: none;
   position: absolute;
@@ -183,7 +182,6 @@
   display: flex;
   align-items: center;
   height: 42px;
-  /*  */
   position: relative;
 }
 
@@ -196,7 +194,6 @@
   display: flex;
   align-items: center;
   gap: 4px;
-  /*  */
   margin-right: 8px;
 }
 
@@ -204,7 +201,6 @@
   color: #ff4000;
 }
 
-/*  */
 .price-input {
   border: none;
   outline: none;
@@ -214,15 +210,12 @@
   line-height: 21px;
   color: #3e424a;
   width: 100px;
-  /* Adjust width as needed */
   background: transparent;
 }
 
 .price-input::placeholder {
   color: #a0a3a7;
 }
-
-/*  */
 
 .apply-button {
   background-color: #ff4000;
@@ -243,8 +236,6 @@
 .apply-button:hover {
   background-color: #e63600;
 }
-
-/*  */
 
 .listing-page .heroicons-outline {
   position: relative;
@@ -291,7 +282,6 @@
   cursor: pointer;
 }
 
-/*  */
 .dropdown-menu {
   display: none;
   position: absolute;
@@ -329,8 +319,6 @@
   background: #f3f4f6;
 }
 
-/*  */
-
 .price-values {
   position: relative;
   width: 141px;
@@ -342,7 +330,6 @@
   justify-content: center;
   border: 1px solid grey;
   left: 100px;
-  /* display: none; */
   font-family: "Poppins", "Helvetica";
   font-size: 14px;
 }

@@ -1,11 +1,10 @@
-/* In styles/congrats/style.css */
 .modal {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.5); /* Semi-transparent overlay */
+  background: rgba(0, 0, 0, 0.5); 
   z-index: 1000;
   display: none;
   justify-content: center;
@@ -20,14 +19,13 @@
   display: flex;
 }
 
-/* Center the .success container */
 .success {
   width: 876px;
   height: 590px;
   display: flex;
   flex-direction: column;
   background-color: #ffffff;
-  border-radius: 8px; /* Optional */
+  border-radius: 8px; 
 }
 
 .success {
@@ -125,10 +123,6 @@
   letter-spacing: 0;
   line-height: normal;
 }
-
-/* Original CSS code should be injected here */
-
-/* Additional styles for semantic HTML elements and accessibility */
 
 .success .heroicons-mini-x {
   background: none;
