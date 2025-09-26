@@ -342,7 +342,7 @@
   justify-content: center;
   border: 1px solid grey;
   left: 100px;
-  display: none;
+  /* display: none; */
   font-family: "Poppins", "Helvetica";
   font-size: 14px;
 }

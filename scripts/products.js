@@ -47,6 +47,9 @@ async function getDataByPage() {
     if (state.price_to !== null) params.set("filter[price_to]", state.price_to);
     if (state.sort !== null) params.set("sort", state.sort);
 
+
+    // for debuging
+    console.log('API Request:', `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`);
     const response = await fetch(
       `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
       {
@@ -63,7 +66,7 @@ async function getDataByPage() {
     displayTotalCount(data.meta);
     updateURL();
   } catch (error) {
-    console.error("Error fetching data:", error);
+    console.error("Error fetching data:", error, { sort: state.sort });
     displayProducts([]);
     const productCount = document.querySelector(".product-count");
     if (productCount) productCount.innerHTML = "Error loading products";
@@ -264,21 +267,23 @@ function initializeEventListeners() {
   const dropdownMenu = document.querySelector(".dropdown-menu");
 
   if (filterControl && priceFilter) {
-    priceFilter.style.display =
-      state.price_from || state.price_to ? "block" : "none";
-    filterControl.addEventListener("click", () => {
-      const isExpanded = priceFilter.style.display === "block";
-      priceFilter.style.display = isExpanded ? "none" : "block";
-      filterControl.setAttribute("aria-expanded", !isExpanded);
+    priceFilter.style.display = 'none'; // Always closed on load
+    filterControl.setAttribute('aria-expanded', 'false');
+    filterControl.addEventListener('click', () => {
+      const isExpanded = priceFilter.style.display === 'flex';
+      priceFilter.style.display = isExpanded ? 'none' : 'flex';
+      filterControl.setAttribute('aria-expanded', !isExpanded);
     });
   }
 
+
   if (sortControl && dropdownMenu) {
-    dropdownMenu.style.display = state.sort ? "block" : "none";
-    sortControl.addEventListener("click", () => {
-      const isExpanded = dropdownMenu.style.display === "block";
-      dropdownMenu.style.display = isExpanded ? "none" : "block";
-      sortControl.setAttribute("aria-expanded", !isExpanded);
+    dropdownMenu.style.display = 'none'; // Always closed on load
+    sortControl.setAttribute('aria-expanded', 'false');
+    sortControl.addEventListener('click', () => {
+      const isExpanded = dropdownMenu.style.display === 'block';
+      dropdownMenu.style.display = isExpanded ? 'none' : 'block';
+      sortControl.setAttribute('aria-expanded', !isExpanded);
     });
   }
 
@@ -330,7 +335,7 @@ function initializePriceFilter() {
       state.price_to || "-"
     }`;
     priceValues.style.display =
-      state.price_from || state.price_to ? "block" : "none";
+      state.price_from || state.price_to ? "flex" : "none";
   }
 
   if (applyButton) {
@@ -360,7 +365,7 @@ function initializePriceFilter() {
 
         if (priceValues && priceRange) {
           priceRange.textContent = `${minPrice || 0}-${maxPrice || "-"}`;
-          priceValues.style.display = minPrice || maxPrice ? "block" : "none";
+          priceValues.style.display = minPrice || maxPrice ? "flex" : "none";
           document.querySelector(".price-filter").style.display = "none";
           document
             .querySelector(".filter-control")
@@ -385,36 +390,77 @@ function initializePriceFilter() {
   }
 }
 
+// // Initialize sort dropdown
+// function initializeSortDropdown() {
+//   const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
+//   const dropdownMenu = document.querySelector(".dropdown-menu");
+
+//   if (sortText) {
+//     sortText.textContent =
+//       state.sort === "price"
+//         ? "Price, low to high"
+//         : state.sort === "-price"
+//         ? "Price, high to low"
+//         : state.sort === 'created_at'
+//         ? "New products first"
+//         : "Sort By";
+//   }
+
+//   document.querySelectorAll(".dropdown-option").forEach((option) => {
+//     option.addEventListener("click", (event) => {
+//       event.stopPropagation();
+//       const value = option.dataset.value;
+//       const text = option.textContent;
+//       if (sortText) sortText.textContent = text;
+//       state.sort = value === "default" ? null : value;
+//       state.page = 1;
+//       getDataByPage();
+//       if (dropdownMenu) {
+//         dropdownMenu.style.display = "none";
+//         document
+//           .querySelector(".sort-dropdown")
+//           .setAttribute("aria-expanded", "false");
+//       }
+//     });
+//   });
+// }
+
 // Initialize sort dropdown
 function initializeSortDropdown() {
-  const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
-  const dropdownMenu = document.querySelector(".dropdown-menu");
+  const sortText = document.querySelector('.text-wrapper-3 .sort-wrapper');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+  const sortOptions = [
+    { value: 'created_at', text: 'New products first' },
+    { value: 'price', text: 'Price, low to high' },
+    { value: '-price', text: 'Price, high to low' },
+    {value: 'default', text: 'Sort by'}
+  ];
 
   if (sortText) {
-    sortText.textContent =
-      state.sort === "price"
-        ? "Price, low to high"
-        : state.sort === "-price"
-        ? "Price, high to low"
-        : "New products first";
+    const selectedOption = sortOptions.find(opt => opt.value === state.sort) || sortOptions[3];
+    sortText.textContent = selectedOption.text;
   }
 
-  document.querySelectorAll(".dropdown-option").forEach((option) => {
-    option.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const value = option.dataset.value;
-      const text = option.textContent;
-      if (sortText) sortText.textContent = text;
-      state.sort = value === "default" ? null : value;
-      state.page = 1;
-      getDataByPage();
-      if (dropdownMenu) {
-        dropdownMenu.style.display = "none";
-        document
-          .querySelector(".sort-dropdown")
-          .setAttribute("aria-expanded", "false");
-      }
-    });
+  document.querySelectorAll('.dropdown-option').forEach((option, index) => {
+    if (index < sortOptions.length) {
+      option.setAttribute('data-value', sortOptions[index].value);
+      option.setAttribute('role', 'option');
+      option.textContent = sortOptions[index].text;
+      option.addEventListener('click', event => {
+        event.stopPropagation();
+        const value = option.dataset.value;
+        const text = option.textContent;
+        console.log('Sort option selected:', { value, text });
+        if (sortText) sortText.textContent = text;
+        state.sort = value;
+        state.page = 1;
+        getDataByPage();
+        if (dropdownMenu) {
+          dropdownMenu.style.display = 'none';
+          document.querySelector('.sort-dropdown').setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
   });
 }
 
@@ -426,6 +472,16 @@ window.addEventListener("popstate", () => {
   const priceValues = document.querySelector(".price-values");
   const priceRange = document.querySelector(".price-range");
   const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
+  const priceFilter = document.querySelector('.price-filter');
+  const dropdownMenu = document.querySelector('.dropdown-menu');
+  const filterControl = document.querySelector('.filter-control');
+  const sortControl = document.querySelector('.sort-dropdown');
+
+  const sortOptions = [
+    { value: 'created_at', text: 'New products first' },
+    { value: 'price', text: 'Price, low to high' },
+    { value: '-price', text: 'Price, high to low' }
+  ];
 
   if (minPriceInput && maxPriceInput) {
     minPriceInput.value = state.price_from || "";
@@ -436,15 +492,31 @@ window.addEventListener("popstate", () => {
       state.price_to || "-"
     }`;
     priceValues.style.display =
-      state.price_from || state.price_to ? "block" : "none";
+      state.price_from || state.price_to ? "flex" : "none";
   }
+  //  if (sortText) {
+  //   sortText.textContent =
+  //     state.sort === "price"
+  //       ? "Price, low to high"
+  //       : state.sort === "-price"
+  //       ? "Price, high to low"
+  //       : state.sort === 'created_at'
+  //       ? "New products first"
+  //       : "Sort By";
+  // }
+
   if (sortText) {
-    sortText.textContent =
-      state.sort === "price"
-        ? "Price, low to high"
-        : state.sort === "-price"
-        ? "Price, high to low"
-        : "New products first";
+    const selectedOption = sortOptions.find(opt => opt.value === state.sort) || 'Sort By';
+    sortText.textContent = selectedOption.text;
+  }
+
+  if (priceFilter && filterControl) {
+    priceFilter.style.display = 'none';
+    filterControl.setAttribute('aria-expanded', 'false');
+  }
+  if (dropdownMenu && sortControl) {
+    dropdownMenu.style.display = 'none';
+    sortControl.setAttribute('aria-expanded', 'false');
   }
   getDataByPage();
 });
