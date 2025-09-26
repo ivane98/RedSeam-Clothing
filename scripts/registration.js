@@ -86,7 +86,7 @@ async function handleSubmit(event) {
       const errorDiv = document.getElementById(`avatar-error`);
 
       errorDiv.textContent = "Image size must be less than 1MB";
-      errorDiv.style.display = 'flex'
+      errorDiv.style.display = "flex";
 
       submitBtn.disabled = false;
       return;
@@ -110,7 +110,7 @@ async function handleSubmit(event) {
       localStorage.setItem("user", JSON.stringify(data.user));
       showSuccessMessage();
       setTimeout(() => {
-        window.location.href = "products.html";
+        window.location.href = "index.html";
       }, 2000);
     } else if (response.status === 413 || response.status === 422) {
       const data = await response.json();
@@ -150,11 +150,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const avatarInput = document.getElementById("avatar");
   const avatarImg = document.querySelector(".ellipse");
   const passwordToggles = document.querySelectorAll(".password-toggle");
-  const photo = document.querySelector('.ellipse')
+  const photo = document.querySelector(".ellipse");
 
   // Logo click handler
   logo.addEventListener("click", () => {
-    window.location.href = "products.html";
+    window.location.href = "index.html";
   });
 
   // Password toggle
@@ -173,21 +173,20 @@ document.addEventListener("DOMContentLoaded", () => {
   // Avatar upload via photo (ellipse)
   photo.addEventListener("click", () => {
     avatarInput.click();
-
-
   });
-
 
   avatarInput.addEventListener("change", () => {
     const file = avatarInput.files[0];
-    console.log(file.type)
-    console.log("image/png")
-    if (file.type !== "image/png" &&
+    console.log(file.type);
+    console.log("image/png");
+    if (
+      file.type !== "image/png" &&
       file.type !== "image/jpeg" &&
       file.type !== "image/svg+xml" &&
-      file.type !== "image/gif") {
-      alert('File should be of valid Image Type ')
-      return
+      file.type !== "image/gif"
+    ) {
+      alert("File should be of valid Image Type ");
+      return;
     }
     const errorDiv = document.getElementById("avatar-error");
     if (file) {

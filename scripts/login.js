@@ -82,7 +82,7 @@ async function handleSubmit(e) {
       localStorage.setItem("user", JSON.stringify(data.user));
       showSuccessMessage();
       setTimeout(() => {
-        window.location.href = "products.html";
+        window.location.href = "index.html";
       }, 1500);
     } else if (response.status === 422) {
       const data = await response.json();
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Logo click handler
   logo.addEventListener("click", () => {
-    window.location.href = "products.html";
+    window.location.href = "index.html";
   });
 
   // Password toggle

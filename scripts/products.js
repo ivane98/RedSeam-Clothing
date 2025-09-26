@@ -52,7 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const logo = document.querySelector(".div");
 
   logo.addEventListener("click", () => {
-    window.location.href = "products.html";
+    window.location.href = "index.html";
   });
 
   const user = JSON.parse(localStorage.getItem("user"));
@@ -90,14 +90,19 @@ export function displayProducts(products) {
   products.forEach((product) => {
     productsHtml += `
         <article class="div-2" data-product-id="${product.id || "no-id"}">
-          <a href="single-product.html?id=${product.id || "no-id"
-      }" class="product-link">
-            <img class="rectangle" src="${product.cover_image || ""}" alt="${product.name || "Unnamed Product"
-      }" />
+          <a href="single-product.html?id=${
+            product.id || "no-id"
+          }" class="product-link">
+            <img class="rectangle" src="${product.cover_image || ""}" alt="${
+      product.name || "Unnamed Product"
+    }" />
             <div class="frame-7">
-              <h3 class="product-name">${toCapitalCase(product.name) || "No Name"}</h3>
-              <span class="text-wrapper-4" aria-label="Price">$ ${product.price || 0
-      }</span>
+              <h3 class="product-name">${
+                toCapitalCase(product.name) || "No Name"
+              }</h3>
+              <span class="text-wrapper-4" aria-label="Price">$ ${
+                product.price || 0
+              }</span>
             </div>
           </a>
         </article>
@@ -161,8 +166,9 @@ function updatePagination(links) {
 
   const prevLink = links.find((link) => link.label.includes("Previous"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Previous page" ${!prevLink?.url ? "disabled" : ""
-    } data-url="${prevLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Previous page" ${
+          !prevLink?.url ? "disabled" : ""
+        } data-url="${prevLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
         </button>
     `;
@@ -173,11 +179,14 @@ function updatePagination(links) {
     const firstPage = pages.find((p) => p.label === 1);
     pagesHtml += `
             <div class="page ${!firstPage?.active ? "num-wrapper" : ""}">
-                <button class="page-button ${firstPage?.active ? "page-active" : ""
-      }" type="button" aria-label="Go to page 1" data-url="${firstPage?.url || ""
-      }" ${firstPage?.active ? 'aria-current="page"' : ""}>
-                    <span class="num-2 ${firstPage?.active ? "num" : ""
-      }">1</span>
+                <button class="page-button ${
+                  firstPage?.active ? "page-active" : ""
+                }" type="button" aria-label="Go to page 1" data-url="${
+      firstPage?.url || ""
+    }" ${firstPage?.active ? 'aria-current="page"' : ""}>
+                    <span class="num-2 ${
+                      firstPage?.active ? "num" : ""
+                    }">1</span>
                 </button>
             </div>
         `;
@@ -223,11 +232,14 @@ function updatePagination(links) {
     const lastPageLink = pages.find((p) => p.label === lastPage);
     pagesHtml += `
             <div class="${!lastPageLink?.active ? "num-wrapper" : "page"}">
-                <button class="${!lastPageLink?.active ? "page-button" : "page-active"
-      }" type="button" aria-label="Go to page ${lastPage}" data-url="${lastPageLink?.url || ""
-      }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
-                    <span class="${!lastPageLink?.active ? "num-2" : "num"
-      }">${lastPage}</span>
+                <button class="${
+                  !lastPageLink?.active ? "page-button" : "page-active"
+                }" type="button" aria-label="Go to page ${lastPage}" data-url="${
+      lastPageLink?.url || ""
+    }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
+                    <span class="${
+                      !lastPageLink?.active ? "num-2" : "num"
+                    }">${lastPage}</span>
                 </button>
             </div>
         `;
@@ -237,8 +249,9 @@ function updatePagination(links) {
 
   const nextLink = links.find((link) => link.label.includes("Next"));
   paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Next page" ${!nextLink?.url ? "disabled" : ""
-    } data-url="${nextLink?.url || ""}">
+        <button class="pagination-nav" type="button" aria-label="Next page" ${
+          !nextLink?.url ? "disabled" : ""
+        } data-url="${nextLink?.url || ""}">
           <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
         </button>
     `;
@@ -337,8 +350,9 @@ function initializePriceFilter() {
 
       const priceValues = document.querySelector(".price-values");
       const priceRange = document.querySelector(".price-range");
-      priceRange.innerText = `${minPriceInput.value || 0}-${maxPriceInput.value || "-"
-        }`;
+      priceRange.innerText = `${minPriceInput.value || 0}-${
+        maxPriceInput.value || "-"
+      }`;
       priceValues.style.display = "flex";
     });
   }
@@ -377,10 +391,10 @@ function initializeSortDropdown() {
           sortBy === "new-products-first"
             ? "default"
             : sortBy === "price-low-to-high"
-              ? "price-low"
-              : sortBy === "price-high-to-low"
-                ? "price-high"
-                : "default";
+            ? "price-low"
+            : sortBy === "price-high-to-low"
+            ? "price-high"
+            : "default";
         applyFiltersAndSort();
 
         if (dropdownManu) {
