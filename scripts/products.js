@@ -1,101 +1,106 @@
-let products = [];
-let current_page = 1;
-let lastPage = 1;
-let currentSort = "default";
+let state = {
+  page: 1,
+  price_from: null,
+  price_to: null,
+  sort: null,
+};
 
-async function getDataByPage(page = 1) {
+// Debounce function to limit rapid API calls
+function debounce(func, wait) {
+  let timeout;
+  return function (...args) {
+    clearTimeout(timeout);
+    timeout = setTimeout(() => func.apply(this, args), wait);
+  };
+}
+
+// Parse URL query parameters
+function parseQueryParams() {
+  const params = new URLSearchParams(window.location.search);
+  state.page = parseInt(params.get("page")) || 1;
+  state.price_from = parseFloat(params.get("price_from")) || null;
+  state.price_to = parseFloat(params.get("price_to")) || null;
+  state.sort = params.get("sort") || null;
+}
+
+// Update URL with current state
+function updateURL() {
+  const params = new URLSearchParams();
+  if (state.page !== 1) params.set("page", state.page);
+  if (state.price_from !== null) params.set("price_from", state.price_from);
+  if (state.price_to !== null) params.set("price_to", state.price_to);
+  if (state.sort !== null) params.set("sort", state.sort);
+  const queryString = params.toString();
+  const newURL = queryString
+    ? `${window.location.pathname}?${queryString}`
+    : window.location.pathname;
+  history.pushState(state, "", newURL);
+}
+
+// Fetch products from API
+async function getDataByPage() {
   try {
+    const params = new URLSearchParams();
+    params.set("page", state.page);
+    if (state.price_from !== null)
+      params.set("filter[price_from]", state.price_from);
+    if (state.price_to !== null) params.set("filter[price_to]", state.price_to);
+    if (state.sort !== null) params.set("sort", state.sort);
+
     const response = await fetch(
-      `https://api.redseam.redberryinternship.ge/api/products?page=${page}`,
+      `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
       {
         headers: {
           Accept: "application/json",
         },
       }
     );
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
     const data = await response.json();
-    products = data.data; // Ensure products is updated
-    current_page = data.meta.current_page;
-    lastPage = data.meta.last_page;
-    applyFiltersAndSort(); // Apply current filter and sort on load
-    updatePagination(data.meta.links);
+    state.page = data.meta.current_page; // Sync page
+    displayProducts(data.data);
+    updatePagination(data.meta);
+    displayTotalCount(data.meta);
+    updateURL();
   } catch (error) {
     console.error("Error fetching data:", error);
+    displayProducts([]);
+    const productCount = document.querySelector(".product-count");
+    if (productCount) productCount.innerHTML = "Error loading products";
   }
 }
 
-async function displayTotalCount() {
-  try {
-    const response = await fetch(
-      `https://api.redseam.redberryinternship.ge/api/products`,
-      {
-        headers: {
-          Accept: "application/json",
-        },
-      }
-    );
-    const data = await response.json();
-    const meta = data.meta;
-    const start = (meta.current_page - 1) * meta.per_page + 1;
-    const end = Math.min(meta.current_page * meta.per_page, meta.total);
-
-    console.log(meta);
-    const productCount = (document.querySelector(
-      ".product-count"
-    ).innerHTML = `Showing ${start}–${end} of ${meta.total} results`);
-  } catch (error) {
-    console.error("Error fetching total count:", error);
-  }
+// Display total count
+function displayTotalCount(meta) {
+  const productCount = document.querySelector(".product-count");
+  if (!productCount) return;
+  const start =
+    meta.total > 0 ? (meta.current_page - 1) * meta.per_page + 1 : 0;
+  const end = Math.min(meta.current_page * meta.per_page, meta.total);
+  productCount.innerHTML = `Showing ${start}–${end} of ${meta.total} results`;
 }
 
-document.addEventListener("DOMContentLoaded", async () => {
-  const logo = document.querySelector(".div");
-
-  logo.addEventListener("click", () => {
-    window.location.href = "index.html";
-  });
-
-  const user = JSON.parse(localStorage.getItem("user"));
-  const avatarImg = document.querySelector(".user-menu .ellipse");
-
-  if (user && user.avatar && avatarImg) {
-    avatarImg.src = user.avatar; // set avatar dynamically
-    avatarImg.alt = `${user.name || "User"} avatar`; // accessibility
-  } else {
-    avatarImg.src = "images/user-icon.png";
-    avatarImg.alt = `user avatar`;
-    avatarImg.style.width = "20px";
-    avatarImg.style.height = "20px";
-  }
-
-  initializeEventListeners();
-  initializePriceFilter();
-  initializeSortDropdown();
-  const paginationWrapper = document.querySelector(".pagination-wrapper");
-  if (paginationWrapper) {
-    paginationWrapper.classList.remove("loaded");
-  }
-  await displayTotalCount();
-  await getDataByPage();
-});
-
-export function displayProducts(products) {
-  if (!products || !Array.isArray(products)) {
-    console.error("Invalid products array:", products);
+// Display products
+function displayProducts(products) {
+  const productsGrid = document.querySelector(".products-grid");
+  if (!productsGrid) {
+    console.error("Products grid not found");
     return;
   }
 
-  let productsHtml = "";
-
-  products.forEach((product) => {
-    productsHtml += `
+  productsGrid.innerHTML =
+    products.length === 0
+      ? "<p>No products found</p>"
+      : products
+          .map(
+            (product) => `
         <article class="div-2" data-product-id="${product.id || "no-id"}">
           <a href="single-product.html?id=${
             product.id || "no-id"
           }" class="product-link">
             <img class="rectangle" src="${product.cover_image || ""}" alt="${
-      product.name || "Unnamed Product"
-    }" />
+              product.name || "Unnamed Product"
+            }" />
             <div class="frame-7">
               <h3 class="product-name">${
                 toCapitalCase(product.name) || "No Name"
@@ -106,38 +111,29 @@ export function displayProducts(products) {
             </div>
           </a>
         </article>
-        `;
-  });
+      `
+          )
+          .join("");
 
-  const productsGrid = document.querySelector(".products-grid");
-  if (productsGrid) {
-    productsGrid.innerHTML = productsHtml;
-    // Attach event listeners after DOM update
-    const cards = document.querySelectorAll(".div-2");
-    cards.forEach((card) => {
+  productsGrid.querySelectorAll(".div-2").forEach((card) => {
+    card.addEventListener("click", (event) => {
+      event.preventDefault();
       const productId = card.getAttribute("data-product-id");
-      card.addEventListener("click", (event) => {
-        event.preventDefault();
-        const clickedId = card.getAttribute("data-product-id");
-        console.log("Clicked product ID:", clickedId); // Debug: ID on click
-        if (clickedId && clickedId !== "no-id") {
-          window.location.href = `single-product.html?id=${clickedId}`;
-        } else {
-          console.error("No valid product ID for this card:", card);
-        }
-      });
+      if (productId && productId !== "no-id") {
+        window.location.href = `single-product.html?id=${productId}`;
+      } else {
+        console.error("No valid product ID:", card);
+      }
     });
-  } else {
-    console.error("Products grid not found in DOM");
-  }
+  });
 }
 
-function updatePagination(links) {
+// Update pagination
+function updatePagination(meta) {
   const paginationWrapper = document.querySelector(".pagination");
-  const pageWrapper = document.querySelector(".pagination-wrapper");
-  let paginationHtml = "";
+  if (!paginationWrapper) return;
 
-  const pages = links
+  const pages = meta.links
     .filter(
       (link) =>
         !isNaN(link.label) &&
@@ -152,304 +148,334 @@ function updatePagination(links) {
 
   const maxVisiblePages = 2;
   const halfVisible = Math.floor(maxVisiblePages / 2);
-
-  let startPage = Math.max(1, current_page - halfVisible);
-  let endPage = Math.min(lastPage, current_page + halfVisible);
+  const lastPage = meta.last_page;
+  let startPage = Math.max(1, state.page - halfVisible);
+  let endPage = Math.min(lastPage, state.page + halfVisible);
 
   if (endPage - startPage < maxVisiblePages - 1) {
-    if (startPage === 1) {
+    if (startPage === 1)
       endPage = Math.min(lastPage, startPage + maxVisiblePages - 1);
-    } else if (endPage === lastPage) {
+    else if (endPage === lastPage)
       startPage = Math.max(1, endPage - maxVisiblePages + 1);
-    }
   }
 
-  const prevLink = links.find((link) => link.label.includes("Previous"));
-  paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Previous page" ${
-          !prevLink?.url ? "disabled" : ""
-        } data-url="${prevLink?.url || ""}">
-          <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
-        </button>
-    `;
-
-  let pagesHtml = "";
+  let paginationHtml = `
+    <button class="pagination-nav" type="button" aria-label="Previous page" ${
+      meta.links.find((l) => l.label.includes("Previous"))?.url
+        ? ""
+        : "disabled"
+    } data-url="${
+    meta.links.find((l) => l.label.includes("Previous"))?.url || ""
+  }">
+      <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
+    </button>
+  `;
 
   if (startPage > 1) {
     const firstPage = pages.find((p) => p.label === 1);
-    pagesHtml += `
-            <div class="page ${!firstPage?.active ? "num-wrapper" : ""}">
-                <button class="page-button ${
-                  firstPage?.active ? "page-active" : ""
-                }" type="button" aria-label="Go to page 1" data-url="${
+    paginationHtml += `
+      <div class="page ${firstPage?.active ? "" : "num-wrapper"}">
+        <button class="page-button ${
+          firstPage?.active ? "page-active" : ""
+        }" type="button" aria-label="Go to page 1" data-url="${
       firstPage?.url || ""
     }" ${firstPage?.active ? 'aria-current="page"' : ""}>
-                    <span class="num-2 ${
-                      firstPage?.active ? "num" : ""
-                    }">1</span>
-                </button>
-            </div>
-        `;
+          <span class="num-2 ${firstPage?.active ? "num" : ""}">1</span>
+        </button>
+      </div>
+    `;
     if (startPage > 2) {
-      pagesHtml += `
-                <div class="num-wrapper">
-                    <span class="num-2" aria-hidden="true">...</span>
-                </div>
-            `;
+      paginationHtml += `
+        <div class="num-wrapper">
+          <span class="num-2" aria-hidden="true">...</span>
+        </div>
+      `;
     }
   }
 
   pages.forEach((page) => {
     if (page.label >= startPage && page.label <= endPage) {
-      if (page.active) {
-        pagesHtml += `
-                    <div class="page">
-                        <button class="page-active" type="button" aria-current="page" aria-label="Page ${page.label}" data-url="${page.url}">
-                            <span class="num">${page.label}</span>
-                        </button>
-                    </div>
-                `;
-      } else {
-        pagesHtml += `
-                    <div class="num-wrapper">
-                        <button class="page-button" type="button" aria-label="Go to page ${page.label}" data-url="${page.url}">
-                            <span class="num-2">${page.label}</span>
-                        </button>
-                    </div>
-                `;
-      }
+      paginationHtml += `
+        <div class="${page.active ? "page" : "num-wrapper"}">
+          <button class="${
+            page.active ? "page-active" : "page-button"
+          }" type="button" aria-label="Go to page ${page.label}" data-url="${
+        page.url
+      }" ${page.active ? 'aria-current="page"' : ""}>
+            <span class="${page.active ? "num" : "num-2"}">${page.label}</span>
+          </button>
+        </div>
+      `;
     }
   });
 
   if (endPage < lastPage) {
-    if (endPage < lastPage - 1 && startPage <= 1) {
-      pagesHtml += `
-                <div class="num-wrapper">
-                    <span class="num-2" aria-hidden="true">...</span>
-                </div>
-            `;
+    if (endPage < lastPage - 1) {
+      paginationHtml += `
+        <div class="num-wrapper">
+          <span class="num-2" aria-hidden="true">...</span>
+        </div>
+      `;
     }
     const lastPageLink = pages.find((p) => p.label === lastPage);
-    pagesHtml += `
-            <div class="${!lastPageLink?.active ? "num-wrapper" : "page"}">
-                <button class="${
-                  !lastPageLink?.active ? "page-button" : "page-active"
-                }" type="button" aria-label="Go to page ${lastPage}" data-url="${
+    paginationHtml += `
+      <div class="${lastPageLink?.active ? "page" : "num-wrapper"}">
+        <button class="${
+          lastPageLink?.active ? "page-active" : "page-button"
+        }" type="button" aria-label="Go to page ${lastPage}" data-url="${
       lastPageLink?.url || ""
     }" ${lastPageLink?.active ? 'aria-current="page"' : ""}>
-                    <span class="${
-                      !lastPageLink?.active ? "num-2" : "num"
-                    }">${lastPage}</span>
-                </button>
-            </div>
-        `;
-  }
-
-  paginationHtml += pagesHtml;
-
-  const nextLink = links.find((link) => link.label.includes("Next"));
-  paginationHtml += `
-        <button class="pagination-nav" type="button" aria-label="Next page" ${
-          !nextLink?.url ? "disabled" : ""
-        } data-url="${nextLink?.url || ""}">
-          <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
+          <span class="${
+            lastPageLink?.active ? "num" : "num-2"
+          }">${lastPage}</span>
         </button>
+      </div>
     `;
-
-  if (paginationWrapper) {
-    paginationWrapper.innerHTML = paginationHtml;
-    paginationWrapper.offsetHeight;
-
-    paginationWrapper.querySelectorAll("button").forEach((btn) => {
-      btn.addEventListener("click", () => {
-        const url = btn.dataset.url;
-        if (url) {
-          const pageParam = new URL(url).searchParams.get("page");
-          getDataByPage(Number(pageParam));
-        }
-      });
-    });
-
-    if (pageWrapper) {
-      pageWrapper.classList.add("loaded");
-    }
   }
+
+  paginationHtml += `
+    <button class="pagination-nav" type="button" aria-label="Next page" ${
+      meta.links.find((l) => l.label.includes("Next"))?.url ? "" : "disabled"
+    } data-url="${meta.links.find((l) => l.label.includes("Next"))?.url || ""}">
+      <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
+    </button>
+  `;
+
+  paginationWrapper.innerHTML = paginationHtml;
+  paginationWrapper.querySelectorAll("button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const url = btn.dataset.url;
+      if (url) {
+        state.page = Number(new URL(url).searchParams.get("page"));
+        getDataByPage();
+      }
+    });
+  });
+
+  const pageWrapper = document.querySelector(".pagination-wrapper");
+  if (pageWrapper) pageWrapper.classList.add("loaded");
 }
 
+// Initialize event listeners
 function initializeEventListeners() {
   const filterControl = document.querySelector(".filter-control");
   const priceFilter = document.querySelector(".price-filter");
+  const sortControl = document.querySelector(".sort-dropdown");
+  const dropdownMenu = document.querySelector(".dropdown-menu");
 
   if (filterControl && priceFilter) {
-    priceFilter.style.display = priceFilter.style.display || "none";
-    filterControl.addEventListener("click", function () {
-      priceFilter.style.display =
-        priceFilter.style.display === "none" ? "flex" : "none";
+    priceFilter.style.display =
+      state.price_from || state.price_to ? "block" : "none";
+    filterControl.addEventListener("click", () => {
+      const isExpanded = priceFilter.style.display === "block";
+      priceFilter.style.display = isExpanded ? "none" : "block";
+      filterControl.setAttribute("aria-expanded", !isExpanded);
     });
   }
 
-  const sortControl = document.querySelector(".sort-dropdown");
-  const dropdownManu = document.querySelector(".dropdown-menu");
-  if (sortControl && dropdownManu) {
-    dropdownManu.style.display = dropdownManu.style.display || "none";
-    sortControl.addEventListener("click", function () {
-      dropdownManu.style.display =
-        dropdownManu.style.display === "none" ? "flex" : "none";
+  if (sortControl && dropdownMenu) {
+    dropdownMenu.style.display = state.sort ? "block" : "none";
+    sortControl.addEventListener("click", () => {
+      const isExpanded = dropdownMenu.style.display === "block";
+      dropdownMenu.style.display = isExpanded ? "none" : "block";
+      sortControl.setAttribute("aria-expanded", !isExpanded);
     });
   }
 
-  document.addEventListener("click", function (event) {
-    const sortControl = document.querySelector(".sort-dropdown");
-    const dropdownManu = document.querySelector(".dropdown-menu");
-    const filterControl = document.querySelector(".filter-control");
-    const priceFilter = document.querySelector(".price-filter");
-
-    if (dropdownManu && sortControl) {
-      if (
-        !dropdownManu.contains(event.target) &&
-        !sortControl.contains(event.target)
-      ) {
-        dropdownManu.style.display = "none";
-      }
+  document.addEventListener("click", (event) => {
+    if (
+      dropdownMenu &&
+      sortControl &&
+      !dropdownMenu.contains(event.target) &&
+      !sortControl.contains(event.target)
+    ) {
+      dropdownMenu.style.display = "none";
+      sortControl.setAttribute("aria-expanded", "false");
     }
-    if (priceFilter && filterControl) {
-      if (
-        !priceFilter.contains(event.target) &&
-        !filterControl.contains(event.target)
-      ) {
-        priceFilter.style.display = "none";
-      }
+    if (
+      priceFilter &&
+      filterControl &&
+      !priceFilter.contains(event.target) &&
+      !filterControl.contains(event.target)
+    ) {
+      priceFilter.style.display = "none";
+      filterControl.setAttribute("aria-expanded", "false");
     }
   });
 }
 
+// Initialize price filter
 function initializePriceFilter() {
   const applyButton = document.querySelector(".apply-button");
-  const priceFilter = document.querySelector(".price-filter");
+  const minPriceInput = document.querySelector("#price-from");
+  const maxPriceInput = document.querySelector("#price-to");
+  const priceValues = document.querySelector(".price-values");
+  const priceRange = document.querySelector(".price-range");
+  const clearButton = document.querySelector(".price-values-img");
+
+  // Log warning if inputs are missing
+  if (!minPriceInput || !maxPriceInput) {
+    console.warn(
+      "Price filter inputs not found: #price-from or #price-to missing"
+    );
+  }
+
+  // Set initial values
+  if (minPriceInput && maxPriceInput) {
+    minPriceInput.value = state.price_from || "";
+    maxPriceInput.value = state.price_to || "";
+  }
+  if (priceValues && priceRange) {
+    priceRange.textContent = `${state.price_from || 0}-${
+      state.price_to || "-"
+    }`;
+    priceValues.style.display =
+      state.price_from || state.price_to ? "block" : "none";
+  }
 
   if (applyButton) {
-    applyButton.addEventListener("click", function () {
-      const minPriceInput = document.querySelector(
-        ".price-inputs .price-input-group:first-child .price-input"
-      );
-      const maxPriceInput = document.querySelector(
-        ".price-inputs .price-input-group:last-child .price-input"
-      );
-      const minPrice = parseFloat(minPriceInput.value) || 0;
-      const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
-
-      if (minPrice > maxPrice) {
-        alert("Minimum price cannot be greater than maximum price.");
-        return;
-      }
-
-      applyFiltersAndSort();
-      if (priceFilter) {
-        priceFilter.style.display = "none";
-      }
-
-      const priceValues = document.querySelector(".price-values");
-      const priceRange = document.querySelector(".price-range");
-      priceRange.innerText = `${minPriceInput.value || 0}-${
-        maxPriceInput.value || "-"
-      }`;
-      priceValues.style.display = "flex";
-    });
-  }
-
-  document.addEventListener("click", function (event) {
-    const filterControl = document.querySelector(".filter-control");
-    const priceFilter = document.querySelector(".price-filter");
-
-    if (priceFilter && filterControl) {
-      if (
-        !priceFilter.contains(event.target) &&
-        !filterControl.contains(event.target)
-      ) {
-        priceFilter.style.display = "none";
-      }
-    }
-  });
-}
-
-function initializeSortDropdown() {
-  const dropdownOptions = document.querySelectorAll(".dropdown-option");
-  const sortText = document.querySelector(".text-wrapper-3");
-  const dropdownManu = document.querySelector(".dropdown-menu");
-  if (dropdownOptions && sortText) {
-    dropdownOptions.forEach((option) => {
-      option.addEventListener("click", function () {
-        event.stopPropagation();
-        const selectedText = option.textContent;
-        const capitalizedText = toCapitalCase(selectedText);
-        sortText.textContent = capitalizedText;
-        const sortBy = selectedText
-          .toLowerCase()
-          .replace(/, /g, "-")
-          .replace(/ /g, "-");
-        currentSort =
-          sortBy === "new-products-first"
-            ? "default"
-            : sortBy === "price-low-to-high"
-            ? "price-low"
-            : sortBy === "price-high-to-low"
-            ? "price-high"
-            : "default";
-        applyFiltersAndSort();
-
-        if (dropdownManu) {
-          dropdownManu.style.display = "none";
+    applyButton.addEventListener(
+      "click",
+      debounce(() => {
+        if (!minPriceInput || !maxPriceInput) {
+          console.error("Cannot apply filters: Price inputs not found");
+          alert(
+            "Error: Price filter inputs are missing. Please try refreshing the page."
+          );
+          return;
         }
-      });
-    });
+
+        const minPrice = parseFloat(minPriceInput.value) || null;
+        const maxPrice = parseFloat(maxPriceInput.value) || null;
+
+        if (minPrice !== null && maxPrice !== null && minPrice > maxPrice) {
+          alert("Minimum price cannot be greater than maximum price.");
+          return;
+        }
+
+        state.price_from = minPrice;
+        state.price_to = maxPrice;
+        state.page = 1;
+        getDataByPage();
+
+        if (priceValues && priceRange) {
+          priceRange.textContent = `${minPrice || 0}-${maxPrice || "-"}`;
+          priceValues.style.display = minPrice || maxPrice ? "block" : "none";
+          document.querySelector(".price-filter").style.display = "none";
+          document
+            .querySelector(".filter-control")
+            .setAttribute("aria-expanded", "false");
+        }
+      }, 300)
+    );
   }
 
-  const priceValuesImg = document.querySelector(".price-values-img");
+  if (clearButton) {
+    clearButton.addEventListener("click", () => {
+      state.price_from = null;
+      state.price_to = null;
+      state.page = 1;
+      if (minPriceInput && maxPriceInput) {
+        minPriceInput.value = "";
+        maxPriceInput.value = "";
+      }
+      if (priceValues) priceValues.style.display = "none";
+      getDataByPage();
+    });
+  }
+}
 
-  priceValuesImg.addEventListener("click", () => {
-    document.querySelector(".price-values").style.display = "none";
-    window.location.reload();
+// Initialize sort dropdown
+function initializeSortDropdown() {
+  const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
+  const dropdownMenu = document.querySelector(".dropdown-menu");
+
+  if (sortText) {
+    sortText.textContent =
+      state.sort === "price"
+        ? "Price, low to high"
+        : state.sort === "-price"
+        ? "Price, high to low"
+        : "New products first";
+  }
+
+  document.querySelectorAll(".dropdown-option").forEach((option) => {
+    option.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const value = option.dataset.value;
+      const text = option.textContent;
+      if (sortText) sortText.textContent = text;
+      state.sort = value === "default" ? null : value;
+      state.page = 1;
+      getDataByPage();
+      if (dropdownMenu) {
+        dropdownMenu.style.display = "none";
+        document
+          .querySelector(".sort-dropdown")
+          .setAttribute("aria-expanded", "false");
+      }
+    });
   });
 }
 
-function applyFiltersAndSort() {
-  const minPriceInput = document.querySelector(
-    ".price-inputs .price-input-group:first-child .price-input"
-  );
-  const maxPriceInput = document.querySelector(
-    ".price-inputs .price-input-group:last-child .price-input"
-  );
-  const minPrice = parseFloat(minPriceInput.value) || 0;
-  const maxPrice = parseFloat(maxPriceInput.value) || Infinity;
+// Handle popstate
+window.addEventListener("popstate", () => {
+  parseQueryParams();
+  const minPriceInput = document.querySelector("#price-from");
+  const maxPriceInput = document.querySelector("#price-to");
+  const priceValues = document.querySelector(".price-values");
+  const priceRange = document.querySelector(".price-range");
+  const sortText = document.querySelector(".text-wrapper-3 .sort-wrapper");
 
-  if (minPrice > maxPrice) {
-    alert("Minimum price cannot be greater than maximum price.");
-    return;
+  if (minPriceInput && maxPriceInput) {
+    minPriceInput.value = state.price_from || "";
+    maxPriceInput.value = state.price_to || "";
+  }
+  if (priceValues && priceRange) {
+    priceRange.textContent = `${state.price_from || 0}-${
+      state.price_to || "-"
+    }`;
+    priceValues.style.display =
+      state.price_from || state.price_to ? "block" : "none";
+  }
+  if (sortText) {
+    sortText.textContent =
+      state.sort === "price"
+        ? "Price, low to high"
+        : state.sort === "-price"
+        ? "Price, high to low"
+        : "New products first";
+  }
+  getDataByPage();
+});
+
+// Initialize on DOM load
+document.addEventListener("DOMContentLoaded", () => {
+  const logo = document.querySelector(".div");
+  if (logo) {
+    logo.addEventListener("click", () => {
+      window.location.href = "index.html";
+    });
   }
 
-  let filteredProducts = filterProductsByPrice(minPrice, maxPrice);
-  const sortedProducts = sortProducts(filteredProducts, currentSort);
-  displayProducts(sortedProducts);
-}
-
-function filterProductsByPrice(minPrice, maxPrice) {
-  return products.filter(
-    (product) => product.price >= minPrice && product.price <= maxPrice
-  );
-}
-
-function sortProducts(products, sortBy) {
-  switch (sortBy) {
-    case "price-low":
-      return products.sort((a, b) => a.price - b.price);
-    case "price-high":
-      return products.sort((a, b) => b.price - a.price);
-    case "name":
-      return products.sort((a, b) => a.name.localeCompare(b.name)); // Updated to use 'name' instead of 'title'
-    default:
-      return [...products];
+  const user = JSON.parse(localStorage.getItem("user"));
+  const avatarImg = document.querySelector(".user-menu .ellipse");
+  if (user && user.avatar && avatarImg) {
+    avatarImg.src = user.avatar;
+    avatarImg.alt = `${user.name || "User"} avatar`;
+  } else if (avatarImg) {
+    avatarImg.src = "images/user-icon.png";
+    avatarImg.alt = "User avatar";
+    avatarImg.style.width = "20px";
+    avatarImg.style.height = "20px";
   }
-}
+
+  parseQueryParams();
+  initializeEventListeners();
+  initializePriceFilter();
+  initializeSortDropdown();
+  getDataByPage();
+});
 
 function toCapitalCase(str) {
   return str.replace(/(^|\s)\w/g, (letter) => letter.toUpperCase());

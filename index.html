@@ -63,14 +63,24 @@
               <div class="price-input-group">
                 <div class="input-field">
                   <label>From <span class="required">*</span></label>
-                  <input type="number" class="price-input" min="0" />
+                  <input
+                    type="number"
+                    class="price-input"
+                    id="price-from"
+                    min="0"
+                  />
                 </div>
               </div>
 
               <div class="price-input-group">
                 <div class="input-field">
                   <label>To <span class="required">*</span></label>
-                  <input type="number" class="price-input" min="0" />
+                  <input
+                    type="number"
+                    class="price-input"
+                    id="price-to"
+                    min="0"
+                  />
                 </div>
               </div>
             </div>
@@ -107,51 +117,7 @@
       <section class="products-grid" aria-label="Product grid"></section>
 
       <nav class="pagination-wrapper" role="navigation" aria-label="Pagination">
-        <div class="pagination">
-          <button
-            class="pagination-nav"
-            type="button"
-            aria-label="Previous page"
-            disabled
-          >
-            <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
-          </button>
-          <div class="page">
-            <button
-              class="page-active"
-              type="button"
-              aria-current="page"
-              aria-label="Page 1"
-            >
-              <span class="num">1</span>
-            </button>
-          </div>
-          <div class="num-wrapper">
-            <button class="page-button" type="button" aria-label="Go to page 2">
-              <span class="num-2">2</span>
-            </button>
-          </div>
-          <div class="num-wrapper">
-            <span class="num-2" aria-hidden="true">...</span>
-          </div>
-          <div class="num-wrapper">
-            <button class="page-button" type="button" aria-label="Go to page 9">
-              <span class="num-2">9</span>
-            </button>
-          </div>
-          <div class="num-wrapper">
-            <button
-              class="page-button"
-              type="button"
-              aria-label="Go to page 10"
-            >
-              <span class="num-2">10</span>
-            </button>
-          </div>
-          <button class="pagination-nav" type="button" aria-label="Next page">
-            <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
-          </button>
-        </div>
+        <div class="pagination"></div>
       </nav>
     </main>
     <script type="module" src="./scripts/products.js"></script>

@@ -591,22 +591,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     const overlay = document.querySelector(".rectangle-2");
 
     // Required elements
-    if (!cartPanel) {
-      console.error("Shopping cart panel (.shopping-cart) not found");
-      return;
-    }
-    if (!emptyCartPanel) {
-      console.error("Empty cart panel (.cart-is-empty) not found");
-      return;
-    }
-    if (!overlay) {
-      console.error("Overlay (.rectangle-2) not found");
+    if (!cartPanel || !emptyCartPanel || !overlay) {
+      console.error("Required cart elements not found");
       return;
     }
 
     // Optional elements with fallback
     const cartTitle = cartPanel.querySelector(".text-wrapper-9");
     const orderSummary = cartPanel.querySelector(".frame-23");
+
+    //
+    const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
 
     if (!cartTitle) {
       console.warn("Cart title (.text-wrapper-9) not found in .shopping-cart");
@@ -622,29 +617,37 @@ document.addEventListener("DOMContentLoaded", async () => {
     cartPanel.classList.add("active");
     emptyCartPanel.classList.remove("active");
     overlay.classList.add("active");
-    console.log("Shopping cart classList:", cartPanel.classList.toString());
-    console.log("Overlay classList:", overlay.classList.toString());
-    console.log("Empty cart classList:", emptyCartPanel.classList.toString());
 
-    // Remove existing cart items and messages
-    const existingItems = cartPanel.querySelectorAll(
-      "article[class^='frame-'], .empty-cart, .error-message"
-    );
-    existingItems.forEach((item) => item.remove());
-
+    // update total count
     if (cartTitle) {
-      cartTitle.textContent = `Shopping cart (${cartItems.length})`;
+      const totalQuantity = cartItems.reduce(
+        (sum, item) => sum + (item.quantity || 1),
+        0
+      );
+      cartTitle.textContent = `Shopping cart (${totalQuantity})`;
     }
+
+    //
+    cartItemsContainer.innerHTML = ""; // Clear only the container
 
     cartItems.forEach((item, index) => {
       console.log(`Rendering cart item ${index + 1}:`, item);
+
+      // Find the index of the selected color in available_colors
+      const colorIndex = item.available_colors.indexOf(item.color);
+      // Select the corresponding image, fallback to cover_image or first image
+      const itemImage =
+        colorIndex !== -1 && item.images[colorIndex]
+          ? item.images[colorIndex]
+          : item.cover_image || item.images?.[0] || "/images/fallback.png";
+
       const itemElement = document.createElement("article");
       itemElement.className = `frame-${14 + index * 8}`;
       itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
       itemElement.innerHTML = `
-        <img class="rectangle-3" src="${
-          item.main_image || item.images?.[0] || "/images/fallback.png"
-        }" alt="${toCapitalCase(item.name) || "Product"}" />
+        <img class="rectangle-3" src="${itemImage}" alt="${
+        toCapitalCase(item.name) || "Product"
+      }" />
         <div class="frame-15">
           <div class="frame-16">
             <div class="frame-17">
@@ -692,6 +695,9 @@ document.addEventListener("DOMContentLoaded", async () => {
           </div>
         </div>
       `;
+      //
+      cartItemsContainer.appendChild(itemElement); // Append to container
+
       if (orderSummary) {
         cartPanel.insertBefore(itemElement, orderSummary);
       } else {

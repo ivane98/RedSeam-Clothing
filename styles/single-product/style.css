@@ -41,7 +41,6 @@
   background-color: var(--grey);
   border-left: 1px solid #e1dfe1;
   overflow-y: auto;
-  /* Enable scrolling for more items */
 }
 
 .listing-page .shopping-cart.active {
@@ -573,6 +572,7 @@
   height: 937px;
   border-radius: 10px;
   object-fit: cover;
+  border: 1px solid rgb(212, 212, 212);
 }
 
 .listing-page .frame-3 {
@@ -989,8 +989,8 @@
   height: 0;
 }
 
-.color-input:focus+label,
-.size-input:focus+label {
+.color-input:focus + label,
+.size-input:focus + label {
   outline: 2px solid #4a90e2;
   outline-offset: 2px;
 }
