@@ -149,7 +149,7 @@
 .order .frame-2 {
   display: flex;
   flex-direction: column;
-  width: 460px;
+  width: 480px;
   align-items: flex-start;
   gap: 81px;
   position: absolute;
@@ -166,6 +166,9 @@
   align-self: stretch;
   width: 100%;
   flex: 0 0 auto;
+  max-height: 450px;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .order .frame-4 {

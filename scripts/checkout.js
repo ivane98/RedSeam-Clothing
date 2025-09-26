@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avatarImg = document.querySelector(".ellipse");
 
   if (userDataString && userDataString.avatar && avatarImg) {
-    avatarImg.src = userDataString.avatar; 
+    avatarImg.src = userDataString.avatar;
     avatarImg.alt = `${userDataString.name || "User"} avatar`;
   } else {
     avatarImg.src = "images/user-icon.png";
@@ -83,10 +83,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
 
       const formData = {
-        name, 
+        name,
         surname,
         email,
-        zip_code: zipcode, 
+        zip_code: zipcode,
         address,
       };
       console.log("Checkout form data:", formData);
@@ -126,7 +126,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           alert("Checkout successful! Your cart has been cleared.");
         }
 
-        await fetchCartItems(true); 
+        await fetchCartItems(true);
         checkoutForm.reset();
       } catch (error) {
         console.error("Error during checkout:", error);
@@ -151,8 +151,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 retryErrorData
               );
               throw new Error(
-                `Checkout failed: ${
-                  retryErrorData.message || retryResponse.status
+                `Checkout failed: ${retryErrorData.message || retryResponse.status
                 }`
               );
             }
@@ -168,7 +167,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               console.error(
                 "Congratulatory modal (#congratulatory-modal) not found"
               );
-              alert("Checkout successful! Your cart has been cleared."); 
+              alert("Checkout successful! Your cart has been cleared.");
             }
 
             await fetchCartItems(true);
@@ -203,7 +202,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (modal) {
           modal.classList.remove("visible");
           console.log("Congratulatory modal closed via Continue shopping");
-          window.location.href = "index.html"; 
+          window.location.href = "index.html";
         }
       });
     } else {
@@ -287,7 +286,7 @@ function displayCartItems(cartItems) {
 
   cartItems.forEach((item, index) => {
     const itemElement = document.createElement("article");
-    itemElement.className = `frame-4`; 
+    itemElement.className = `frame-4`;
     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
     itemElement.innerHTML = `
       <img
@@ -299,21 +298,18 @@ function displayCartItems(cartItems) {
         <div class="frame-6">
           <div class="frame-7">
             <div class="kids-curved-hilfiger-wrapper">
-              <h3 class="kids-curved-hilfiger">${
-                toCapitalCase(item.name) || "Unknown Product"
-              }</h3>
+              <h3 class="kids-curved-hilfiger">${toCapitalCase(item.name) || "Unknown Product"
+      }</h3>
             </div>
-            <div class="text-wrapper-2">${
-              toCapitalCase(item.color) || "N/A"
-            }</div>
+            <div class="text-wrapper-2">${toCapitalCase(item.color) || "N/A"
+      }</div>
             <div class="text-wrapper-2">${(
-              item.size || "N/A"
-            ).toUpperCase()}</div>
+        item.size || "N/A"
+      ).toUpperCase()}</div>
           </div>
           <div class="div-wrapper">
-            <div class="text-wrapper-3">$${
-              item.price ? item.price.toFixed(2) : "0.00"
-            }</div>
+            <div class="text-wrapper-3">$${item.price ? item.price.toFixed(2) : "0.00"
+      }</div>
           </div>
         </div>
         <div class="frame-8">
@@ -328,9 +324,8 @@ function displayCartItems(cartItems) {
               <img class="img-3" src="/images/minus.png" alt="" />
             </button>
             <div class="frame-10">
-              <span class="text-wrapper-4" aria-label="Quantity">${
-                item.quantity || 1
-              }</span>
+              <span class="text-wrapper-4" aria-label="Quantity">${item.quantity || 1
+      }</span>
             </div>
             <button
               type="button"
@@ -343,9 +338,8 @@ function displayCartItems(cartItems) {
             </button>
           </div>
           <div class="frame-11">
-            <button type="button" class="remove-button" data-item-id="${
-              item.id || ""
-            }">
+            <button type="button" class="remove-button" data-item-id="${item.id || ""
+      }">
               <span class="text-wrapper-5">Remove</span>
             </button>
           </div>
@@ -430,7 +424,7 @@ function addCartItemEventListeners() {
         if (!authToken) throw new Error("Please log in to update cart.");
 
         const response = await fetch(
-          `https://api.redseam.redberryinternship.ge/api/cart/${itemId}`,
+          `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
           {
             method: "PATCH",
             headers: {
@@ -450,7 +444,7 @@ function addCartItemEventListeners() {
         }
 
         quantityElement.textContent = currentQuantity;
-        await fetchCartItems(true); 
+        await fetchCartItems(true);
       } catch (error) {
         console.error("Error updating quantity:", error);
         displayCartError("Failed to update quantity. Please try again.");
@@ -467,7 +461,7 @@ function addCartItemEventListeners() {
         if (!authToken) throw new Error("Please log in to remove items.");
 
         const response = await fetch(
-          `https://api.redseam.redberryinternship.ge/api/cart/${itemId}`,
+          `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
           {
             method: "DELETE",
             headers: {
@@ -484,7 +478,7 @@ function addCartItemEventListeners() {
           );
         }
 
-        await fetchCartItems(true); 
+        await fetchCartItems(true);
       } catch (error) {
         console.error("Error removing item:", error);
         displayCartError("Failed to remove item. Please try again.");
@@ -520,9 +514,9 @@ function getCookie(name) {
 function toCapitalCase(str) {
   return str
     ? str
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     : "";
 }

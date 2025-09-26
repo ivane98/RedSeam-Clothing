@@ -8,8 +8,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   const avatarImg = document.querySelector(".ellipse");
 
   if (user && user.avatar && avatarImg) {
-    avatarImg.src = user.avatar; 
-    avatarImg.alt = `${user.name || "User"} avatar`; 
+    avatarImg.src = user.avatar;
+    avatarImg.alt = `${user.name || "User"} avatar`;
   } else {
     avatarImg.src = "images/user-icon.png";
     avatarImg.alt = `user avatar`;
@@ -101,11 +101,10 @@ document.addEventListener("DOMContentLoaded", async () => {
       colorPickerContainer.className = "frame-6";
       const legend = document.createElement("legend");
       legend.className = "text-wrapper-4";
-      legend.textContent = `Color: ${
-        product.available_colors
-          ? toCapitalCase(product.available_colors[0])
-          : "N/A"
-      }`;
+      legend.textContent = `Color: ${product.available_colors
+        ? toCapitalCase(product.available_colors[0])
+        : "N/A"
+        }`;
       const radioGroup = document.createElement("div");
       radioGroup.className = "frame-7";
       radioGroup.setAttribute("role", "radiogroup");
@@ -243,9 +242,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       sizePickerContainer.className = "frame-8";
       const sizeLegend = document.createElement("legend");
       sizeLegend.className = "text-wrapper-4";
-      sizeLegend.textContent = `Size: ${
-        product.available_sizes ? product.available_sizes[0] : "N/A"
-      }`;
+      sizeLegend.textContent = `Size: ${product.available_sizes ? product.available_sizes[0] : "N/A"
+        }`;
       const sizeRadioGroup = document.createElement("div");
       sizeRadioGroup.className = "frame-9";
       sizeRadioGroup.setAttribute("role", "radiogroup");
@@ -268,11 +266,10 @@ document.addEventListener("DOMContentLoaded", async () => {
           const label = document.createElement("label");
           label.htmlFor = inputId;
           label.className = index === 0 ? "div-wrapper" : "size";
-          label.innerHTML = `<span class="${
-            index === 0 ? "text-wrapper-5" : "l"
-          }">${size}</span>`;
-          label.style.cursor = "pointer"; 
-          label.style.outline = "none"; 
+          label.innerHTML = `<span class="${index === 0 ? "text-wrapper-5" : "l"
+            }">${size}</span>`;
+          label.style.cursor = "pointer";
+          label.style.outline = "none";
 
           input.addEventListener("change", () => {
             if (input.checked) {
@@ -452,7 +449,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (response.status === 422) {
           console.log("POST returned 422, checking for existing item");
-          const cartItems = await fetchCartItems(false); 
+          const cartItems = await fetchCartItems(false);
           const existingItem = cartItems.find(
             (item) =>
               item.product_id === product.id &&
@@ -489,7 +486,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               `Updated quantity of item ${existingItem.id} to ${newQuantity}`
             );
             alert("Updated quantity in cart successfully!");
-            
+
           } else {
             throw new Error(
               "Validation error: Item not found in cart for update."
@@ -558,21 +555,143 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   }
 
+  // function displayCartItems(cartItems) {
+  //   console.log("Entering displayCartItems with items:", cartItems);
+  //   const cartPanel = document.querySelector(".shopping-cart");
+  //   const emptyCartPanel = document.querySelector(".cart-is-empty");
+  //   const overlay = document.querySelector(".rectangle-2");
+
+  //   if (!cartPanel || !emptyCartPanel || !overlay) {
+  //     console.error("Required cart elements not found");
+  //     return;
+  //   }
+
+  //   const cartTitle = cartPanel.querySelector(".text-wrapper-9");
+  //   const orderSummary = cartPanel.querySelector(".frame-23");
+
+  //   const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
+
+  //   if (!cartTitle) {
+  //     console.warn("Cart title (.text-wrapper-9) not found in .shopping-cart");
+  //   }
+  //   if (!orderSummary) {
+  //     console.warn("Order summary (.frame-23) not found in .shopping-cart");
+  //   }
+
+  //   console.log(
+  //     "Adding .active to .shopping-cart and .rectangle-2, removing from .cart-is-empty"
+  //   );
+  //   cartPanel.classList.add("active");
+  //   emptyCartPanel.classList.remove("active");
+  //   overlay.classList.add("active");
+
+  //   if (cartTitle) {
+  //     const totalQuantity = cartItems.reduce(
+  //       (sum, item) => sum + (item.quantity || 1),
+  //       0
+  //     );
+  //     cartTitle.textContent = `Shopping cart (${totalQuantity})`;
+  //   }
+
+  //   //
+  //   cartItemsContainer.innerHTML = "";
+
+  //   cartItems.forEach((item, index) => {
+  //     console.log(`Rendering cart item ${index + 1}:`, item);
+
+
+  //     const colorIndex = item.available_colors.indexOf(item.color);
+  //     const itemImage =
+  //       colorIndex !== -1 && item.images[colorIndex]
+  //         ? item.images[colorIndex]
+  //         : item.cover_image || item.images?.[0] || "/images/fallback.png";
+
+  //     const itemElement = document.createElement("article");
+  //     itemElement.className = `frame-${14 + index * 8}`;
+
+  //     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
+  //     itemElement.innerHTML = `
+  //       <img class="rectangle-3" src="${itemImage}" alt="${toCapitalCase(item.name) || "Product"
+  //       }" />
+  //       <div class="frame-15">
+  //         <div class="frame-16">
+  //           <div class="frame-17">
+  //             <div class="kids-curved-hilfiger-wrapper">
+  //               <h3 class="kids-curved-hilfiger-2">${toCapitalCase(item.name) || "Unknown Product"
+  //       }</h3>
+  //             </div>
+  //             <div class="text-wrapper-10">${toCapitalCase(item.color) || "N/A"
+  //       }</div>
+  //             <div class="text-wrapper-10">${(
+  //         item.size || "N/A"
+  //       ).toUpperCase()}</div>
+  //           </div>
+  //           <div class="frame-18">
+  //             <div class="text-wrapper-11">$${item.price ? item.price : "0"
+  //       }</div>
+  //           </div>
+  //         </div>
+  //         <div class="frame-12">
+  //           <div class="frame-19" role="group" aria-label="Quantity controls">
+  //             <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${item.id || ""
+  //       }" data-action="decrease">
+  //               <img class="img-2" src="/images/minus.png" alt="Decrease" />
+  //             </button>
+  //             <div class="frame-20"><div class="text-wrapper-12">${item.quantity || 1
+  //       }</div></div>
+  //             <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${item.id || ""
+  //       }" data-action="increase">
+  //               <img class="img-2" src="/images/plus.png" alt="Increase" />
+  //             </button>
+  //           </div>
+  //           <div class="frame-21">
+  //             <button type="button" class="remove-button" data-item-id="${item.id || ""
+  //       }">
+  //               <span class="text-wrapper-13">Remove</span>
+  //             </button>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     `;
+  //     //
+  //     cartItemsContainer.appendChild(itemElement);
+
+  //     // if (orderSummary) {
+  //     //   cartPanel.insertBefore(itemElement, orderSummary);
+  //     // } else {
+  //     //   cartPanel.appendChild(itemElement);
+  //     // }
+  //   });
+
+  //   if (orderSummary) {
+  //     const subtotal = cartItems.reduce(
+  //       (sum, item) =>
+  //         sum + (item.total_price || item.price * item.quantity || 0),
+  //       0
+  //     );
+  //     updateOrderSummary(subtotal);
+  //   } else {
+  //     console.warn("Skipping order summary update due to missing .frame-23");
+  //   }
+
+  //   addCartItemEventListeners();
+  //   console.log("Completed displayCartItems");
+  // }
+
   function displayCartItems(cartItems) {
     console.log("Entering displayCartItems with items:", cartItems);
     const cartPanel = document.querySelector(".shopping-cart");
     const emptyCartPanel = document.querySelector(".cart-is-empty");
     const overlay = document.querySelector(".rectangle-2");
+    const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
 
-    if (!cartPanel || !emptyCartPanel || !overlay) {
+    if (!cartPanel || !emptyCartPanel || !overlay || !cartItemsContainer) {
       console.error("Required cart elements not found");
       return;
     }
 
     const cartTitle = cartPanel.querySelector(".text-wrapper-9");
     const orderSummary = cartPanel.querySelector(".frame-23");
-
-    const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
 
     if (!cartTitle) {
       console.warn("Cart title (.text-wrapper-9) not found in .shopping-cart");
@@ -596,81 +715,65 @@ document.addEventListener("DOMContentLoaded", async () => {
       cartTitle.textContent = `Shopping cart (${totalQuantity})`;
     }
 
-    //
-    cartItemsContainer.innerHTML = ""; 
+    // Clear the container
+    cartItemsContainer.innerHTML = "";
 
     cartItems.forEach((item, index) => {
       console.log(`Rendering cart item ${index + 1}:`, item);
 
-
-      const colorIndex = item.available_colors.indexOf(item.color);
+      const colorIndex = item.available_colors?.indexOf(item.color) || 0;
       const itemImage =
-        colorIndex !== -1 && item.images[colorIndex]
+        colorIndex !== -1 && item.images?.[colorIndex]
           ? item.images[colorIndex]
-          : item.cover_image || item.images?.[0] || "/images/fallback.png";
+          : item.main_image || item.images?.[0] || "/images/fallback.png";
 
       const itemElement = document.createElement("article");
-      itemElement.className = `frame-${14 + index * 8}`;
+      itemElement.className = "cart-item"; // Use a single class for all items
       itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
       itemElement.innerHTML = `
-        <img class="rectangle-3" src="${itemImage}" alt="${
-        toCapitalCase(item.name) || "Product"
-      }" />
-        <div class="frame-15">
-          <div class="frame-16">
-            <div class="frame-17">
-              <div class="kids-curved-hilfiger-wrapper">
-                <h3 class="kids-curved-hilfiger-2">${
-                  toCapitalCase(item.name) || "Unknown Product"
-                }</h3>
-              </div>
-              <div class="text-wrapper-10">${
-                toCapitalCase(item.color) || "N/A"
-              }</div>
-              <div class="text-wrapper-10">${(
-                item.size || "N/A"
-              ).toUpperCase()}</div>
+      <img class="rectangle-3" src="${itemImage}" alt="${toCapitalCase(item.name) || "Product"
+        }" />
+      <div class="frame-15">
+        <div class="frame-16">
+          <div class="frame-17">
+            <div class="kids-curved-hilfiger-wrapper">
+              <h3 class="kids-curved-hilfiger-2">${toCapitalCase(item.name) || "Unknown Product"
+        }</h3>
             </div>
-            <div class="frame-18">
-              <div class="text-wrapper-11">$${
-                item.price ? item.price : "0"
-              }</div>
-            </div>
+            <div class="text-wrapper-10">${toCapitalCase(item.color) || "N/A"
+        }</div>
+            <div class="text-wrapper-10">${(item.size || "N/A").toUpperCase()}</div>
           </div>
-          <div class="frame-12">
-            <div class="frame-19" role="group" aria-label="Quantity controls">
-              <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${
-                item.id || ""
-              }" data-action="decrease">
-                <img class="img-2" src="/images/minus.png" alt="Decrease" />
-              </button>
-              <div class="frame-20"><div class="text-wrapper-12">${
-                item.quantity || 1
-              }</div></div>
-              <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${
-                item.id || ""
-              }" data-action="increase">
-                <img class="img-2" src="/images/plus.png" alt="Increase" />
-              </button>
-            </div>
-            <div class="frame-21">
-              <button type="button" class="remove-button" data-item-id="${
-                item.id || ""
-              }">
-                <span class="text-wrapper-13">Remove</span>
-              </button>
-            </div>
+          <div class="frame-18">
+            <div class="text-wrapper-11">$${item.price ? item.price : "0"
+        }</div>
           </div>
         </div>
-      `;
-      //
-      cartItemsContainer.appendChild(itemElement);
+        <div class="frame-12">
+          <div class="frame-19" role="group" aria-label="Quantity controls">
+            <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${item.id || index
+        }" data-action="decrease">
+              <img class="img-2" src="/images/minus.png" alt="Decrease" />
+            </button>
+            <div class="frame-20"><div class="text-wrapper-12">${item.quantity || 1
+        }</div></div>
+            <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${item.id || index
+        }" data-action="increase">
+              <img class="img-2" src="/images/plus.png" alt="Increase" />
+            </button>
+          </div>
+          <div class="frame-21">
+            <button type="button" class="remove-button" data-item-id="${item.id || index
+        }">
+              <span class="text-wrapper-13">Remove</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
 
-      if (orderSummary) {
-        cartPanel.insertBefore(itemElement, orderSummary);
-      } else {
-        cartPanel.appendChild(itemElement);
-      }
+      // Append to cartItemsContainer
+      cartItemsContainer.appendChild(itemElement);
     });
 
     if (orderSummary) {
@@ -880,7 +983,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   if (cartButton) {
     cartButton.addEventListener("click", () => {
       console.log("Cart button clicked");
-      fetchCartItems(true); 
+      fetchCartItems(true);
     });
   } else {
     console.error("Cart button (.cart-button) not found");
@@ -1094,9 +1197,9 @@ function getColorValue(color) {
 function toCapitalCase(str) {
   return str
     ? str
-        .toLowerCase()
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
+      .toLowerCase()
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ")
     : "";
 }
