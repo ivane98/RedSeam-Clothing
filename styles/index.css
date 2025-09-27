@@ -805,7 +805,6 @@
   height: 184px;
 
   flex-direction: column;
-  padding: 16px 0;
   z-index: 10;
   font-family: "Poppins", Helvetica;
 }
@@ -829,12 +828,35 @@
   background: #f3f4f6;
 }
 
+.clear-sort {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 7px 14px;
+  position: relative;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--red);
+  color: white;
+  font-weight: bold;
+  font-family: "Poppins", "Helvetica";
+  margin-top: 5px;
+  width: 200px;
+  margin-left: 10px;
+}
+
+.clear-sort:hover {
+  background-color: #e63900;
+}
+
 .price-values {
   position: relative;
   width: 141px;
   height: 37px;
   border-radius: 50px;
-  background-color: #e7e7e74f;
+  /* background-color: #e7e7e74f; */
   display: flex;
   align-items: center;
   justify-content: center;

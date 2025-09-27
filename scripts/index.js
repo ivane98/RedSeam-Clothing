@@ -3,7 +3,10 @@ let state = {
   price_from: null,
   price_to: null,
   sort: null,
+  lastSortOption: null,
 };
+
+console.log(state.sort);
 
 function debounce(func, wait) {
   let timeout;
@@ -19,6 +22,13 @@ function parseQueryParams() {
   state.price_from = parseFloat(params.get("price_from")) || null;
   state.price_to = parseFloat(params.get("price_to")) || null;
   state.sort = params.get("sort") || null;
+  // Only update lastSortOption if a sort parameter is present
+  if (params.get("sort")) {
+    state.lastSortOption = state.sort;
+  } else {
+    // If no sort parameter, keep lastSortOption as is or set to null if undefined
+    state.lastSortOption = state.lastSortOption || null;
+  }
 }
 
 function updateURL() {
@@ -386,37 +396,61 @@ function initializeSortDropdown() {
     { value: "created_at", text: "New products first" },
     { value: "price", text: "Price, low to high" },
     { value: "-price", text: "Price, high to low" },
-    { value: "default", text: "Sort by" },
+    // { value: "default", text: "Sort by" },
+    { value: "clear", text: "Clear Sort" },
   ];
 
   if (sortText) {
-    const selectedOption =
-      sortOptions.find((opt) => opt.value === state.sort) || sortOptions[3];
-    sortText.textContent = selectedOption.text;
+    const selectedOption = sortOptions.find(
+      (opt) => opt.value === state.lastSortOption && opt.value !== "clear"
+    );
+    sortText.textContent = selectedOption ? selectedOption.text : "Sort by";
   }
 
-  document.querySelectorAll(".dropdown-option").forEach((option, index) => {
-    if (index < sortOptions.length) {
-      option.setAttribute("data-value", sortOptions[index].value);
-      option.setAttribute("role", "option");
-      option.textContent = sortOptions[index].text;
-      option.addEventListener("click", (event) => {
-        event.stopPropagation();
-        const value = option.dataset.value;
-        const text = option.textContent;
-        console.log("Sort option selected:", { value, text });
-        if (sortText) sortText.textContent = text;
-        state.sort = value;
-        state.page = 1;
-        getDataByPage();
-        if (dropdownMenu) {
-          dropdownMenu.style.display = "none";
-          document
-            .querySelector(".sort-dropdown")
-            .setAttribute("aria-expanded", "false");
-        }
-      });
-    }
+  //   document.querySelectorAll(".dropdown-option").forEach((option, index) => {
+  //     if (index < sortOptions.length) {
+  //       option.setAttribute("data-value", sortOptions[index].value);
+  //       option.setAttribute("role", "option");
+  //       option.textContent = sortOptions[index].text;
+  //       option.addEventListener("click", (event) => {
+  //         event.stopPropagation();
+  //         const value = option.dataset.value;
+  //         const text = option.textContent;
+  //         console.log("Sort option selected:", { value, text });
+  //         if (sortText) sortText.textContent = text;
+  //         state.sort = value === "default" || value === "clear" ? null : value;
+  //         state.page = 1;
+  //         getDataByPage();
+  //         if (dropdownMenu) {
+  //           dropdownMenu.style.display = "none";
+  //           document
+  //             .querySelector(".sort-dropdown")
+  //             .setAttribute("aria-expanded", "false");
+  //         }
+  //       });
+  //     }
+  //   });
+  // }
+
+  document.querySelectorAll(".dropdown-option").forEach((option) => {
+    const value = option.dataset.value;
+    const text = option.textContent.trim();
+    option.setAttribute("role", "option");
+    option.addEventListener("click", (event) => {
+      event.stopPropagation();
+      console.log("Sort option selected:", { value, text });
+      if (sortText) sortText.textContent = value === "clear" ? "Sort By" : text;
+      state.sort = value === "clear" ? null : value;
+      state.lastSortOption = value;
+      state.page = 1;
+      getDataByPage();
+      if (dropdownMenu) {
+        dropdownMenu.style.display = "none";
+        document
+          .querySelector(".sort-dropdown")
+          .setAttribute("aria-expanded", "false");
+      }
+    });
   });
 }
 
@@ -807,7 +841,8 @@ window.addEventListener("popstate", () => {
     { value: "created_at", text: "New products first" },
     { value: "price", text: "Price, low to high" },
     { value: "-price", text: "Price, high to low" },
-    { value: "default", text: "Sort by" },
+    // { value: "default", text: "Sort by" },
+    { value: "clear", text: "Clear Sort" },
   ];
 
   if (minPriceInput && maxPriceInput) {
@@ -823,9 +858,8 @@ window.addEventListener("popstate", () => {
   }
 
   if (sortText) {
-    const selectedOption =
-      sortOptions.find((opt) => opt.value === state.sort) || sortOptions[3];
-    sortText.textContent = selectedOption.text;
+    const selectedOption = sortOptions.find((opt) => opt.value === state.sort);
+    sortText.textContent = selectedOption ? selectedOption.text : "Sort By";
   }
 
   if (priceFilter && filterControl) {
