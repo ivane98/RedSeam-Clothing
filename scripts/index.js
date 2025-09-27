@@ -407,31 +407,6 @@ function initializeSortDropdown() {
     sortText.textContent = selectedOption ? selectedOption.text : "Sort by";
   }
 
-  //   document.querySelectorAll(".dropdown-option").forEach((option, index) => {
-  //     if (index < sortOptions.length) {
-  //       option.setAttribute("data-value", sortOptions[index].value);
-  //       option.setAttribute("role", "option");
-  //       option.textContent = sortOptions[index].text;
-  //       option.addEventListener("click", (event) => {
-  //         event.stopPropagation();
-  //         const value = option.dataset.value;
-  //         const text = option.textContent;
-  //         console.log("Sort option selected:", { value, text });
-  //         if (sortText) sortText.textContent = text;
-  //         state.sort = value === "default" || value === "clear" ? null : value;
-  //         state.page = 1;
-  //         getDataByPage();
-  //         if (dropdownMenu) {
-  //           dropdownMenu.style.display = "none";
-  //           document
-  //             .querySelector(".sort-dropdown")
-  //             .setAttribute("aria-expanded", "false");
-  //         }
-  //       });
-  //     }
-  //   });
-  // }
-
   document.querySelectorAll(".dropdown-option").forEach((option) => {
     const value = option.dataset.value;
     const text = option.textContent.trim();

@@ -589,7 +589,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 
   function displayCartItems(cartItems) {
-    console.log("Entering displayCartItems with items:", cartItems);
     const cartPanel = document.querySelector(".shopping-cart");
     const emptyCartPanel = document.querySelector(".cart-is-empty");
     const overlay = document.querySelector(".rectangle-2");
@@ -603,16 +602,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     const cartTitle = cartPanel.querySelector(".text-wrapper-9");
     const orderSummary = cartPanel.querySelector(".frame-23");
 
-    if (!cartTitle) {
-      console.warn("Cart title (.text-wrapper-9) not found in .shopping-cart");
-    }
-    if (!orderSummary) {
-      console.warn("Order summary (.frame-23) not found in .shopping-cart");
-    }
-
-    console.log(
-      "Adding .active to .shopping-cart and .rectangle-2, removing from .cart-is-empty"
-    );
     cartPanel.classList.add("active");
     emptyCartPanel.classList.remove("active");
     overlay.classList.add("active");
@@ -625,21 +614,27 @@ document.addEventListener("DOMContentLoaded", async () => {
       cartTitle.textContent = `Shopping cart (${totalQuantity})`;
     }
 
-    // Clear the container
     cartItemsContainer.innerHTML = "";
 
     cartItems.forEach((item, index) => {
-      console.log(`Rendering cart item ${index + 1}:`, item);
-
       const colorIndex = item.available_colors?.indexOf(item.color) || 0;
       const itemImage =
         colorIndex !== -1 && item.images?.[colorIndex]
           ? item.images[colorIndex]
           : item.main_image || item.images?.[0] || "/images/fallback.png";
 
+      const uniqueId = `${item.id || index}-${item.color || "N/A"}-${
+        item.size || "N/A"
+      }`;
+      console.log(
+        `Rendering cart item: uniqueId=${uniqueId}, id=${
+          item.id || index
+        }, color=${item.color || "N/A"}, size=${item.size || "N/A"}`
+      );
       const itemElement = document.createElement("article");
-      itemElement.className = "cart-item"; // Use a single class for all items
+      itemElement.className = "cart-item";
       itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
+      itemElement.setAttribute("data-unique-id", uniqueId);
       itemElement.innerHTML = `
       <img class="rectangle-3" src="${itemImage}" alt="${
         toCapitalCase(item.name) || "Product"
@@ -665,24 +660,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         </div>
         <div class="frame-12">
           <div class="frame-19" role="group" aria-label="Quantity controls">
-            <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${
-              item.id || index
-            }" data-action="decrease">
+            <button type="button" class="quantity-button" aria-label="Decrease quantity" data-unique-id="${uniqueId}" data-action="decrease">
               <img class="img-2" src="/images/minus.png" alt="Decrease" />
             </button>
             <div class="frame-20"><div class="text-wrapper-12">${
               item.quantity || 1
             }</div></div>
-            <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${
-              item.id || index
-            }" data-action="increase">
+            <button type="button" class="quantity-button" aria-label="Increase quantity" data-unique-id="${uniqueId}" data-action="increase">
               <img class="img-2" src="/images/plus.png" alt="Increase" />
             </button>
           </div>
           <div class="frame-21">
-            <button type="button" class="remove-button" data-item-id="${
-              item.id || index
-            }">
+            <button type="button" class="remove-button" data-unique-id="${uniqueId}">
               <span class="text-wrapper-13">Remove</span>
             </button>
           </div>
@@ -690,8 +679,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       </div>
     `;
 
-      // Append to cartItemsContainer
       cartItemsContainer.appendChild(itemElement);
+      addCartItemEventListeners(
+        uniqueId,
+        item.id || index,
+        item.color || "N/A",
+        item.size || "N/A"
+      );
     });
 
     if (orderSummary) {
@@ -701,12 +695,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         0
       );
       updateOrderSummary(subtotal);
-    } else {
-      console.warn("Skipping order summary update due to missing .frame-23");
     }
-
-    addCartItemEventListeners();
-    console.log("Completed displayCartItems");
   }
 
   function displayEmptyCart() {
@@ -820,15 +809,41 @@ document.addEventListener("DOMContentLoaded", async () => {
     console.log("Completed displayCartError");
   }
 
-  function addCartItemEventListeners() {
-    console.log("Adding cart item event listeners");
-    document.querySelectorAll(".quantity-button").forEach((button) => {
+  function addCartItemEventListeners(uniqueId, itemId, color, size) {
+    const cartItem = document.querySelector(
+      `.cart-item[data-unique-id="${uniqueId}"]`
+    );
+    if (!cartItem) {
+      console.warn(`Cart item not found for uniqueId: ${uniqueId}`);
+      return;
+    }
+
+    const decreaseButton = cartItem.querySelector(
+      `.quantity-button[data-action="decrease"][data-unique-id="${uniqueId}"]`
+    );
+    const increaseButton = cartItem.querySelector(
+      `.quantity-button[data-action="increase"][data-unique-id="${uniqueId}"]`
+    );
+    const removeButton = cartItem.querySelector(
+      `.remove-button[data-unique-id="${uniqueId}"]`
+    );
+    const quantityElement = cartItem.querySelector(
+      ".frame-19 .frame-20 .text-wrapper-12"
+    );
+
+    if (!decreaseButton || !increaseButton || !quantityElement) {
+      console.warn(`Required elements not found for uniqueId: ${uniqueId}`, {
+        decreaseButton,
+        increaseButton,
+        quantityElement,
+      });
+      return;
+    }
+
+    [decreaseButton, increaseButton].forEach((button) => {
       button.addEventListener("click", async () => {
-        const itemId = button.getAttribute("data-item-id");
-        const action = button.getAttribute("data-action");
-        const quantityElement =
-          button.parentElement.querySelector(".text-wrapper-12");
         let currentQuantity = parseInt(quantityElement.textContent, 10);
+        const action = button.getAttribute("data-action");
 
         if (action === "increase") {
           currentQuantity += 1;
@@ -838,9 +853,19 @@ document.addEventListener("DOMContentLoaded", async () => {
           return;
         }
 
+        console.log(
+          `Initiating quantity update for uniqueId: ${uniqueId}, itemId: ${itemId}, color: ${color}, size: ${size}, new quantity: ${currentQuantity}`
+        );
         try {
           const authToken = getCookie("authToken");
           if (!authToken) throw new Error("Please log in to update cart.");
+
+          const requestBody = {
+            quantity: currentQuantity,
+            color: color !== "N/A" ? color : undefined,
+            size: size !== "N/A" ? size : undefined,
+          };
+          console.log("PATCH request body:", requestBody);
 
           const response = await fetch(
             `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
@@ -851,14 +876,24 @@ document.addEventListener("DOMContentLoaded", async () => {
                 "Content-Type": "application/json",
                 Authorization: `Bearer ${authToken}`,
               },
-              body: JSON.stringify({ quantity: currentQuantity }),
+              body: JSON.stringify(requestBody),
             }
           );
 
-          if (!response.ok) throw new Error("Failed to update quantity.");
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Failed to update quantity: ${response.status} ${
+                errorData.message || ""
+              }`
+            );
+          }
 
+          console.log(
+            `Successfully updated item ${itemId} (color: ${color}, size: ${size}) to quantity ${currentQuantity}`
+          );
           quantityElement.textContent = currentQuantity;
-          await fetchCartItems(true);
+          await fetchCartItems();
         } catch (error) {
           console.error("Error updating quantity:", error);
           displayCartError("Failed to update quantity. Please try again.");
@@ -866,10 +901,9 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
     });
 
-    document.querySelectorAll(".remove-button").forEach((button) => {
-      button.addEventListener("click", async () => {
-        const itemId = button.getAttribute("data-item-id");
-
+    if (removeButton) {
+      removeButton.addEventListener("click", async () => {
+        console.log(`Removing item ${itemId} (color: ${color}, size: ${size})`);
         try {
           const authToken = getCookie("authToken");
           if (!authToken) throw new Error("Please log in to remove items.");
@@ -880,21 +914,37 @@ document.addEventListener("DOMContentLoaded", async () => {
               method: "DELETE",
               headers: {
                 Accept: "application/json",
+                "Content-Type": "application/json",
                 Authorization: `Bearer ${authToken}`,
               },
+              body: JSON.stringify({
+                color: color !== "N/A" ? color : undefined,
+                size: size !== "N/A" ? size : undefined,
+              }),
             }
           );
 
-          if (!response.ok) throw new Error("Failed to remove item.");
+          if (!response.ok) {
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(
+              `Failed to remove item: ${response.status} ${
+                errorData.message || ""
+              }`
+            );
+          }
 
-          await fetchCartItems(true);
+          console.log(
+            `Successfully removed item ${itemId} (color: ${color}, size: ${size})`
+          );
+          await fetchCartItems();
         } catch (error) {
           console.error("Error removing item:", error);
           displayCartError("Failed to remove item. Please try again.");
         }
       });
-    });
-    console.log("Completed adding cart item event listeners");
+    } else {
+      console.warn(`Remove button not found for uniqueId: ${uniqueId}`);
+    }
   }
 
   const cartButton = document.querySelector(".cart-button");
@@ -947,6 +997,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const cartPanel = document.querySelector(".shopping-cart");
       const emptyCartPanel = document.querySelector(".cart-is-empty");
       const overlay = document.querySelector(".rectangle-2");
+
       if (cartPanel && emptyCartPanel && overlay) {
         cartPanel.classList.remove("active");
         emptyCartPanel.classList.remove("active");
@@ -979,6 +1030,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         cartPanel.classList.remove("active");
         emptyCartPanel.classList.remove("active");
         overlay.classList.remove("active");
+
         console.log(
           "Closed via overlay, shopping cart classList:",
           cartPanel.classList.toString()
