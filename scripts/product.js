@@ -154,8 +154,16 @@ document.addEventListener("DOMContentLoaded", async () => {
           label.style.width = "38px";
           label.style.height = "38px";
           wrapper.appendChild(label);
+          // wrapper.style.border =
+          //   index === 0 ? `2px solid ${getColorValue(color)}` : "none";
           wrapper.style.border =
-            index === 0 ? `2px solid ${getColorValue(color)}` : "none";
+            index === 0
+              ? `2px solid ${
+                  color.toLowerCase() === "white"
+                    ? "#cfceceff"
+                    : getColorValue(color)
+                }`
+              : "none";
           wrapper.style.borderRadius = "50%";
           wrapper.style.display = "inline-flex";
           wrapper.style.alignItems = "center";
@@ -190,7 +198,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 lastSelectedWrapper.style.border = "none";
               }
 
-              wrapper.style.border = `2px solid ${getColorValue(color)}`;
+              // wrapper.style.border = `2px solid ${getColorValue(color)}`;
+              wrapper.style.border = `2px solid ${
+                color.toLowerCase() === "white"
+                  ? "#cfceceff"
+                  : getColorValue(color)
+              }`;
               lastSelectedWrapper = wrapper;
 
               const thumbnailButtons =
@@ -198,6 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               thumbnailButtons.forEach((btn) => (btn.style.border = "none"));
               if (thumbnailButtons[index]) {
                 thumbnailButtons[index].style.border = "2px solid #FF4000";
+                thumbnailButtons[index].style.borderRadius = "5px";
                 lastSelectedThumbnail = thumbnailButtons[index];
               }
             }
@@ -443,7 +457,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!authToken) {
           alert("You must be logged in to add items to cart.");
-          window.location.href = "login.html";
           return;
         }
 
@@ -1096,6 +1109,19 @@ function getColorValue(color) {
     grey: "#808080",
     orange: "#FFA500",
     multi: "#808080",
+    cyan: "#00FFFF",
+    magenta: "#FF00FF",
+    teal: "#008080",
+    olive: "#808000",
+    maroon: "#800000",
+    brown: "#A52A2A",
+    "forest green": "#228B22",
+    violet: "#EE82EE",
+    gold: "#FFD700",
+    silver: "#C0C0C0",
+    indigo: "#4B0082",
+    turquoise: "#40E0D0",
+    coral: "#FF7F50",
   };
   return colorMap[color.toLowerCase()] || "#808080";
 }
