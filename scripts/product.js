@@ -1,9 +1,23 @@
 document.addEventListener("DOMContentLoaded", async () => {
+  const authToken = getCookie("authToken");
   const logo = document.querySelector(".div");
+  const loginBtn = document.querySelector(".login-btn");
 
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
+
+  if (!authToken) {
+    loginBtn.style.display = "flex";
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      console.log("login");
+      window.location.href = "login.html";
+    });
+  }
+
   const user = JSON.parse(localStorage.getItem("user"));
   const avatarImg = document.querySelector(".ellipse");
 
@@ -297,8 +311,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
       } else {
         const noSize = document.createElement("p");
-        noSize.textContent = "No sizes available";
+        noSize.textContent = "Out of stock";
+        noSize.style.fontFamily = "Poppins";
+        noSize.style.fontWeight = "bold";
+        noSize.style.color = "red";
         sizeRadioGroup.appendChild(noSize);
+
+        const addToCartButton = document.querySelector("button.primary");
+        addToCartButton.disabled = true;
       }
 
       sizePickerContainer.appendChild(sizeLegend);

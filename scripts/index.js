@@ -840,10 +840,24 @@ window.addEventListener("popstate", () => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  const authToken = getCookie("authToken");
   const logo = document.querySelector(".div");
+  const loginBtn = document.querySelector(".login-btn");
+
   if (logo) {
     logo.addEventListener("click", () => {
       window.location.href = "index.html";
+    });
+  }
+
+  if (!authToken) {
+    loginBtn.style.display = "flex";
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      console.log("login");
+      window.location.href = "login.html";
     });
   }
 

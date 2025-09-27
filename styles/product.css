@@ -6,6 +6,29 @@
   overflow: hidden;
 }
 
+.login-btn {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 7px 14px;
+  position: relative;
+  border-radius: 10px;
+  border: 1px solid;
+  border-color: #e1dfe1;
+  cursor: pointer;
+  background-color: var(--red);
+  color: white;
+  font-weight: bold;
+  font-family: "Poppins", "Helvetica";
+  margin-left: 4px;
+}
+
+.login-btn:hover {
+  background-color: #e63900;
+}
+
 .listing-page .rectangle-2 {
   display: none;
   position: absolute;
@@ -71,8 +94,6 @@ article {
   font-weight: bold;
   color: #333;
   flex-shrink: 0;
-
-
 }
 
 .listing-page .shopping-cart.active {
@@ -139,7 +160,6 @@ article {
   align-items: center;
   gap: 17px;
 }
-
 
 .listing-page .shopping-cart .rectangle-3 {
   position: relative;
@@ -1033,8 +1053,8 @@ article {
   height: 0;
 }
 
-.color-input:focus+label,
-.size-input:focus+label {
+.color-input:focus + label,
+.size-input:focus + label {
   outline: 2px solid #4a90e2;
   outline-offset: 2px;
 }
