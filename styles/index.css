@@ -58,7 +58,7 @@
   min-height: 100px;
 }
 
-.article-element {
+/* .article-element {
   width: 460px;
   height: 134px;
   border-radius: 8px;
@@ -71,7 +71,7 @@
   font-weight: bold;
   color: #333;
   flex-shrink: 0;
-}
+} */
 
 .listing-page .shopping-cart.active {
   display: block !important;
