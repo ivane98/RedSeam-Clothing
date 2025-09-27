@@ -521,7 +521,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             console.log(
               `Updated quantity of item ${existingItem.id} to ${newQuantity}`
             );
-            alert("Updated quantity in cart successfully!");
+            await fetchCartItems(true);
           } else {
             throw new Error(
               "Validation error: Item not found in cart for update."
@@ -535,8 +535,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         } else {
           const responseData = await response.json();
           console.log("Added new item to cart:", responseData);
-          alert("Product added to cart successfully!");
-          window.location.href = "index.html";
+          await fetchCartItems(true);
         }
       } catch (error) {
         console.error("Error adding product to cart:", error);
