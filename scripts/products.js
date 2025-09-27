@@ -93,7 +93,7 @@ function displayProducts(products) {
           .map(
             (product) => `
         <article class="div-2" data-product-id="${product.id || "no-id"}">
-          <a href="single-product.html?id=${
+          <a href="product.html?id=${
             product.id || "no-id"
           }" class="product-link">
             <img class="rectangle" src="${product.cover_image || ""}" alt="${
@@ -118,7 +118,7 @@ function displayProducts(products) {
       event.preventDefault();
       const productId = card.getAttribute("data-product-id");
       if (productId && productId !== "no-id") {
-        window.location.href = `single-product.html?id=${productId}`;
+        window.location.href = `product.html?id=${productId}`;
       } else {
         console.error("No valid product ID:", card);
       }

@@ -1,132 +1,180 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8" />
+    <title>RedSeam Clothing</title>
+    <link rel="stylesheet" href="styles/globals.css" />
+    <link rel="stylesheet" href="styles/styleguide.css" />
+    <link rel="stylesheet" href="/styles/checkout.css" />
+    <link rel="stylesheet" href="/styles/congrats.css" />
+  </head>
 
-<head>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta charset="utf-8" />
-  <title>RedSeam Clothing</title>
-  <link rel="stylesheet" href="styles/globals.css" />
-  <link rel="stylesheet" href="styles/styleguide.css" />
-  <link rel="stylesheet" href="/styles/checkout/style.css" />
-  <link rel="stylesheet" href="/styles/congrats/style.css" />
-</head>
-
-<body>
-  <main class="order">
-    <header class="header">
-      <div class="div">
-        <img class="img" src="images/HandEye.png" alt="RedSeam Clothing logo" />
-        <div class="text-wrapper">RedSeam Clothing</div>
-      </div>
-      <nav class="frame" role="navigation" aria-label="User navigation">
-        <button type="button" class="cart-button" aria-label="Shopping cart">
-          <img class="img" src="images/shopping-cart.png" alt="" />
-        </button>
+  <body>
+    <main class="order">
+      <header class="header">
         <div class="div">
-          <img class="ellipse" alt="User avatar" />
-          <button type="button" class="user-menu-button" aria-label="User menu">
-            <img class="img-2" src="images/chevron-down.png" alt="" />
+          <img
+            class="img"
+            src="images/HandEye.png"
+            alt="RedSeam Clothing logo"
+          />
+          <div class="text-wrapper">RedSeam Clothing</div>
+        </div>
+        <nav class="frame" role="navigation" aria-label="User navigation">
+          <button type="button" class="cart-button" aria-label="Shopping cart">
+            <img class="img" src="images/shopping-cart.png" alt="" />
           </button>
-        </div>
-      </nav>
-    </header>
-    <section class="frame-2" aria-labelledby="order-summary">
-      <div class="frame-3">
-
-      </div>
-      <div class="frame-12" role="region" aria-label="Order summary">
-        <div class="frame-8">
-          <div class="text-wrapper-6">Items subtotal</div>
-          <div class="text-wrapper-7">$ 50</div>
-        </div>
-        <div class="frame-8">
-          <div class="text-wrapper-6">Delivery</div>
-          <div class="text-wrapper-7">$ 5</div>
-        </div>
-        <div class="frame-8">
-          <div class="text-wrapper-8">Total</div>
-          <div class="text-wrapper-8">$55</div>
-        </div>
-      </div>
-      <button type="submit" class="primary" form="checkout-form">
-        <span class="add-to-cart">Pay</span>
-      </button>
-    </section>
-    <div class="rectangle-2"></div>
-    <form id="checkout-form" class="checkout-form" novalidate>
-      <div class="frame-13">
-        <div class="frame-14">
-          <div class="frame-15">
-            <div class="frame-15">
-              <label for="name" class="mail">Name</label>
-              <input type="text" id="name" name="name" class="form-input" required aria-required="true" />
-            </div>
+          <div class="div">
+            <img class="ellipse" alt="User avatar" />
+            <button
+              type="button"
+              class="user-menu-button"
+              aria-label="User menu"
+            >
+              <img class="img-2" src="images/chevron-down.png" alt="" />
+            </button>
+          </div>
+        </nav>
+      </header>
+      <section class="frame-2" aria-labelledby="order-summary">
+        <div class="frame-3"></div>
+        <div class="frame-12" role="region" aria-label="Order summary">
+          <div class="frame-8">
+            <div class="text-wrapper-6">Items subtotal</div>
+            <div class="text-wrapper-7">$ 50</div>
+          </div>
+          <div class="frame-8">
+            <div class="text-wrapper-6">Delivery</div>
+            <div class="text-wrapper-7">$ 5</div>
+          </div>
+          <div class="frame-8">
+            <div class="text-wrapper-8">Total</div>
+            <div class="text-wrapper-8">$55</div>
           </div>
         </div>
-      </div>
-      <div class="frame-16">
-        <div class="frame-14">
-          <div class="frame-15">
-            <div class="frame-15">
-              <label for="address" class="mail">Address</label>
-              <input type="text" id="address" name="address" class="form-input" required aria-required="true" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="frame-17">
-        <div class="frame-14">
-          <div class="frame-15">
-            <img class="img-2" src="images/envelope.png" alt="" />
-            <div class="frame-15">
-              <label for="email" class="mail">Email</label>
-              <input type="email" id="email" name="email" class="form-input" required aria-required="true" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="frame-18">
-        <div class="frame-14">
-          <div class="frame-15">
-            <div class="frame-15">
-              <label for="surname" class="mail">Surname</label>
-              <input type="text" id="surname" name="surname" class="form-input" required aria-required="true" />
-            </div>
-          </div>
-        </div>
-      </div>
-      <div class="frame-19">
-        <div class="frame-14">
-          <div class="frame-15">
-            <label for="zipcode" class="mail">Zip code</label>
-            <input type="text" id="zipcode" name="zipcode" class="form-input" required aria-required="true" />
-          </div>
-        </div>
-      </div>
-    </form>
-    <h1 class="text-wrapper-9">Checkout</h1>
-    <h2 class="text-wrapper-10">Order details</h2>
-  </main>
-
-  <div id="congratulatory-modal" class="modal hidden">
-    <div class="success" role="main">
-      <button class="heroicons-mini-x" type="button" aria-label="Close success message" tabindex="0">
-        <img src="images/x-mark.png" alt="" role="presentation" />
-      </button>
-      <section class="frame" aria-labelledby="success-heading">
-        <img class="img" src="images/check.png" alt="Success checkmark icon" />
-        <div class="div">
-          <h1 class="text-wrapper" id="success-heading">Congrats!</h1>
-          <p class="p">Your order is placed successfully!</p>
-        </div>
+        <button type="submit" class="primary" form="checkout-form">
+          <span class="add-to-cart">Pay</span>
+        </button>
       </section>
-      <button class="primary" type="button" aria-label="Continue shopping">
-        <span class="add-to-cart">Continue shopping</span>
-      </button>
+      <div class="rectangle-2"></div>
+      <form id="checkout-form" class="checkout-form" novalidate>
+        <div class="frame-13">
+          <div class="frame-14">
+            <div class="frame-15">
+              <div class="frame-15">
+                <label for="name" class="mail">Name</label>
+                <input
+                  type="text"
+                  id="name"
+                  name="name"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-16">
+          <div class="frame-14">
+            <div class="frame-15">
+              <div class="frame-15">
+                <label for="address" class="mail">Address</label>
+                <input
+                  type="text"
+                  id="address"
+                  name="address"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-17">
+          <div class="frame-14">
+            <div class="frame-15">
+              <img class="img-2" src="images/envelope.png" alt="" />
+              <div class="frame-15">
+                <label for="email" class="mail">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-18">
+          <div class="frame-14">
+            <div class="frame-15">
+              <div class="frame-15">
+                <label for="surname" class="mail">Surname</label>
+                <input
+                  type="text"
+                  id="surname"
+                  name="surname"
+                  class="form-input"
+                  required
+                  aria-required="true"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="frame-19">
+          <div class="frame-14">
+            <div class="frame-15">
+              <label for="zipcode" class="mail">Zip code</label>
+              <input
+                type="text"
+                id="zipcode"
+                name="zipcode"
+                class="form-input"
+                required
+                aria-required="true"
+              />
+            </div>
+          </div>
+        </div>
+      </form>
+      <h1 class="text-wrapper-9">Checkout</h1>
+      <h2 class="text-wrapper-10">Order details</h2>
+    </main>
+
+    <div id="congratulatory-modal" class="modal hidden">
+      <div class="success" role="main">
+        <button
+          class="heroicons-mini-x"
+          type="button"
+          aria-label="Close success message"
+          tabindex="0"
+        >
+          <img src="images/x-mark.png" alt="" role="presentation" />
+        </button>
+        <section class="frame" aria-labelledby="success-heading">
+          <img
+            class="img"
+            src="images/check.png"
+            alt="Success checkmark icon"
+          />
+          <div class="div">
+            <h1 class="text-wrapper" id="success-heading">Congrats!</h1>
+            <p class="p">Your order is placed successfully!</p>
+          </div>
+        </section>
+        <button class="primary" type="button" aria-label="Continue shopping">
+          <span class="add-to-cart">Continue shopping</span>
+        </button>
+      </div>
     </div>
-  </div>
 
-  <script type="module" src="scripts/checkout.js"></script>
-</body>
-
+    <script type="module" src="scripts/checkout.js"></script>
+  </body>
 </html>
