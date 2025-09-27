@@ -420,6 +420,307 @@ function initializeSortDropdown() {
   });
 }
 
+// ADDED FOR CART: Cart fetching and display functions
+async function fetchCartItems(render = true) {
+  const authToken = getCookie("authToken");
+  if (!authToken) {
+    console.error("No auth token found");
+    alert("You must be logged in to view your cart");
+    return [];
+  }
+
+  try {
+    const response = await fetch(
+      "https://api.redseam.redberryinternship.ge/api/cart",
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+
+    const cartItems = await response.json();
+    if (render) {
+      if (cartItems.length === 0) {
+        displayEmptyCart();
+      } else {
+        displayCartItems(cartItems);
+      }
+    }
+    return cartItems;
+  } catch (error) {
+    console.error("Error fetching cart items:", error);
+    if (render)
+      displayCartError("Failed to load cart items. Please try again.");
+    return [];
+  }
+}
+
+function displayCartItems(cartItems) {
+  const cartPanel = document.querySelector(".shopping-cart");
+  const emptyCartPanel = document.querySelector(".cart-is-empty");
+  const overlay = document.querySelector(".rectangle-2");
+  const cartItemsContainer = cartPanel.querySelector(".cart-items-container");
+
+  if (!cartPanel || !emptyCartPanel || !overlay || !cartItemsContainer) {
+    console.error("Required cart elements not found");
+    return;
+  }
+
+  const cartTitle = cartPanel.querySelector(".text-wrapper-9");
+  const orderSummary = cartPanel.querySelector(".frame-23");
+
+  cartPanel.classList.add("active");
+  emptyCartPanel.classList.remove("active");
+  overlay.classList.add("active");
+
+  if (cartTitle) {
+    const totalQuantity = cartItems.reduce(
+      (sum, item) => sum + (item.quantity || 1),
+      0
+    );
+    cartTitle.textContent = `Shopping cart (${totalQuantity})`;
+  }
+
+  cartItemsContainer.innerHTML = "";
+
+  cartItems.forEach((item, index) => {
+    const colorIndex = item.available_colors?.indexOf(item.color) || 0;
+    const itemImage =
+      colorIndex !== -1 && item.images?.[colorIndex]
+        ? item.images[colorIndex]
+        : item.main_image || item.images?.[0] || "/images/fallback.png";
+
+    const itemElement = document.createElement("article");
+    itemElement.className = "cart-item";
+    itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
+    itemElement.innerHTML = `
+      <img class="rectangle-3" src="${itemImage}" alt="${
+      toCapitalCase(item.name) || "Product"
+    }" />
+      <div class="frame-15">
+        <div class="frame-16">
+          <div class="frame-17">
+            <div class="kids-curved-hilfiger-wrapper">
+              <h3 class="kids-curved-hilfiger-2">${
+                toCapitalCase(item.name) || "Unknown Product"
+              }</h3>
+            </div>
+            <div class="text-wrapper-10">${
+              toCapitalCase(item.color) || "N/A"
+            }</div>
+            <div class="text-wrapper-10">${(
+              item.size || "N/A"
+            ).toUpperCase()}</div>
+          </div>
+          <div class="frame-18">
+            <div class="text-wrapper-11">$${item.price ? item.price : "0"}</div>
+          </div>
+        </div>
+        <div class="frame-12">
+          <div class="frame-19" role="group" aria-label="Quantity controls">
+            <button type="button" class="quantity-button" aria-label="Decrease quantity" data-item-id="${
+              item.id || index
+            }" data-action="decrease">
+              <img class="img-2" src="/images/minus.png" alt="Decrease" />
+            </button>
+            <div class="frame-20"><div class="text-wrapper-12">${
+              item.quantity || 1
+            }</div></div>
+            <button type="button" class="quantity-button" aria-label="Increase quantity" data-item-id="${
+              item.id || index
+            }" data-action="increase">
+              <img class="img-2" src="/images/plus.png" alt="Increase" />
+            </button>
+          </div>
+          <div class="frame-21">
+            <button type="button" class="remove-button" data-item-id="${
+              item.id || index
+            }">
+              <span class="text-wrapper-13">Remove</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+
+    cartItemsContainer.appendChild(itemElement);
+  });
+
+  if (orderSummary) {
+    const subtotal = cartItems.reduce(
+      (sum, item) =>
+        sum + (item.total_price || item.price * item.quantity || 0),
+      0
+    );
+    updateOrderSummary(subtotal);
+  }
+
+  addCartItemEventListeners();
+}
+
+function displayEmptyCart() {
+  const cartPanel = document.querySelector(".shopping-cart");
+  const emptyCartPanel = document.querySelector(".cart-is-empty");
+  const emptyCartTitle = emptyCartPanel.querySelector(".empty-cart-heading");
+  const overlay = document.querySelector(".rectangle-2");
+
+  if (!cartPanel || !emptyCartPanel || !emptyCartTitle || !overlay) {
+    console.error("Required cart elements not found");
+    return;
+  }
+
+  emptyCartPanel.classList.add("active");
+  cartPanel.classList.remove("active");
+  overlay.classList.add("active");
+  emptyCartTitle.textContent = "Shopping cart (0)";
+}
+
+function updateOrderSummary(subtotal) {
+  const orderSummary = document.querySelector(".frame-23");
+  if (!orderSummary) {
+    console.warn("Order summary (.frame-23) not found");
+    return;
+  }
+
+  const delivery = 5;
+  const total = subtotal + delivery;
+
+  orderSummary.innerHTML = `
+    <div class="frame-12">
+      <div class="text-wrapper-14">Items subtotal</div>
+      <div class="text-wrapper-15">$${subtotal}</div>
+    </div>
+    <div class="frame-12">
+      <div class="text-wrapper-14">Delivery</div>
+      <div class="text-wrapper-15">$${delivery}</div>
+    </div>
+    <div class="frame-12">
+      <div class="text-wrapper-16">Total</div>
+      <div class="text-wrapper-16">$${total}</div>
+    </div>
+  `;
+}
+
+function displayCartError(message) {
+  const cartPanel = document.querySelector(".shopping-cart");
+  const emptyCartPanel = document.querySelector(".cart-is-empty");
+  const orderSummary = cartPanel.querySelector(".frame-23");
+  const overlay = document.querySelector(".rectangle-2");
+
+  if (!cartPanel || !emptyCartPanel || !overlay) {
+    console.error("Required cart elements not found");
+    return;
+  }
+
+  cartPanel.classList.add("active");
+  emptyCartPanel.classList.remove("active");
+  overlay.classList.add("active");
+
+  const existingItems = cartPanel.querySelectorAll(
+    "article[class^='frame-'], .empty-cart, .error-message"
+  );
+  existingItems.forEach((item) => item.remove());
+
+  const errorMessage = document.createElement("p");
+  errorMessage.className = "error-message";
+  errorMessage.textContent = message;
+  if (orderSummary) {
+    cartPanel.insertBefore(errorMessage, orderSummary);
+  } else {
+    cartPanel.appendChild(errorMessage);
+  }
+}
+
+function addCartItemEventListeners() {
+  document.querySelectorAll(".quantity-button").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const itemId = button.getAttribute("data-item-id");
+      const action = button.getAttribute("data-action");
+      const quantityElement =
+        button.parentElement.querySelector(".text-wrapper-12");
+      let currentQuantity = parseInt(quantityElement.textContent, 10);
+
+      if (action === "increase") {
+        currentQuantity += 1;
+      } else if (action === "decrease" && currentQuantity > 1) {
+        currentQuantity -= 1;
+      } else {
+        return;
+      }
+
+      try {
+        const authToken = getCookie("authToken");
+        if (!authToken) throw new Error("Please log in to update cart.");
+
+        const response = await fetch(
+          `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
+          {
+            method: "PATCH",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+            body: JSON.stringify({ quantity: currentQuantity }),
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to update quantity.");
+
+        quantityElement.textContent = currentQuantity;
+        await fetchCartItems(true);
+      } catch (error) {
+        console.error("Error updating quantity:", error);
+        displayCartError("Failed to update quantity. Please try again.");
+      }
+    });
+  });
+
+  document.querySelectorAll(".remove-button").forEach((button) => {
+    button.addEventListener("click", async () => {
+      const itemId = button.getAttribute("data-item-id");
+
+      try {
+        const authToken = getCookie("authToken");
+        if (!authToken) throw new Error("Please log in to remove items.");
+
+        const response = await fetch(
+          `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
+          {
+            method: "DELETE",
+            headers: {
+              Accept: "application/json",
+              Authorization: `Bearer ${authToken}`,
+            },
+          }
+        );
+
+        if (!response.ok) throw new Error("Failed to remove item.");
+
+        await fetchCartItems(true);
+      } catch (error) {
+        console.error("Error removing item:", error);
+        displayCartError("Failed to remove item. Please try again.");
+      }
+    });
+  });
+}
+
+// ADDED FOR CART: Utility function for authentication
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(";").shift();
+  return null;
+}
+
 window.addEventListener("popstate", () => {
   parseQueryParams();
   const minPriceInput = document.querySelector("#price-from");
@@ -493,6 +794,83 @@ document.addEventListener("DOMContentLoaded", () => {
   initializePriceFilter();
   initializeSortDropdown();
   getDataByPage();
+
+  // ADDED FOR CART: Cart button and interaction event listeners
+  const cartButton = document.querySelector(".cart-button");
+  if (cartButton) {
+    cartButton.addEventListener("click", () => {
+      console.log("Cart button clicked");
+      fetchCartItems(true);
+    });
+  } else {
+    console.error("Cart button (.cart-button) not found");
+  }
+
+  const closeButton = document.querySelector(
+    ".shopping-cart .heroicons-solid-x"
+  );
+  if (closeButton) {
+    closeButton.addEventListener("click", () => {
+      console.log("Shopping cart close button clicked");
+      const cartPanel = document.querySelector(".shopping-cart");
+      const emptyCartPanel = document.querySelector(".cart-is-empty");
+      const overlay = document.querySelector(".rectangle-2");
+      if (cartPanel && emptyCartPanel && overlay) {
+        cartPanel.classList.remove("active");
+        emptyCartPanel.classList.remove("active");
+        overlay.classList.remove("active");
+      }
+    });
+  }
+
+  const emptyCartCloseButton = document.querySelector(
+    ".cart-is-empty .close-cart-button"
+  );
+  if (emptyCartCloseButton) {
+    emptyCartCloseButton.addEventListener("click", () => {
+      console.log("Empty cart close button clicked");
+      const cartPanel = document.querySelector(".shopping-cart");
+      const emptyCartPanel = document.querySelector(".cart-is-empty");
+      const overlay = document.querySelector(".rectangle-2");
+      if (cartPanel && emptyCartPanel && overlay) {
+        cartPanel.classList.remove("active");
+        emptyCartPanel.classList.remove("active");
+        overlay.classList.remove("active");
+      }
+    });
+  }
+
+  const overlay = document.querySelector(".rectangle-2");
+  if (overlay) {
+    overlay.addEventListener("click", () => {
+      console.log("Overlay clicked");
+      const cartPanel = document.querySelector(".shopping-cart");
+      const emptyCartPanel = document.querySelector(".cart-is-empty");
+      if (cartPanel && emptyCartPanel) {
+        cartPanel.classList.remove("active");
+        emptyCartPanel.classList.remove("active");
+        overlay.classList.remove("active");
+      }
+    });
+  }
+
+  const checkoutButton = document.querySelector(".shopping-cart .primary-2");
+  if (checkoutButton) {
+    checkoutButton.addEventListener("click", () => {
+      console.log("Go to Checkout button clicked");
+      window.location.href = "checkout.html";
+    });
+  }
+
+  const startShoppingButton = document.querySelector(
+    ".cart-is-empty .shopping-button-wrapper"
+  );
+  if (startShoppingButton) {
+    startShoppingButton.addEventListener("click", () => {
+      console.log("Start shopping button clicked");
+      window.location.href = "index.html";
+    });
+  }
 });
 
 function toCapitalCase(str) {
