@@ -54,7 +54,7 @@ async function handleSubmit(event) {
   const form = event.target;
   const fields = form.querySelectorAll("input");
   const submitBtn = form.querySelector("button[type=submit]");
-  submitBtn.disabled = true; 
+  submitBtn.disabled = true;
 
   let isValid = true;
   fields.forEach((field) => {
@@ -127,7 +127,7 @@ async function handleSubmit(event) {
     console.error("Network error:", error);
     alert("Network error. Please check your connection.");
   } finally {
-    submitBtn.disabled = false; 
+    submitBtn.disabled = false;
   }
 }
 
@@ -181,7 +181,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   removeBtn.addEventListener("click", () => {
     avatarInput.value = "";
-    avatarImg.src = "images/photo.png";
+    avatarImg.src = "assets/photo.png";
     document.getElementById("avatar-error").textContent = "";
     document.getElementById("avatar-error").style.display = "none";
   });

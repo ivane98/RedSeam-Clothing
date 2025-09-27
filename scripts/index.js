@@ -174,7 +174,7 @@ function updatePagination(meta) {
     } data-url="${
     meta.links.find((l) => l.label.includes("Previous"))?.url || ""
   }">
-      <img class="heroicons-mini" src="images/chevron-left.png" alt="" />
+      <img class="heroicons-mini" src="assets/chevron-left.png" alt="" />
     </button>
   `;
 
@@ -244,7 +244,7 @@ function updatePagination(meta) {
     <button class="pagination-nav" type="button" aria-label="Next page" ${
       meta.links.find((l) => l.label.includes("Next"))?.url ? "" : "disabled"
     } data-url="${meta.links.find((l) => l.label.includes("Next"))?.url || ""}">
-      <img class="heroicons-mini" src="images/chevron-right.png" alt="" />
+      <img class="heroicons-mini" src="assets/chevron-right.png" alt="" />
     </button>
   `;
 
@@ -504,7 +504,7 @@ function displayCartItems(cartItems) {
     const itemImage =
       colorIndex !== -1 && item.images?.[colorIndex]
         ? item.images[colorIndex]
-        : item.main_image || item.images?.[0] || "/images/fallback.png";
+        : item.main_image || item.images?.[0] || "/assets/fallback.png";
 
     const uniqueId = `${item.id || index}-${item.color || "N/A"}-${
       item.size || "N/A"
@@ -544,13 +544,13 @@ function displayCartItems(cartItems) {
         <div class="frame-12">
           <div class="frame-19" role="group" aria-label="Quantity controls">
             <button type="button" class="quantity-button" aria-label="Decrease quantity" data-unique-id="${uniqueId}" data-action="decrease">
-              <img class="img-2" src="/images/minus.png" alt="Decrease" />
+              <img class="img-2" src="/assets/minus.png" alt="Decrease" />
             </button>
             <div class="frame-20"><div class="text-wrapper-12">${
               item.quantity || 1
             }</div></div>
             <button type="button" class="quantity-button" aria-label="Increase quantity" data-unique-id="${uniqueId}" data-action="increase">
-              <img class="img-2" src="/images/plus.png" alt="Increase" />
+              <img class="img-2" src="/assets/plus.png" alt="Increase" />
             </button>
           </div>
           <div class="frame-21">
@@ -876,7 +876,7 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarImg.src = user.avatar;
     avatarImg.alt = `${user.name || "User"} avatar`;
   } else if (avatarImg) {
-    avatarImg.src = "images/user-icon.png";
+    avatarImg.src = "assets/user-icon.png";
     avatarImg.alt = "User avatar";
     avatarImg.style.width = "20px";
     avatarImg.style.height = "20px";

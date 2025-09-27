@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     avatarImg.src = user.avatar;
     avatarImg.alt = `${user.name || "User"} avatar`;
   } else {
-    avatarImg.src = "images/user-icon.png";
+    avatarImg.src = "assets/user-icon.png";
     avatarImg.alt = `user avatar`;
     avatarImg.style.width = "20px";
     avatarImg.style.height = "20px";
@@ -66,7 +66,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
       if (mainImage) {
         mainImage.src =
-          product.images?.[0] || product.main_image || "/images/fallback.png";
+          product.images?.[0] || product.main_image || "/assets/fallback.png";
         mainImage.alt = `${toCapitalCase(product.name)} - Main product image`;
       } else {
         console.warn("Main image (.rectangle) not found");
@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             >
               <img
                 class="image"
-                src="${img || "/images/fallback.png"}"
+                src="${img || "/assets/fallback.png"}"
                 alt="Product thumbnail ${index + 1}"
               />
             </button>
@@ -184,7 +184,7 @@ document.addEventListener("DOMContentLoaded", async () => {
               const selectedImage =
                 product.images[index] ||
                 product.main_image ||
-                "/images/fallback.png";
+                "/assets/fallback.png";
               if (mainImage) {
                 mainImage.src = selectedImage;
                 mainImage.alt = `${toCapitalCase(
@@ -366,7 +366,7 @@ document.addEventListener("DOMContentLoaded", async () => {
           const selectedColor = product.available_colors[index];
 
           if (mainImage) {
-            mainImage.src = product.images[index] || "/images/fallback.png";
+            mainImage.src = product.images[index] || "/assets/fallback.png";
             mainImage.alt = `${toCapitalCase(product.name)} - ${toCapitalCase(
               selectedColor
             )}`;
@@ -621,7 +621,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const itemImage =
         colorIndex !== -1 && item.images?.[colorIndex]
           ? item.images[colorIndex]
-          : item.main_image || item.images?.[0] || "/images/fallback.png";
+          : item.main_image || item.images?.[0] || "/assets/fallback.png";
 
       const uniqueId = `${item.id || index}-${item.color || "N/A"}-${
         item.size || "N/A"
@@ -661,13 +661,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         <div class="frame-12">
           <div class="frame-19" role="group" aria-label="Quantity controls">
             <button type="button" class="quantity-button" aria-label="Decrease quantity" data-unique-id="${uniqueId}" data-action="decrease">
-              <img class="img-2" src="/images/minus.png" alt="Decrease" />
+              <img class="img-2" src="/assets/minus.png" alt="Decrease" />
             </button>
             <div class="frame-20"><div class="text-wrapper-12">${
               item.quantity || 1
             }</div></div>
             <button type="button" class="quantity-button" aria-label="Increase quantity" data-unique-id="${uniqueId}" data-action="increase">
-              <img class="img-2" src="/images/plus.png" alt="Increase" />
+              <img class="img-2" src="/assets/plus.png" alt="Increase" />
             </button>
           </div>
           <div class="frame-21">

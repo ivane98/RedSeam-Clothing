@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     avatarImg.src = userDataString.avatar;
     avatarImg.alt = `${userDataString.name || "User"} avatar`;
   } else {
-    avatarImg.src = "images/user-icon.png";
+    avatarImg.src = "assets/user-icon.png";
     avatarImg.alt = `user avatar`;
     avatarImg.style.width = "20px";
     avatarImg.style.height = "20px";
@@ -151,7 +151,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 retryErrorData
               );
               throw new Error(
-                `Checkout failed: ${retryErrorData.message || retryResponse.status
+                `Checkout failed: ${
+                  retryErrorData.message || retryResponse.status
                 }`
               );
             }
@@ -283,7 +284,6 @@ function displayCartItems(cartItems) {
     return;
   }
 
-
   cartItems.forEach((item, index) => {
     const itemElement = document.createElement("article");
     itemElement.className = `frame-4`;
@@ -291,25 +291,28 @@ function displayCartItems(cartItems) {
     itemElement.innerHTML = `
       <img
         class="rectangle"
-        src="${item.cover_image || item.images?.[0] || "/images/fallback.png"}"
+        src="${item.cover_image || item.images?.[0] || "/assets/fallback.png"}"
         alt="${toCapitalCase(item.name) || "Product"}"
       />
       <div class="frame-5">
         <div class="frame-6">
           <div class="frame-7">
             <div class="kids-curved-hilfiger-wrapper">
-              <h3 class="kids-curved-hilfiger">${toCapitalCase(item.name) || "Unknown Product"
-      }</h3>
+              <h3 class="kids-curved-hilfiger">${
+                toCapitalCase(item.name) || "Unknown Product"
+              }</h3>
             </div>
-            <div class="text-wrapper-2">${toCapitalCase(item.color) || "N/A"
-      }</div>
+            <div class="text-wrapper-2">${
+              toCapitalCase(item.color) || "N/A"
+            }</div>
             <div class="text-wrapper-2">${(
-        item.size || "N/A"
-      ).toUpperCase()}</div>
+              item.size || "N/A"
+            ).toUpperCase()}</div>
           </div>
           <div class="div-wrapper">
-            <div class="text-wrapper-3">$${item.price ? item.price.toFixed(2) : "0.00"
-      }</div>
+            <div class="text-wrapper-3">$${
+              item.price ? item.price.toFixed(2) : "0.00"
+            }</div>
           </div>
         </div>
         <div class="frame-8">
@@ -321,11 +324,12 @@ function displayCartItems(cartItems) {
               data-item-id="${item.id || ""}"
               data-action="decrease"
             >
-              <img class="img-3" src="/images/minus.png" alt="" />
+              <img class="img-3" src="/assets/minus.png" alt="" />
             </button>
             <div class="frame-10">
-              <span class="text-wrapper-4" aria-label="Quantity">${item.quantity || 1
-      }</span>
+              <span class="text-wrapper-4" aria-label="Quantity">${
+                item.quantity || 1
+              }</span>
             </div>
             <button
               type="button"
@@ -334,12 +338,13 @@ function displayCartItems(cartItems) {
               data-item-id="${item.id || ""}"
               data-action="increase"
             >
-              <img class="img-3" src="/images/plus.png" alt="" />
+              <img class="img-3" src="/assets/plus.png" alt="" />
             </button>
           </div>
           <div class="frame-11">
-            <button type="button" class="remove-button" data-item-id="${item.id || ""
-      }">
+            <button type="button" class="remove-button" data-item-id="${
+              item.id || ""
+            }">
               <span class="text-wrapper-5">Remove</span>
             </button>
           </div>
@@ -514,9 +519,9 @@ function getCookie(name) {
 function toCapitalCase(str) {
   return str
     ? str
-      .toLowerCase()
-      .split(" ")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ")
+        .toLowerCase()
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ")
     : "";
 }
