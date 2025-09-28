@@ -146,7 +146,7 @@
   white-space: nowrap;
 }
 
-.order .frame-2 {
+.order .shopping-cart {
   display: flex;
   flex-direction: column;
   width: 480px;
@@ -157,7 +157,7 @@
   left: 1360px;
 }
 
-.order .frame-3 {
+.order .cart-items-container {
   display: flex;
   flex-direction: column;
   align-items: flex-start;

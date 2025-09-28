@@ -263,7 +263,7 @@ async function fetchCartItems(render = true) {
 }
 
 function displayCartItems(cartItems) {
-  const cartContainer = document.querySelector(".frame-3");
+  const cartContainer = document.querySelector(".cart-items-container");
   const orderSummary = document.querySelector(".frame-12");
 
   if (!cartContainer || !orderSummary) {
@@ -285,13 +285,29 @@ function displayCartItems(cartItems) {
   }
 
   cartItems.forEach((item, index) => {
+    const colorIndex = item.available_colors?.indexOf(item.color) || 0;
+    const itemImage =
+      colorIndex !== -1 && item.images?.[colorIndex]
+        ? item.images[colorIndex]
+        : item.main_image || item.images?.[0] || "/assets/fallback.png";
+
+    const uniqueId = `${item.id || index}-${item.color || "N/A"}-${
+      item.size || "N/A"
+    }`;
+    console.log(
+      `Rendering cart item: uniqueId=${uniqueId}, id=${
+        item.id || index
+      }, color=${item.color || "N/A"}, size=${item.size || "N/A"}`
+    );
+
     const itemElement = document.createElement("article");
     itemElement.className = `frame-4`;
     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
+    itemElement.setAttribute("data-unique-id", uniqueId);
     itemElement.innerHTML = `
       <img
         class="rectangle"
-        src="${item.cover_image || item.images?.[0] || "/assets/fallback.png"}"
+        src="${itemImage}"
         alt="${toCapitalCase(item.name) || "Product"}"
       />
       <div class="frame-5">
@@ -310,9 +326,7 @@ function displayCartItems(cartItems) {
             ).toUpperCase()}</div>
           </div>
           <div class="div-wrapper">
-            <div class="text-wrapper-3">$${
-              item.price ? item.price.toFixed(2) : "0.00"
-            }</div>
+            <div class="text-wrapper-3">$${item.price ? item.price : "0"}</div>
           </div>
         </div>
         <div class="frame-8">
@@ -321,7 +335,7 @@ function displayCartItems(cartItems) {
               type="button"
               class="quantity-button"
               aria-label="Decrease quantity"
-              data-item-id="${item.id || ""}"
+              data-unique-id="${uniqueId}"
               data-action="decrease"
             >
               <img class="img-3" src="/assets/minus.png" alt="" />
@@ -335,16 +349,14 @@ function displayCartItems(cartItems) {
               type="button"
               class="quantity-button"
               aria-label="Increase quantity"
-              data-item-id="${item.id || ""}"
+              data-unique-id="${uniqueId}"
               data-action="increase"
             >
               <img class="img-3" src="/assets/plus.png" alt="" />
             </button>
           </div>
           <div class="frame-11">
-            <button type="button" class="remove-button" data-item-id="${
-              item.id || ""
-            }">
+            <button type="button" class="remove-button" data-unique-id="${uniqueId}">
               <span class="text-wrapper-5">Remove</span>
             </button>
           </div>
@@ -352,6 +364,12 @@ function displayCartItems(cartItems) {
       </div>
     `;
     cartContainer.appendChild(itemElement);
+    addCartItemEventListeners(
+      uniqueId,
+      item.id || index,
+      item.color || "N/A",
+      item.size || "N/A"
+    );
   });
 
   const subtotal = cartItems.reduce(
@@ -359,8 +377,6 @@ function displayCartItems(cartItems) {
     0
   );
   updateOrderSummary(subtotal);
-
-  addCartItemEventListeners();
 }
 
 function updateOrderSummary(subtotal) {
@@ -390,11 +406,11 @@ function updateOrderSummary(subtotal) {
 }
 
 function displayCartError(message) {
-  const cartContainer = document.querySelector(".frame-3");
+  const cartContainer = document.querySelector(".cart-items-container");
   const orderSummary = document.querySelector(".frame-12");
   if (!cartContainer || !orderSummary) {
     console.error(
-      "Cart container (.frame-3) or order summary (.frame-12) not found"
+      "Cart container (.cart-items-container) or order summary (.frame-12) not found"
     );
     return;
   }
@@ -407,14 +423,41 @@ function displayCartError(message) {
   updateOrderSummary(0);
 }
 
-function addCartItemEventListeners() {
-  document.querySelectorAll(".quantity-button").forEach((button) => {
+function addCartItemEventListeners(uniqueId, itemId, color, size) {
+  const cartItem = document.querySelector(
+    `.frame-4[data-unique-id="${uniqueId}"]`
+  );
+
+  if (!cartItem) {
+    console.warn(`Cart item not found for uniqueId: ${uniqueId}`);
+    return;
+  }
+  const decreaseButton = cartItem.querySelector(
+    `.quantity-button[data-action="decrease"][data-unique-id="${uniqueId}"]`
+  );
+  const increaseButton = cartItem.querySelector(
+    `.quantity-button[data-action="increase"][data-unique-id="${uniqueId}"]`
+  );
+  const removeButton = cartItem.querySelector(
+    `.remove-button[data-unique-id="${uniqueId}"]`
+  );
+  const quantityElement = cartItem.querySelector(
+    ".frame-9 .frame-10 .text-wrapper-4"
+  );
+
+  if (!decreaseButton || !increaseButton || !quantityElement) {
+    console.warn(`Required elements not found for uniqueId: ${uniqueId}`, {
+      decreaseButton,
+      increaseButton,
+      quantityElement,
+    });
+    return;
+  }
+
+  [decreaseButton, increaseButton].forEach((button) => {
     button.addEventListener("click", async () => {
-      const itemId = button.getAttribute("data-item-id");
-      const action = button.getAttribute("data-action");
-      const quantityElement =
-        button.parentElement.querySelector(".text-wrapper-4");
       let currentQuantity = parseInt(quantityElement.textContent, 10);
+      const action = button.getAttribute("data-action");
 
       if (action === "increase") {
         currentQuantity += 1;
@@ -424,9 +467,19 @@ function addCartItemEventListeners() {
         return;
       }
 
+      console.log(
+        `Initiating quantity update for uniqueId: ${uniqueId}, itemId: ${itemId}, color: ${color}, size: ${size}, new quantity: ${currentQuantity}`
+      );
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to update cart.");
+
+        const requestBody = {
+          quantity: currentQuantity,
+          color: color !== "N/A" ? color : undefined,
+          size: size !== "N/A" ? size : undefined,
+        };
+        console.log("PATCH request body:", requestBody);
 
         const response = await fetch(
           `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
@@ -437,19 +490,24 @@ function addCartItemEventListeners() {
               "Content-Type": "application/json",
               Authorization: `Bearer ${authToken}`,
             },
-            body: JSON.stringify({ quantity: currentQuantity }),
+            body: JSON.stringify(requestBody),
           }
         );
 
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            `Failed to update quantity: ${errorData.message || response.status}`
+            `Failed to update quantity: ${response.status} ${
+              errorData.message || ""
+            }`
           );
         }
 
+        console.log(
+          `Successfully updated item ${itemId} (color: ${color}, size: ${size}) to quantity ${currentQuantity}`
+        );
         quantityElement.textContent = currentQuantity;
-        await fetchCartItems(true);
+        await fetchCartItems();
       } catch (error) {
         console.error("Error updating quantity:", error);
         displayCartError("Failed to update quantity. Please try again.");
@@ -457,10 +515,9 @@ function addCartItemEventListeners() {
     });
   });
 
-  document.querySelectorAll(".remove-button").forEach((button) => {
-    button.addEventListener("click", async () => {
-      const itemId = button.getAttribute("data-item-id");
-
+  if (removeButton) {
+    removeButton.addEventListener("click", async () => {
+      console.log(`Removing item ${itemId} (color: ${color}, size: ${size})`);
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to remove items.");
@@ -471,25 +528,37 @@ function addCartItemEventListeners() {
             method: "DELETE",
             headers: {
               Accept: "application/json",
+              "Content-Type": "application/json",
               Authorization: `Bearer ${authToken}`,
             },
+            body: JSON.stringify({
+              color: color !== "N/A" ? color : undefined,
+              size: size !== "N/A" ? size : undefined,
+            }),
           }
         );
 
         if (!response.ok) {
-          const errorData = await response.json();
+          const errorData = await response.json().catch(() => ({}));
           throw new Error(
-            `Failed to remove item: ${errorData.message || response.status}`
+            `Failed to remove item: ${response.status} ${
+              errorData.message || ""
+            }`
           );
         }
 
-        await fetchCartItems(true);
+        console.log(
+          `Successfully removed item ${itemId} (color: ${color}, size: ${size})`
+        );
+        await fetchCartItems();
       } catch (error) {
         console.error("Error removing item:", error);
         displayCartError("Failed to remove item. Please try again.");
       }
     });
-  });
+  } else {
+    console.warn(`Remove button not found for uniqueId: ${uniqueId}`);
+  }
 }
 
 function displayFormError(message) {
