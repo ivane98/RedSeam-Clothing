@@ -22,7 +22,7 @@
 
 .login-btn:hover {
   border: 1px solid #10151f;
-  border-radius: 10px;
+  border-radius: 7px;
 }
 
 .listing-page .rectangle-2 {
@@ -455,7 +455,6 @@
 .listing-page .div {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   position: relative;
   flex: 0 0 auto;
   cursor: pointer;

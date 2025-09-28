@@ -22,7 +22,7 @@
 
 .login-btn:hover {
   border: 1px solid #10151f;
-  border-radius: 10px;
+  border-radius: 7px;
 }
 
 /* shopping cart */
@@ -511,7 +511,6 @@
 .listing-page .div {
   display: inline-flex;
   align-items: center;
-  gap: 4px;
   position: relative;
   flex: 0 0 auto;
   cursor: pointer;
@@ -955,6 +954,8 @@
   position: relative;
   width: 32px;
   height: 32px;
+  border: 1px solid var(--red);
+  border-radius: 3px;
 }
 
 .listing-page .page-active {
@@ -964,8 +965,6 @@
   background-color: var(--white);
   border-radius: 4px;
   overflow: hidden;
-  border: 1px solid;
-  border-color: #ff3f00;
 }
 
 .listing-page .num {
@@ -974,7 +973,7 @@
   margin-right: 4px;
   flex: 1;
   margin-bottom: 5px;
-  width: 24px;
+  width: 32px;
   font-family: "Poppins", Helvetica;
   font-weight: 700;
   color: var(--red);
@@ -993,6 +992,7 @@
   border-radius: 4px;
   border: 1px solid;
   border-color: #f8f6f7;
+  box-shadow: none;
 }
 
 .listing-page .num-2 {

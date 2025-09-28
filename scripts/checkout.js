@@ -1,14 +1,77 @@
+function clearErrors() {
+  document.querySelectorAll(".error-message").forEach((div) => {
+    div.textContent = "";
+    const frame14 = div
+      .closest(".frame-13, .frame-16, .frame-17, .frame-18, .frame-19")
+      ?.querySelector(".frame-14");
+    if (frame14) frame14.classList.remove("has-error");
+  });
+}
+
+function validateField(field, errorDiv) {
+  const value = field.value.trim();
+  let error = "";
+  const frame14 = errorDiv
+    .closest(".frame-13, .frame-16, .frame-17, .frame-18, .frame-19")
+    ?.querySelector(".frame-14");
+
+  if (!value) {
+    error = "This field is required";
+  } else {
+    switch (field.name) {
+      case "name":
+      case "surname":
+        if (value.length < 2 || value.length > 50) {
+          error = `${
+            field.name.charAt(0).toUpperCase() + field.name.slice(1)
+          } must be 2-50 characters long`;
+        } else if (!/^[A-Za-z\s]+$/.test(value)) {
+          error = `${
+            field.name.charAt(0).toUpperCase() + field.name.slice(1)
+          } can only contain letters and spaces`;
+        }
+        break;
+      case "email":
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          error = "Please enter a valid email address";
+        }
+        break;
+      case "address":
+        if (value.length < 5 || value.length > 100) {
+          error = "Address must be 5-100 characters long";
+        }
+        break;
+      case "zipcode":
+        if (!/^\d{5}$/.test(value)) {
+          error = "Zip code must be exactly 5 digits";
+        }
+        break;
+    }
+  }
+
+  errorDiv.textContent = error;
+  if (frame14) {
+    if (error) {
+      frame14.classList.add("has-error");
+    } else {
+      frame14.classList.remove("has-error");
+    }
+  }
+  return !error;
+}
 document.addEventListener("DOMContentLoaded", async () => {
+  const authToken = getCookie("authToken");
+
   const logo = document.querySelector(".div");
 
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  const userDataString = localStorage.getItem("user");
+  const userDataString = JSON.parse(localStorage.getItem("user"));
 
   const avatarImg = document.querySelector(".ellipse");
 
-  if (userDataString && userDataString.avatar && avatarImg) {
+  if (userDataString && userDataString.avatar && avatarImg && authToken) {
     avatarImg.src = userDataString.avatar;
     avatarImg.alt = `${userDataString.name || "User"} avatar`;
   } else {
@@ -19,14 +82,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
   if (userDataString) {
     try {
-      const userData = JSON.parse(userDataString);
-      console.log("Loaded user data from localStorage:", userData);
+      console.log("Loaded user data from localStorage:", userDataString);
 
       const emailInput = document.getElementById("email");
-      if (emailInput && userData.email) {
-        emailInput.value = userData.email;
-        console.log("Email field prepopulated with:", userData.email);
-      } else if (!userData.email) {
+      if (emailInput && userDataString.email) {
+        emailInput.value = userDataString.email;
+        console.log("Email field prepopulated with:", userDataString.email);
+      } else if (!userDataString.email) {
         console.log("No email found in userData; email field remains empty.");
       } else if (!emailInput) {
         console.error("Email input (#email) not found in DOM.");
@@ -44,9 +106,78 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   const checkoutForm = document.getElementById("checkout-form");
   if (checkoutForm) {
+    const fields = [
+      {
+        input: document.getElementById("name"),
+        error: document.getElementById("name-error"),
+      },
+      {
+        input: document.getElementById("surname"),
+        error: document.getElementById("surname-error"),
+      },
+      {
+        input: document.getElementById("email"),
+        error: document.getElementById("email-error"),
+      },
+      {
+        input: document.getElementById("address"),
+        error: document.getElementById("address-error"),
+      },
+      {
+        input: document.getElementById("zipcode"),
+        error: document.getElementById("zipcode-error"),
+      },
+    ];
+
+    fields.forEach(({ input, error }) => {
+      if (input && error) {
+        input.addEventListener("input", () => {
+          validateField(input, error);
+        });
+      }
+    });
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       console.log("Pay button clicked, processing checkout...");
+
+      // Clear previous errors
+      clearErrors();
+
+      // Validate all fields on frontend
+      const fields = [
+        {
+          input: document.getElementById("name"),
+          error: document.getElementById("name-error"),
+        },
+        {
+          input: document.getElementById("surname"),
+          error: document.getElementById("surname-error"),
+        },
+        {
+          input: document.getElementById("email"),
+          error: document.getElementById("email-error"),
+        },
+        {
+          input: document.getElementById("address"),
+          error: document.getElementById("address-error"),
+        },
+        {
+          input: document.getElementById("zipcode"),
+          error: document.getElementById("zipcode-error"),
+        },
+      ];
+
+      let isValid = true;
+      fields.forEach(({ input, error }) => {
+        if (!validateField(input, error)) {
+          isValid = false;
+        }
+      });
+
+      if (!isValid) {
+        // displayFormError("Please correct the errors in the form.");
+        return;
+      }
 
       const name = document.getElementById("name").value.trim();
       const surname = document.getElementById("surname").value.trim();
@@ -54,23 +185,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       const address = document.getElementById("address").value.trim();
       const zipcode = document.getElementById("zipcode").value.trim();
 
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-      if (!name || !surname || !email || !address || !zipcode) {
-        displayFormError("All fields are required.");
-        return;
-      }
-      if (!emailRegex.test(email)) {
-        displayFormError("Please enter a valid email address.");
-        return;
-      }
-
       const cartItems = await fetchCartItems(false); // Don't render, just fetch
       console.log("Cart items:", cartItems);
-      if (cartItems.length === 0) {
-        displayFormError("Your cart is empty. Add items before checking out.");
-        return;
-      }
-
       if (cartItems.length === 0) {
         displayFormError("Your cart is empty. Add items before checking out.");
         return;
@@ -107,6 +223,24 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) {
           const errorData = await response.json();
+          if (response.status === 422 || response.status === 400) {
+            // Handle field-specific validation errors from backend
+            if (errorData.errors) {
+              Object.keys(errorData.errors).forEach((field) => {
+                const errorDiv = document.getElementById(`${field}-error`);
+                if (errorDiv) {
+                  errorDiv.textContent =
+                    errorData.errors[field][0] || "Invalid input";
+                }
+              });
+              displayFormError("Please correct the errors in the form.");
+            } else {
+              throw new Error(
+                `Checkout failed: ${errorData.message || response.status}`
+              );
+            }
+            return;
+          }
           throw new Error(
             `Checkout failed: ${errorData.message || response.status}`
           );
@@ -146,10 +280,29 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
             if (!retryResponse.ok) {
               const retryErrorData = await retryResponse.json();
-              console.error(
-                "Retry checkout API error response:",
-                retryErrorData
-              );
+              if (
+                retryResponse.status === 422 ||
+                retryResponse.status === 400
+              ) {
+                // Handle field-specific validation errors from backend retry
+                if (retryErrorData.errors) {
+                  Object.keys(retryErrorData.errors).forEach((field) => {
+                    const errorDiv = document.getElementById(`${field}-error`);
+                    if (errorDiv) {
+                      errorDiv.textContent =
+                        retryErrorData.errors[field][0] || "Invalid input";
+                    }
+                  });
+                  displayFormError("Please correct the errors in the form.");
+                } else {
+                  throw new Error(
+                    `Checkout failed: ${
+                      retryErrorData.message || retryResponse.status
+                    }`
+                  );
+                }
+                return;
+              }
               throw new Error(
                 `Checkout failed: ${
                   retryErrorData.message || retryResponse.status

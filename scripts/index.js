@@ -874,7 +874,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const user = JSON.parse(localStorage.getItem("user"));
   const avatarImg = document.querySelector(".user-menu .ellipse");
-  if (user && user.avatar && avatarImg) {
+  if (user && user.avatar && avatarImg && authToken) {
     avatarImg.src = user.avatar;
     avatarImg.alt = `${user.name || "User"} avatar`;
   } else if (avatarImg) {
