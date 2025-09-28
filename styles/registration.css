@@ -253,6 +253,7 @@
   color: var(--red);
   font-size: 12px;
   line-height: normal;
+  margin-left: 5px;
 }
 
 .registration .avatar-error-message {

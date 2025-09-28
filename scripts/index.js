@@ -6,8 +6,6 @@ let state = {
   lastSortOption: null,
 };
 
-console.log(state.sort);
-
 function debounce(func, wait) {
   let timeout;
   return function (...args) {

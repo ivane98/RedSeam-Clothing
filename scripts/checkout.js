@@ -21,14 +21,10 @@ function validateField(field, errorDiv) {
     switch (field.name) {
       case "name":
       case "surname":
-        if (value.length < 2 || value.length > 50) {
-          error = `${
-            field.name.charAt(0).toUpperCase() + field.name.slice(1)
-          } must be 2-50 characters long`;
+        if (value.length < 2) {
+          error = `Must be more then 2 characters long`;
         } else if (!/^[A-Za-z\s]+$/.test(value)) {
-          error = `${
-            field.name.charAt(0).toUpperCase() + field.name.slice(1)
-          } can only contain letters and spaces`;
+          error = `Can only contain letters and spaces`;
         }
         break;
       case "email":
@@ -37,13 +33,14 @@ function validateField(field, errorDiv) {
         }
         break;
       case "address":
-        if (value.length < 5 || value.length > 100) {
-          error = "Address must be 5-100 characters long";
+        if (value.length < 3) {
+          error = "Must be more than 3 characters long";
         }
         break;
       case "zipcode":
-        if (!/^\d{5}$/.test(value)) {
-          error = "Zip code must be exactly 5 digits";
+        if (!/^\d+$/.test(value) || value.length < 3) {
+          error =
+            "Zip code must be valid number and more than 2 characters long";
         }
         break;
     }
@@ -59,16 +56,28 @@ function validateField(field, errorDiv) {
   }
   return !error;
 }
+
 document.addEventListener("DOMContentLoaded", async () => {
   const authToken = getCookie("authToken");
-
   const logo = document.querySelector(".div");
+  const loginBtn = document.querySelector(".login-btn");
+
+  if (!authToken) {
+    loginBtn.style.display = "flex";
+  }
+
+  if (loginBtn) {
+    loginBtn.addEventListener("click", () => {
+      console.log("login");
+      window.location.href = "login.html";
+    });
+  }
 
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
-  const userDataString = JSON.parse(localStorage.getItem("user"));
 
+  const userDataString = JSON.parse(localStorage.getItem("user"));
   const avatarImg = document.querySelector(".ellipse");
 
   if (userDataString && userDataString.avatar && avatarImg && authToken) {
@@ -80,10 +89,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     avatarImg.style.width = "20px";
     avatarImg.style.height = "20px";
   }
+
   if (userDataString) {
     try {
       console.log("Loaded user data from localStorage:", userDataString);
-
       const emailInput = document.getElementById("email");
       if (emailInput && userDataString.email) {
         emailInput.value = userDataString.email;
@@ -129,13 +138,19 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     ];
 
+    // Clear errors on input without validation
     fields.forEach(({ input, error }) => {
       if (input && error) {
         input.addEventListener("input", () => {
-          validateField(input, error);
+          error.textContent = "";
+          const frame14 = error
+            .closest(".frame-13, .frame-16, .frame-17, .frame-18, .frame-19")
+            ?.querySelector(".frame-14");
+          if (frame14) frame14.classList.remove("has-error");
         });
       }
     });
+
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
       console.log("Pay button clicked, processing checkout...");
@@ -143,30 +158,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       // Clear previous errors
       clearErrors();
 
-      // Validate all fields on frontend
-      const fields = [
-        {
-          input: document.getElementById("name"),
-          error: document.getElementById("name-error"),
-        },
-        {
-          input: document.getElementById("surname"),
-          error: document.getElementById("surname-error"),
-        },
-        {
-          input: document.getElementById("email"),
-          error: document.getElementById("email-error"),
-        },
-        {
-          input: document.getElementById("address"),
-          error: document.getElementById("address-error"),
-        },
-        {
-          input: document.getElementById("zipcode"),
-          error: document.getElementById("zipcode-error"),
-        },
-      ];
-
+      // Frontend validation
       let isValid = true;
       fields.forEach(({ input, error }) => {
         if (!validateField(input, error)) {
@@ -185,7 +177,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       const address = document.getElementById("address").value.trim();
       const zipcode = document.getElementById("zipcode").value.trim();
 
-      const cartItems = await fetchCartItems(false); // Don't render, just fetch
+      const cartItems = await fetchCartItems(false);
       console.log("Cart items:", cartItems);
       if (cartItems.length === 0) {
         displayFormError("Your cart is empty. Add items before checking out.");
@@ -223,20 +215,38 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) {
           const errorData = await response.json();
+          console.log("API error response:", errorData);
           if (response.status === 422 || response.status === 400) {
-            // Handle field-specific validation errors from backend
-            if (errorData.errors) {
-              Object.keys(errorData.errors).forEach((field) => {
-                const errorDiv = document.getElementById(`${field}-error`);
-                if (errorDiv) {
-                  errorDiv.textContent =
-                    errorData.errors[field][0] || "Invalid input";
-                }
-              });
+            const fieldMap = {
+              name: "name-error",
+              surname: "surname-error",
+              email: "email-error",
+              address: "address-error",
+              zip_code: "zipcode-error",
+            };
+            let hasErrors = false;
+            Object.keys(fieldMap).forEach((apiField) => {
+              const errorDivId = fieldMap[apiField];
+              const errorDiv = document.getElementById(errorDivId);
+              if (errorDiv && errorData.errors && errorData.errors[apiField]) {
+                const errorMessage = Array.isArray(errorData.errors[apiField])
+                  ? errorData.errors[apiField][0]
+                  : errorData.errors[apiField];
+                errorDiv.textContent = errorMessage || "Invalid input";
+                const frame14 = errorDiv
+                  .closest(
+                    ".frame-13, .frame-16, .frame-17, .frame-18, .frame-19"
+                  )
+                  ?.querySelector(".frame-14");
+                if (frame14) frame14.classList.add("has-error");
+                hasErrors = true;
+              }
+            });
+            if (hasErrors) {
               displayFormError("Please correct the errors in the form.");
             } else {
-              throw new Error(
-                `Checkout failed: ${errorData.message || response.status}`
+              displayFormError(
+                errorData.message || "Checkout failed due to invalid input."
               );
             }
             return;
@@ -280,25 +290,48 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
             if (!retryResponse.ok) {
               const retryErrorData = await retryResponse.json();
+              console.log("API retry error response:", retryErrorData);
               if (
                 retryResponse.status === 422 ||
                 retryResponse.status === 400
               ) {
-                // Handle field-specific validation errors from backend retry
-                if (retryErrorData.errors) {
-                  Object.keys(retryErrorData.errors).forEach((field) => {
-                    const errorDiv = document.getElementById(`${field}-error`);
-                    if (errorDiv) {
-                      errorDiv.textContent =
-                        retryErrorData.errors[field][0] || "Invalid input";
-                    }
-                  });
+                const fieldMap = {
+                  name: "name-error",
+                  surname: "surname-error",
+                  email: "email-error",
+                  address: "address-error",
+                  zip_code: "zipcode-error",
+                };
+                let hasErrors = false;
+                Object.keys(fieldMap).forEach((apiField) => {
+                  const errorDivId = fieldMap[apiField];
+                  const errorDiv = document.getElementById(errorDivId);
+                  if (
+                    errorDiv &&
+                    retryErrorData.errors &&
+                    retryErrorData.errors[apiField]
+                  ) {
+                    const errorMessage = Array.isArray(
+                      retryErrorData.errors[apiField]
+                    )
+                      ? retryErrorData.errors[apiField][0]
+                      : retryErrorData.errors[apiField];
+                    errorDiv.textContent = errorMessage || "Invalid input";
+                    const frame14 = errorDiv
+                      .closest(
+                        ".frame-13, .frame-16, .frame-17, .frame-18, .frame-19"
+                      )
+                      ?.querySelector(".frame-14");
+                    if (frame14) frame14.classList.add("has-error");
+                    hasErrors = true;
+                  }
+                });
+                if (hasErrors) {
                   displayFormError("Please correct the errors in the form.");
                 } else {
-                  throw new Error(
-                    `Checkout failed: ${
-                      retryErrorData.message || retryResponse.status
-                    }`
+                  displayFormError(
+                    retryErrorData.message ||
+                      "Checkout failed due to invalid input."
                   );
                 }
                 return;
@@ -349,6 +382,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     } else {
       console.warn("Close modal button (.heroicons-mini-x) not found");
     }
+
     const continueButton = document.querySelector(".success .primary");
     if (continueButton) {
       continueButton.addEventListener("click", () => {
@@ -421,7 +455,7 @@ function displayCartItems(cartItems) {
 
   if (!cartContainer || !orderSummary) {
     console.error(
-      "Cart container (.frame-3) or order summary (.frame-12) not found:",
+      "Cart container (.cart-items-container) or order summary (.frame-12) not found:",
       { cartContainer, orderSummary }
     );
     return;
@@ -580,11 +614,11 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
   const cartItem = document.querySelector(
     `.frame-4[data-unique-id="${uniqueId}"]`
   );
-
   if (!cartItem) {
     console.warn(`Cart item not found for uniqueId: ${uniqueId}`);
     return;
   }
+
   const decreaseButton = cartItem.querySelector(
     `.quantity-button[data-action="decrease"][data-unique-id="${uniqueId}"]`
   );
