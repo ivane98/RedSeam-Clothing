@@ -852,6 +852,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const authToken = getCookie("authToken");
   const logo = document.querySelector(".div");
   const loginBtn = document.querySelector(".login-btn");
+  const cartBtn = document.querySelector(".cart-img");
 
   if (logo) {
     logo.addEventListener("click", () => {
@@ -861,6 +862,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (!authToken) {
     loginBtn.style.display = "flex";
+    cartBtn.style.display = "none";
   }
 
   if (loginBtn) {

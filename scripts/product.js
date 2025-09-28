@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const authToken = getCookie("authToken");
   const logo = document.querySelector(".div");
   const loginBtn = document.querySelector(".login-btn");
+  const cartBtn = document.querySelector(".cart-img");
 
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
@@ -9,6 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!authToken) {
     loginBtn.style.display = "flex";
+    cartBtn.style.display = "none";
   }
 
   if (loginBtn) {

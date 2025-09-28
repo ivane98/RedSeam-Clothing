@@ -12,20 +12,17 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-  padding: 7px 14px;
-  position: relative;
-  border-radius: 10px;
-  border: 1px solid;
-  border-color: #e1dfe1;
   cursor: pointer;
-  background-color: var(--red);
-  color: white;
-  font-weight: bold;
   font-family: "Poppins", "Helvetica";
+  font-size: 12px;
+  font-weight: 500;
+  background-color: white;
+  border: 1px solid white;
 }
 
 .login-btn:hover {
-  background-color: #e63900;
+  border: 1px solid #10151f;
+  border-radius: 10px;
 }
 
 /* shopping cart */
@@ -521,6 +518,13 @@
 }
 
 .listing-page .img {
+  position: relative;
+  width: 24px;
+  height: 24px;
+}
+
+.listing-page .cart-img {
+  display: flex;
   position: relative;
   width: 24px;
   height: 24px;
