@@ -56,7 +56,6 @@
   overflow-y: hidden;
 }
 
-/* container */
 .cart-items-container {
   width: 490px;
   max-height: 620px;
@@ -146,8 +145,6 @@
   width: 100px;
   height: 134px;
   border-radius: 10px;
-  /* border: 1px solid;
-  border-color: #e1dfe1; */
   object-fit: cover;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }

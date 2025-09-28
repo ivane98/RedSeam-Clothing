@@ -20,11 +20,9 @@ function parseQueryParams() {
   state.price_from = parseFloat(params.get("price_from")) || null;
   state.price_to = parseFloat(params.get("price_to")) || null;
   state.sort = params.get("sort") || null;
-  // Only update lastSortOption if a sort parameter is present
   if (params.get("sort")) {
     state.lastSortOption = state.sort;
   } else {
-    // If no sort parameter, keep lastSortOption as is or set to null if undefined
     state.lastSortOption = state.lastSortOption || null;
   }
 }
@@ -394,7 +392,6 @@ function initializeSortDropdown() {
     { value: "created_at", text: "New products first" },
     { value: "price", text: "Price, low to high" },
     { value: "-price", text: "Price, high to low" },
-    // { value: "default", text: "Sort by" },
     { value: "clear", text: "Clear Sort" },
   ];
 
@@ -427,7 +424,6 @@ function initializeSortDropdown() {
   });
 }
 
-// ADDED FOR CART: Cart fetching and display functions
 async function fetchCartItems(render = true) {
   const authToken = getCookie("authToken");
   if (!authToken) {
@@ -790,7 +786,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
   }
 }
 
-// ADDED FOR CART: Utility function for authentication
 function getCookie(name) {
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
@@ -814,7 +809,6 @@ window.addEventListener("popstate", () => {
     { value: "created_at", text: "New products first" },
     { value: "price", text: "Price, low to high" },
     { value: "-price", text: "Price, high to low" },
-    // { value: "default", text: "Sort by" },
     { value: "clear", text: "Clear Sort" },
   ];
 
@@ -888,7 +882,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initializeSortDropdown();
   getDataByPage();
 
-  // ADDED FOR CART: Cart button and interaction event listeners
   const cartButton = document.querySelector(".cart-button");
   if (cartButton) {
     cartButton.addEventListener("click", () => {

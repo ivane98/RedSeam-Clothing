@@ -138,7 +138,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       },
     ];
 
-    // Clear errors on input without validation
     fields.forEach(({ input, error }) => {
       if (input && error) {
         input.addEventListener("input", () => {
@@ -155,10 +154,8 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.preventDefault();
       console.log("Pay button clicked, processing checkout...");
 
-      // Clear previous errors
       clearErrors();
 
-      // Frontend validation
       let isValid = true;
       fields.forEach(({ input, error }) => {
         if (!validateField(input, error)) {
@@ -167,7 +164,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       });
 
       if (!isValid) {
-        // displayFormError("Please correct the errors in the form.");
         return;
       }
 
@@ -579,15 +575,15 @@ function updateOrderSummary(subtotal) {
   orderSummary.innerHTML = `
     <div class="frame-8">
       <div class="text-wrapper-6">Items subtotal</div>
-      <div class="text-wrapper-7">$${subtotal.toFixed(2)}</div>
+      <div class="text-wrapper-7">$${subtotal}</div>
     </div>
     <div class="frame-8">
       <div class="text-wrapper-6">Delivery</div>
-      <div class="text-wrapper-7">$${delivery.toFixed(2)}</div>
+      <div class="text-wrapper-7">$${delivery}</div>
     </div>
     <div class="frame-8">
       <div class="text-wrapper-8">Total</div>
-      <div class="text-wrapper-8">$${total.toFixed(2)}</div>
+      <div class="text-wrapper-8">$${total}</div>
     </div>
   `;
 }

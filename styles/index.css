@@ -25,7 +25,6 @@
   border-radius: 7px;
 }
 
-/* shopping cart */
 .listing-page .rectangle-2 {
   display: none;
   position: absolute;
@@ -843,7 +842,6 @@
   width: 141px;
   height: 37px;
   border-radius: 50px;
-  /* background-color: #e7e7e74f; */
   display: flex;
   align-items: center;
   justify-content: center;

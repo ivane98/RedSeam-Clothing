@@ -141,6 +141,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordToggles = document.querySelectorAll(".password-toggle");
   const photo = document.querySelector(".ellipse");
 
+  removeBtn.style.display = "none";
+
   logo.addEventListener("click", () => {
     window.location.href = "index.html";
   });
@@ -176,6 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const errorDiv = document.getElementById("avatar-error");
     if (file) {
       avatarImg.src = URL.createObjectURL(file);
+      removeBtn.style.display = "flex";
     }
   });
 
@@ -184,6 +187,7 @@ document.addEventListener("DOMContentLoaded", () => {
     avatarImg.src = "assets/photo.png";
     document.getElementById("avatar-error").textContent = "";
     document.getElementById("avatar-error").style.display = "none";
+    removeBtn.style.display = "none";
   });
 
   form.querySelectorAll("input").forEach((field) => {

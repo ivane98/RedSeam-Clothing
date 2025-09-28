@@ -82,27 +82,23 @@
   margin-left: 10px;
   margin-top: 3px;
 }
-/*  */
 
 .order .error-message:empty {
-  visibility: hidden; /* Hide empty error messages */
+  visibility: hidden;
 }
 
 .order .frame-14:focus-within {
   border: 2px solid var(--dark-blue);
 }
 
-/* Set border to red when error exists */
 .order .frame-14.has-error {
   border: 2px solid var(--red);
 }
 
-/* Ensure error border persists on focus */
 .order .frame-14.has-error:focus-within {
   border: 2px solid var(--red);
 }
 
-/* Remove invalid/valid styles to avoid conflicts */
 .order .form-input:invalid,
 .order .form-input:valid {
   border-color: transparent;
@@ -515,7 +511,6 @@
 .order .frame-15 {
   display: flex;
   align-items: center;
-  /* flex-direction: column; */
   gap: 4px;
   position: relative;
   flex: 1;

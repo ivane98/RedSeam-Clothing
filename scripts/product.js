@@ -156,8 +156,6 @@ document.addEventListener("DOMContentLoaded", async () => {
           label.style.width = "38px";
           label.style.height = "38px";
           wrapper.appendChild(label);
-          // wrapper.style.border =
-          //   index === 0 ? `2px solid ${getColorValue(color)}` : "none";
           wrapper.style.border =
             index === 0
               ? `2px solid ${
@@ -200,7 +198,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 lastSelectedWrapper.style.border = "none";
               }
 
-              // wrapper.style.border = `2px solid ${getColorValue(color)}`;
               wrapper.style.border = `2px solid ${
                 color.toLowerCase() === "white"
                   ? "#cfceceff"
