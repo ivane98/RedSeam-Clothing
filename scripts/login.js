@@ -45,7 +45,7 @@ async function handleSubmit(e) {
   const emailError = document.getElementById("email-error");
   const passwordError = document.getElementById("password-error");
   const submitBtn = form.querySelector("button[type=submit]");
-  submitBtn.disabled = true; 
+  submitBtn.disabled = true;
 
   let isValid = true;
   if (!validateField(emailInput, emailError)) isValid = false;
@@ -97,7 +97,7 @@ async function handleSubmit(e) {
     console.error("Network error:", error);
     passwordError.textContent = "Network error. Please try again.";
   } finally {
-    submitBtn.disabled = false; 
+    submitBtn.disabled = false;
   }
 }
 
@@ -106,6 +106,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("login-form");
   const passwordInput = document.getElementById("password");
   const passwordToggle = document.querySelector(".password-toggle");
+
+  document.querySelector(".login-btn").addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
 
   logo.addEventListener("click", () => {
     window.location.href = "index.html";

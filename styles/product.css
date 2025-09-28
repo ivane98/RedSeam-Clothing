@@ -32,7 +32,7 @@
   left: 0;
   width: 1920px;
   height: 1080px;
-  background-color: var(--dark-blue);
+  background-color: #10151f;
   opacity: 0.3;
   z-index: 1000;
   pointer-events: none;
@@ -51,7 +51,7 @@
   width: 540px;
   height: 1080px;
   z-index: 2000;
-  background-color: var(--grey);
+  background-color: #f8f6f7;
   border-left: 1px solid #e1dfe1;
   overflow-y: hidden;
 }
@@ -404,7 +404,7 @@
   border-radius: 10px;
   display: flex;
   gap: 10px;
-  height: 48px;
+  height: 41px;
   justify-content: center;
   left: calc(50% - 107px);
   padding: 10px 20px;
@@ -421,7 +421,7 @@
   margin-top: -1px;
   color: #ffffff;
   font-family: "Poppins", Helvetica;
-  font-size: 18px;
+  font-size: 14px;
   font-weight: 500;
   letter-spacing: 0;
   line-height: normal;

@@ -144,11 +144,6 @@
   opacity: 0.7;
 }
 
-.registration .text-wrapper-3:focus {
-  outline: 2px solid var(--red);
-  outline-offset: 2px;
-}
-
 .registration .frame-3 {
   display: flex;
   flex-direction: column;
@@ -344,8 +339,21 @@
   opacity: 0.7;
 }
 
-.registration .text-wrapper-3:focus {
-  outline: 2px solid var(--red);
-  border-radius: 10px;
-  outline-offset: 2px;
+.login-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  font-family: "Poppins", "Helvetica";
+  font-size: 12px;
+  font-weight: 500;
+  background-color: white;
+  border: 1px solid white;
+}
+
+.login-btn:hover {
+  border: 1px solid #10151f;
+  border-radius: 7px;
 }

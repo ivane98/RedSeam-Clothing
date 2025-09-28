@@ -141,6 +141,10 @@ document.addEventListener("DOMContentLoaded", () => {
   const passwordToggles = document.querySelectorAll(".password-toggle");
   const photo = document.querySelector(".ellipse");
 
+  document.querySelector(".login-btn").addEventListener("click", () => {
+    window.location.href = "login.html";
+  });
+
   removeBtn.style.display = "none";
 
   logo.addEventListener("click", () => {

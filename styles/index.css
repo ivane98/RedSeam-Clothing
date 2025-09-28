@@ -32,7 +32,7 @@
   left: 0;
   width: 1920px;
   height: 1080px;
-  background-color: var(--dark-blue);
+  background-color: #10151f;
   opacity: 0.3;
   z-index: 1000;
   pointer-events: none;
@@ -464,7 +464,7 @@
   border-radius: 10px;
   display: flex;
   gap: 10px;
-  height: 48px;
+  height: 41px;
   justify-content: center;
   left: calc(50% - 107px);
   padding: 10px 20px;
@@ -513,6 +513,7 @@
   position: relative;
   flex: 0 0 auto;
   cursor: pointer;
+  gap: 4px;
 }
 
 .listing-page .img {
@@ -727,6 +728,7 @@
   width: 124px;
   height: 41px;
   align-self: flex-end;
+  margin-top: -10px;
 }
 
 .apply-button:hover {
@@ -845,10 +847,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  border: 1px solid grey;
+  border: 1px solid #e1dfe1;
   left: 100px;
   font-family: "Poppins", "Helvetica";
   font-size: 14px;
+}
+
+.price-values p {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .price-values img {
