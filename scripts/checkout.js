@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      console.log("login");
       window.location.href = "login.html";
     });
   }
@@ -92,7 +91,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (userDataString) {
     try {
-      console.log("Loaded user data from localStorage:", userDataString);
       const emailInput = document.getElementById("email");
       if (emailInput && userDataString.email) {
         emailInput.value = userDataString.email;
@@ -152,7 +150,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     checkoutForm.addEventListener("submit", async (e) => {
       e.preventDefault();
-      console.log("Pay button clicked, processing checkout...");
 
       clearErrors();
 
@@ -174,7 +171,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       const zipcode = document.getElementById("zipcode").value.trim();
 
       const cartItems = await fetchCartItems(false);
-      console.log("Cart items:", cartItems);
       if (cartItems.length === 0) {
         displayFormError("Your cart is empty. Add items before checking out.");
         return;
@@ -193,7 +189,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         zip_code: zipcode,
         address,
       };
-      console.log("Checkout form data:", formData);
 
       try {
         const response = await fetch(
@@ -211,7 +206,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         if (!response.ok) {
           const errorData = await response.json();
-          console.log("API error response:", errorData);
           if (response.status === 422 || response.status === 400) {
             const fieldMap = {
               name: "name-error",
@@ -253,12 +247,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const responseData = await response.json();
-        console.log("Checkout successful:", responseData);
 
         const modal = document.getElementById("congratulatory-modal");
         if (modal) {
           modal.classList.add("visible");
-          console.log("Congratulatory modal displayed");
         } else {
           console.error(
             "Congratulatory modal (#congratulatory-modal) not found"
@@ -286,7 +278,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             );
             if (!retryResponse.ok) {
               const retryErrorData = await retryResponse.json();
-              console.log("API retry error response:", retryErrorData);
               if (
                 retryResponse.status === 422 ||
                 retryResponse.status === 400
@@ -340,7 +331,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const retryData = await retryResponse.json();
-            console.log("Checkout successful (empty body):", retryData);
 
             const modal = document.getElementById("congratulatory-modal");
             if (modal) {
@@ -372,7 +362,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (modal) {
           modal.classList.remove("visible");
           window.location.href = "index.html";
-          console.log("Congratulatory modal closed via close button");
         }
       });
     } else {
@@ -385,7 +374,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const modal = document.getElementById("congratulatory-modal");
         if (modal) {
           modal.classList.remove("visible");
-          console.log("Congratulatory modal closed via Continue shopping");
           window.location.href = "index.html";
         }
       });
@@ -398,7 +386,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       modal.addEventListener("click", (e) => {
         if (e.target === modal) {
           modal.classList.remove("visible");
-          console.log("Congratulatory modal closed by clicking outside");
         }
       });
     } else {
@@ -434,7 +421,6 @@ async function fetchCartItems(render = true) {
     }
 
     const cartItems = await response.json();
-    console.log("Fetched cart items:", cartItems);
     if (render) displayCartItems(cartItems);
     return cartItems;
   } catch (error) {
@@ -650,9 +636,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
         return;
       }
 
-      console.log(
-        `Initiating quantity update for uniqueId: ${uniqueId}, itemId: ${itemId}, color: ${color}, size: ${size}, new quantity: ${currentQuantity}`
-      );
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to update cart.");
@@ -662,7 +645,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           color: color !== "N/A" ? color : undefined,
           size: size !== "N/A" ? size : undefined,
         };
-        console.log("PATCH request body:", requestBody);
 
         const response = await fetch(
           `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
@@ -686,9 +668,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           );
         }
 
-        console.log(
-          `Successfully updated item ${itemId} (color: ${color}, size: ${size}) to quantity ${currentQuantity}`
-        );
         quantityElement.textContent = currentQuantity;
         await fetchCartItems();
       } catch (error) {
@@ -700,7 +679,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
 
   if (removeButton) {
     removeButton.addEventListener("click", async () => {
-      console.log(`Removing item ${itemId} (color: ${color}, size: ${size})`);
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to remove items.");
@@ -730,9 +708,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           );
         }
 
-        console.log(
-          `Successfully removed item ${itemId} (color: ${color}, size: ${size})`
-        );
         await fetchCartItems();
       } catch (error) {
         console.error("Error removing item:", error);

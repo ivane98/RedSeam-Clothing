@@ -250,8 +250,8 @@
 }
 
 .log-in .input-field:focus-within {
-  border-color: var(--red);
-  box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2);
+  border-color: #10151f;
+  /* box-shadow: 0 0 0 2px rgba(255, 69, 0, 0.2); */
 }
 
 .log-in .form-input:invalid {

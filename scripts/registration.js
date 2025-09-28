@@ -106,7 +106,6 @@ async function handleSubmit(event) {
     } else if (response.status === 413 || response.status === 422) {
       const data = await response.json();
       const errors = data.errors || {};
-      console.log("Backend errors:", errors);
 
       [
         "username",
@@ -168,8 +167,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   avatarInput.addEventListener("change", () => {
     const file = avatarInput.files[0];
-    console.log(file.type);
-    console.log("image/png");
     if (
       file.type !== "image/png" &&
       file.type !== "image/jpeg" &&
@@ -192,13 +189,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("avatar-error").textContent = "";
     document.getElementById("avatar-error").style.display = "none";
     removeBtn.style.display = "none";
-  });
-
-  form.querySelectorAll("input").forEach((field) => {
-    field.addEventListener("blur", () => {
-      const errorDiv = document.getElementById(`${field.id}-error`);
-      validateField(field, errorDiv);
-    });
   });
 
   form.addEventListener("submit", handleSubmit);

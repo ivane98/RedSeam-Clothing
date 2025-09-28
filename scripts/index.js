@@ -49,10 +49,6 @@ async function getDataByPage() {
     if (state.price_to !== null) params.set("filter[price_to]", state.price_to);
     if (state.sort !== null) params.set("sort", state.sort);
 
-    console.log(
-      "API Request:",
-      `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`
-    );
     const response = await fetch(
       `https://api.redseam.redberryinternship.ge/api/products?${params.toString()}`,
       {
@@ -121,7 +117,6 @@ function displayProducts(products) {
           .join("");
 
   const productCount = products.length;
-  console.log(productCount);
   const rowHeight = 561;
   const columns = 4;
   const rows = Math.ceil(productCount / columns);
@@ -423,7 +418,6 @@ function initializeSortDropdown() {
     option.setAttribute("role", "option");
     option.addEventListener("click", (event) => {
       event.stopPropagation();
-      console.log("Sort option selected:", { value, text });
       if (sortText) sortText.textContent = value === "clear" ? "Sort By" : text;
       state.sort = value === "clear" ? null : value;
       state.lastSortOption = value;
@@ -518,11 +512,7 @@ function displayCartItems(cartItems) {
     const uniqueId = `${item.id || index}-${item.color || "N/A"}-${
       item.size || "N/A"
     }`;
-    console.log(
-      `Rendering cart item: uniqueId=${uniqueId}, id=${
-        item.id || index
-      }, color=${item.color || "N/A"}, size=${item.size || "N/A"}`
-    );
+
     const itemElement = document.createElement("article");
     itemElement.className = "cart-item";
     itemElement.setAttribute("aria-label", `Cart item ${index + 1}`);
@@ -707,9 +697,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
         return;
       }
 
-      console.log(
-        `Initiating quantity update for uniqueId: ${uniqueId}, itemId: ${itemId}, color: ${color}, size: ${size}, new quantity: ${currentQuantity}`
-      );
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to update cart.");
@@ -719,7 +706,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           color: color !== "N/A" ? color : undefined,
           size: size !== "N/A" ? size : undefined,
         };
-        console.log("PATCH request body:", requestBody);
 
         const response = await fetch(
           `https://api.redseam.redberryinternship.ge/api/cart/products/${itemId}`,
@@ -743,9 +729,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           );
         }
 
-        console.log(
-          `Successfully updated item ${itemId} (color: ${color}, size: ${size}) to quantity ${currentQuantity}`
-        );
         quantityElement.textContent = currentQuantity;
         await fetchCartItems();
       } catch (error) {
@@ -757,7 +740,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
 
   if (removeButton) {
     removeButton.addEventListener("click", async () => {
-      console.log(`Removing item ${itemId} (color: ${color}, size: ${size})`);
       try {
         const authToken = getCookie("authToken");
         if (!authToken) throw new Error("Please log in to remove items.");
@@ -787,9 +769,6 @@ function addCartItemEventListeners(uniqueId, itemId, color, size) {
           );
         }
 
-        console.log(
-          `Successfully removed item ${itemId} (color: ${color}, size: ${size})`
-        );
         await fetchCartItems();
       } catch (error) {
         console.error("Error removing item:", error);
@@ -874,7 +853,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   if (loginBtn) {
     loginBtn.addEventListener("click", () => {
-      console.log("login");
       window.location.href = "login.html";
     });
   }
@@ -900,7 +878,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const cartButton = document.querySelector(".cart-button");
   if (cartButton) {
     cartButton.addEventListener("click", () => {
-      console.log("Cart button clicked");
       fetchCartItems(true);
     });
   } else {
@@ -912,7 +889,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   if (closeButton) {
     closeButton.addEventListener("click", () => {
-      console.log("Shopping cart close button clicked");
       const cartPanel = document.querySelector(".shopping-cart");
       const emptyCartPanel = document.querySelector(".cart-is-empty");
       const overlay = document.querySelector(".rectangle-2");
@@ -929,7 +905,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   if (emptyCartCloseButton) {
     emptyCartCloseButton.addEventListener("click", () => {
-      console.log("Empty cart close button clicked");
       const cartPanel = document.querySelector(".shopping-cart");
       const emptyCartPanel = document.querySelector(".cart-is-empty");
       const overlay = document.querySelector(".rectangle-2");
@@ -944,7 +919,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const overlay = document.querySelector(".rectangle-2");
   if (overlay) {
     overlay.addEventListener("click", () => {
-      console.log("Overlay clicked");
       const cartPanel = document.querySelector(".shopping-cart");
       const emptyCartPanel = document.querySelector(".cart-is-empty");
       if (cartPanel && emptyCartPanel) {
@@ -958,7 +932,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const checkoutButton = document.querySelector(".shopping-cart .primary-2");
   if (checkoutButton) {
     checkoutButton.addEventListener("click", () => {
-      console.log("Go to Checkout button clicked");
       window.location.href = "checkout.html";
     });
   }
@@ -968,7 +941,6 @@ document.addEventListener("DOMContentLoaded", () => {
   );
   if (startShoppingButton) {
     startShoppingButton.addEventListener("click", () => {
-      console.log("Start shopping button clicked");
       window.location.href = "index.html";
     });
   }

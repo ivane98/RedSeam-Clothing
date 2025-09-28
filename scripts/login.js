@@ -48,8 +48,12 @@ async function handleSubmit(e) {
   submitBtn.disabled = true;
 
   let isValid = true;
-  if (!validateField(emailInput, emailError)) isValid = false;
-  if (!validateField(passwordInput, passwordError)) isValid = false;
+  if (!validateField(emailInput, emailError)) {
+    isValid = false;
+  }
+  if (!validateField(passwordInput, passwordError)) {
+    isValid = false;
+  }
 
   if (!isValid) {
     submitBtn.disabled = false;
@@ -80,7 +84,6 @@ async function handleSubmit(e) {
     } else if (response.status === 422) {
       const data = await response.json();
       const errors = data.errors || {};
-      console.log("Backend errors:", errors);
 
       ["email", "password"].forEach((field) => {
         const errorElement = document.getElementById(`${field}-error`);
@@ -122,14 +125,4 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   form.addEventListener("submit", handleSubmit);
-
-  [
-    document.getElementById("email"),
-    document.getElementById("password"),
-  ].forEach((field) => {
-    field.addEventListener("blur", () => {
-      const errorElement = document.getElementById(`${field.id}-error`);
-      validateField(field, errorElement);
-    });
-  });
 });
