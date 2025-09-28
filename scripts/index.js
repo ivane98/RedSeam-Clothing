@@ -78,6 +78,7 @@ async function getDataByPage() {
 
 function displayTotalCount(meta) {
   const productCount = document.querySelector(".product-count");
+
   if (!productCount) return;
   const start =
     meta.total > 0 ? (meta.current_page - 1) * meta.per_page + 1 : 0;
@@ -118,6 +119,20 @@ function displayProducts(products) {
       `
           )
           .join("");
+
+  const productCount = products.length;
+  console.log(productCount);
+  const rowHeight = 561;
+  const columns = 4;
+  const rows = Math.ceil(productCount / columns);
+  const gridHeight = rows * rowHeight;
+  const paginationWrapper = document.querySelector(".pagination-wrapper");
+
+  if (productCount < 10) {
+    paginationWrapper.style.marginTop = `${gridHeight - 400}px`;
+  } else {
+    paginationWrapper.style.marginTop = `90px`;
+  }
 
   productsGrid.querySelectorAll(".div-2").forEach((card) => {
     card.addEventListener("click", (event) => {

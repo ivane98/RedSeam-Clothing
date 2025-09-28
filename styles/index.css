@@ -869,7 +869,7 @@
   display: flex;
   margin-left: 100px;
   width: 1720px;
-  height: 1938px;
+  min-height: 561px;
   position: relative;
   margin-top: 32px;
   flex-wrap: wrap;
@@ -936,12 +936,11 @@
   width: 1720px;
   height: 32px;
   position: relative;
-  margin-top: 90px;
   align-items: center;
   justify-content: space-around;
   gap: 140px;
   opacity: 0;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, margin-top 0.2s ease;
 }
 
 .listing-page .pagination-wrapper.loaded {
